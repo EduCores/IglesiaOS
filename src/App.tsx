@@ -1224,12 +1224,19 @@ export default function App() {
                 muted
                 loop
                 playsInline
-                preload="metadata"
+                preload="auto"
+                disablePictureInPicture
+                ref={(v) => {
+                  if (v) {
+                    v.muted = true;
+                    v.play().catch(() => {});
+                  }
+                }}
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-white/60 to-[#f4faff]" />
+              <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-white/25 to-[#f4faff]" />
             </div>
             {/* Mobile App Screen Content */}
-            <div className="bg-[#f4faff]/60 min-h-[820px] pt-8 pb-20 flex flex-col relative">
+            <div className="bg-transparent min-h-[820px] pt-8 pb-20 flex flex-col relative">
               
               {/* Header inside phone screen */}
               <header className="relative z-10 flex items-center justify-between px-6 py-4 border-b border-slate-200/20 bg-white/60 backdrop-blur-md">
