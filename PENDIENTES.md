@@ -83,6 +83,55 @@ simulador de teléfono hasta que descubre el toggle — fricción innecesaria en
 
 ---
 
+## ✅ APLICADO — Inicio: video más sutil, sin foto de fondo en la tarjeta y con icono eclesial
+
+**Estado:** ✅ Aplicado el 01-oct-2026.
+
+1. **Video de nubes al 25% de opacidad** (`src/index.css`): el estado final de
+   `@keyframes skyVideoFadeIn` y el fallback `@media (prefers-reduced-motion: reduce)`
+   pasaron de `opacity: 0.65` a `opacity: 0.25`. **Ambos valores deben moverse juntos**:
+   si se sube solo uno, el aspecto del video cambia según la preferencia de animación
+   del sistema operativo del visitante.
+2. **Foto de fondo de la tarjeta de bienvenida eliminada** (`src/App.tsx`, Inicio): se
+   borró el `<div>` con `style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/…')" }}`
+   que estaba detrás de "Paz y Gracia / Buenos días, Pastor Samuel". Se **mantuvo** la
+   capa `bg-gradient-to-t from-white/50 via-white/25 to-transparent` como velo de
+   legibilidad de la cita bíblica sobre el video; si se quiere transparencia total,
+   basta borrar esa única línea.
+3. **Icono de la insignia "Paz y Gracia"** (`src/App.tsx`): se cambió `eco` (hojita,
+   lenguaje wellness/naturaleza) por **`folded_hands`** (manos en oración), en línea con
+   el tema eclesial de la app. Donde antes decía `>eco</span>` ahora dice
+   `>folded_hands</span>`.
+
+**Regla para iconos — verificado contra el CDN de Material Symbols:**
+El glifo **`cross` NO existe** (`404`) → no hay un icono de "cruz suelta" en Material
+Symbols. Para lo religioso/eclesial usar, ya probados (todos `200`):
+`church` (templo con cruz), `folded_hands` (manos orando), `menu_book` (Biblia),
+`auto_stories`, `volunteer_activism`. **Verificar cualquier icono nuevo antes de usarlo**
+(un nombre inexistente se renderiza como un hueco vacío, sin error en consola):
+```powershell
+Invoke-WebRequest -Method Head -Uri "https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/<nombre>/default/24px.svg"
+# 200 = existe · 404 = no existe
+```
+
+### ⏳ PENDIENTE — Vocabulario heredado del tema "Mindora" (bienestar) → lenguaje de iglesia
+
+**Auditoría hecha el 01-oct-2026:** ya **no queda** vocabulario de meditación/consciencia
+en el código (búsqueda de `meditac`, `mindful`, `conscien`, `concienc`, `self_improvement`,
+`respirac`, `bienestar`, `wellness`, `mindset` → **0 resultados**). Lo único que
+sobrevive es el **nombre de marca del tema original ("Mindora")**, que aún es visible
+para el usuario en la pantalla de Sacramentos:
+
+- `src/Sacramentos.tsx:490` → alerta de descarga `Guía_Preparación_Bautismal_Mindora.pdf`.
+- `src/Sacramentos.tsx:508` → correo `secretaria@comunidadmindora.org`.
+- Solo internos (comentarios): `src/App.tsx:174` y `:204`, `src/Directorio.tsx:203`,
+  `src/index.css:89`.
+
+**Falta únicamente que el usuario decida el nombre real** (¿"Comunidad de Fe"? ¿nombre de
+la iglesia?) para reemplazar esas dos cadenas visibles. No se aplicó aún para no inventar
+la identidad de la iglesia.
+
+---
 ## 💡 Propuestas menores (identificadas, no acordadas aún)
 
 1. **PWA (Progressive Web App):** manifest + service worker para que el sitio sea

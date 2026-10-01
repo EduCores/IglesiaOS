@@ -152,7 +152,7 @@ input[type="radio"] {
   border-radius: 10px !important;
 }
 
-/* Video de nubes superior: 35% de transparencia (opacidad 65%)
+/* Video de nubes superior: 75% de transparencia (opacidad 25%)
    con fade in al cargar y fade out hacia abajo (máscara).
    Nítido hasta 154px y se funde hasta desaparecer a los 420px. */
 .sky-video-wrap {
@@ -170,14 +170,15 @@ input[type="radio"] {
     opacity: 0;
   }
   to {
-    opacity: 0.65;
+    opacity: 0.25;
   }
 }
 
-/* Si el sistema reduce animaciones, mostrar el video fijo al 65% */
+/* Si el sistema reduce animaciones, mostrar el video fijo al 25%
+   (mismo valor final que la animación, para no cambiar el aspecto) */
 @media (prefers-reduced-motion: reduce) {
   .sky-video {
     animation: none;
-    opacity: 0.65;
+    opacity: 0.25;
   }
 }

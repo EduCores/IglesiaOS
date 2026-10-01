@@ -829,16 +829,13 @@ function InicioScreen({
         
         {/* Warm Welcome Hero Card */}
         <div className="relative w-full rounded-[10px] overflow-hidden bg-white/40 p-5 shadow-sm border border-slate-100">
-          <div 
-            className="absolute inset-0 z-0 opacity-25 pointer-events-none bg-cover bg-center" 
-            style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuA_RHG1CHPqdPv6UwBtKhAOVuoJE_n4QZESNqBBh3_qpYgNebQNWPoCHyzR1ltb5A6iaV7NSem_8S431GE3_MjDlTMGJo-TGOZ0YCtSQVquwFrQiboiXjcu-OqDC8H5l6MuI_GWePvFFszpl8KQdRywTDiueEUs2vDAxq2ckQyVaCDz2sXu-f2s4dz8btyvlDx1F2t3-fZNvamOQTClZjf204_g8dMEIw5TZQ3F2A93NlwOK52TzAOo')" }}
-          ></div>
+          
           <div className="absolute inset-0 z-0 bg-gradient-to-t from-white/50 via-white/25 to-transparent"></div>
           
           <div className="relative z-10 flex flex-col space-y-3.5">
             <div className="flex items-center justify-between">
               <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-[#386458]/10 text-[#386458]">
-                <span className="material-symbols-outlined text-[15px]" style={{ fontVariationSettings: "'FILL' 1" }}>eco</span>
+                <span className="material-symbols-outlined text-[15px]" style={{ fontVariationSettings: "'FILL' 1" }}>folded_hands</span>
                 <span className="text-[11px] font-bold tracking-wide">Paz y Gracia</span>
               </div>
               <span className="text-[11px] text-slate-500/80 font-medium">Domingo, 27 de Oct</span>
