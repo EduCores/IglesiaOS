@@ -115,6 +115,13 @@ button,
   border-radius: 8px !important;
 }
 
+/* Checkboxes y radio buttons: verde institucional del proyecto (#386458) en todo el sitio,
+   incluyendo el marcado, el punto del radio y el anillo de foco del navegador */
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: #386458 !important;
+}
+
 /* Ajustes de espaciado adaptativos */
 .px-5 {
   padding-left: calc(0.25rem * 2) !important;
