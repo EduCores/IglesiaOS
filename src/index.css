@@ -152,33 +152,45 @@ input[type="radio"] {
   border-radius: 10px !important;
 }
 
-/* Video de nubes superior: 75% de transparencia (opacidad 25%)
-   con fade in al cargar y fade out hacia abajo (máscara).
-   Nítido hasta 154px y se funde hasta desaparecer a los 420px. */
+/* ==============================================================
+   VIDEO DE NUBES (fondo superior) — INTENSIDAD
+   --------------------------------------------------------------
+   AJUSTA LA INTENSIDAD EN UN SOLO SITIO: el `opacity` de .sky-video.
+        1    → video totalmente opaco
+        0.98 → casi opaco (valor actual)
+        0.5  → medio transparente
+        0.25 → muy sutil (casi no se nota)
+   El @keyframes solo declara el estado INICIAL (0), así que el
+   navegador interpola hasta el valor de aquí: no hay que repetir
+   el número en ningún otro sitio (ni en la animación ni en el
+   bloque de prefers-reduced-motion).
+   ============================================================== */
+
+/* Máscara: nítido hasta 154px y se funde hasta desaparecer a 420px */
 .sky-video-wrap {
   -webkit-mask-image: linear-gradient(to bottom, black 154px, transparent 420px);
   mask-image: linear-gradient(to bottom, black 154px, transparent 420px);
 }
 
 .sky-video {
-  opacity: 0;
-  animation: skyVideoFadeIn 1.6s ease-out forwards;
+  opacity: 0.98;
+  animation: skyVideoFadeIn 1.6s ease-out;
 }
 
+/* Keyframe SOLO con el fotograma inicial: al no declarar `to`, el
+   navegador interpola hasta el opacity base del elemento (arriba).
+   Ojo: no puede ir vacío ni con `to`, o el valor base se ignora. */
 @keyframes skyVideoFadeIn {
   from {
     opacity: 0;
   }
-  to {
-    opacity: 0.25;
-  }
 }
 
-/* Si el sistema reduce animaciones, mostrar el video fijo al 25%
-   (mismo valor final que la animación, para no cambiar el aspecto) */
+/* Con "Reducir movimiento" activado simplemente NO se anima: el video
+   queda directo en el opacity base, sin duplicar el número (y sin
+   necesidad de !important). */
 @media (prefers-reduced-motion: reduce) {
   .sky-video {
     animation: none;
-    opacity: 0.25;
   }
 }
