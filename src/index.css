@@ -109,11 +109,10 @@ button,
   font-weight: 600 !important;
 }
 
-/* Protección de componentes circulares para que no se cuadren */
-button.rounded-full,
-.toggle-thumb,
+/* Esquinas redondeadas uniformes (8px) para todos los elementos rounded-full
+   (botones, chips, badges, avatares y toggles) en lugar de píldoras/círculos perfectos */
 .rounded-full {
-  border-radius: 9999px !important;
+  border-radius: 8px !important;
 }
 
 /* Ajustes de espaciado adaptativos */
