@@ -55,7 +55,7 @@ simulador de teléfono hasta que descubre el toggle — fricción innecesaria en
    - ✅ `react-player` **integrado en `src/Multimedia.tsx`** (01-oct-2026) con carga
      diferida (`React.lazy` + `Suspense`): el preview de cámara reproduce video real al
      iniciar la transmisión, y se añadió la sección "Grabaciones Recientes" con clips
-     reproducibles (YouTube embebido + archivos MP4).
+     reproducibles (vídeo embebido de YouTube).
    - ✅ **Videos como fondo** (01-oct-2026): el feed de cámara y cada clip de
      "Grabaciones Recientes" pueden activarse como fondo del contenido principal con el
      botón `wallpaper` (toggle). Aparece un chip "Fondo activo · …" para quitarlo, y
@@ -63,5 +63,7 @@ simulador de teléfono hasta que descubre el toggle — fricción innecesaria en
      `backdrop-blur`); sin fondo, el diseño queda idéntico al original.
      **Pendiente:** reemplazar las URLs de demostración (`src` de cada clip y la
      constante `DEMO_CAMERA_FEED`) por las grabaciones y señales reales del canal.
+     Mientras tanto: el feed de cámara usa música cristiana en vivo 24/7
+     (YouTube · letrasdelreino) y cada clip apunta a un vídeo público de YouTube.
    - `lottie-react` aún sin uso — importarla con carga diferida (`React.lazy` /
      `import()` dinámico) en la pantalla que la use, para no inflar la carga inicial.

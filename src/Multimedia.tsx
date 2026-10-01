@@ -13,8 +13,8 @@ interface SyncChannel {
 // react-player v3 con carga diferida: el chunk se descarga solo al abrir un clip o iniciar el preview.
 const ReactPlayer = lazy(() => import("react-player"));
 
-// Feed de demostración del preview de cámara — reemplazar por la señal real (RTMP/HLS) del canal.
-const DEMO_CAMERA_FEED = "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4";
+// Feed demo del preview de cámara — música cristiana en vivo 24/7 (YouTube · LetrasdelReino). Reemplazar por la señal real (RTMP/HLS) del canal.
+const DEMO_CAMERA_FEED = "https://www.youtube.com/watch?v=SHXCgBIzVss";
 
 const PlayerLoader = () => (
   <div className="w-full h-full flex items-center justify-center bg-slate-950">
@@ -68,7 +68,7 @@ export default function MultimediaScreen() {
   ];
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
-  // Biblioteca de clips recientes (react-player) — DEMO: reemplazar cada `src` por las grabaciones reales del canal.
+  // Biblioteca de clips recientes (react-player) — clips demo con videos públicos de YouTube; reemplazar por las grabaciones reales del canal.
   const [activeClipId, setActiveClipId] = useState<number | null>(null);
   const clips = [
     {
@@ -77,7 +77,7 @@ export default function MultimediaScreen() {
       meta: "Dom 27 Sep · 412 reproducciones",
       badge: "HD",
       thumbnail: "https://lh3.googleusercontent.com/aida-public/AB6AXuCFidNdOOMK-Gc1IlEvVisENzHoO1-ixW45S5GfWQkW_zxYISoGnZIFSjLRpUncMXBHxm39TE7O7BLGp31I3AYuJ4pOmPeEKKz2Kb9snNgg4eyDhI864cehrbiTv5KYXpS5bmooWSPVIVzk7VxUbe4oOzvcj1z-GPoNEfUvZir-Bl4VbQPzNWtTwtWde95Pj2QnUeoaocAuY-bMyMMnBiKM5hKaS3uTljA6Md-suUsf7Xvm6x6myS-3",
-      src: "https://www.youtube.com/watch?v=LXb3EKWsInQ"
+      src: "https://www.youtube.com/watch?v=y5JOJx8l-gA"
     },
     {
       id: 2,
@@ -85,7 +85,7 @@ export default function MultimediaScreen() {
       meta: "Dom 27 Sep · 268 reproducciones",
       badge: "4K",
       thumbnail: "https://lh3.googleusercontent.com/aida-public/AB6AXuBXZQ04S41pr2PWBNCWCCtjbco4gMgLaRNTIT55jYfXjLfA-s8KATpoFYyhTwqpYs5UdkYFjVw7OYLn6TQpDlulgjVJ8vpqWhDcv37unHoA_gE7cUmiFPHMwPZLUMmkYunqQzlH0QPDwNX0jIfgQq8UoqbH4XsvcI7Ezmku9lZvUE5G8-vPtiMcPHkG1VrpPsfH-1jMTuoxFTfQ2i0-h1bGvlz79Hj1VRddlOdSAA1jXHSUoplKoXOm",
-      src: "https://test-videos.co.uk/vids/jellyfish/mp4/h264/720/Jellyfish_720_10s_1MB.mp4"
+      src: "https://www.youtube.com/watch?v=6sRKYpgfS4I"
     },
     {
       id: 3,
@@ -93,7 +93,7 @@ export default function MultimediaScreen() {
       meta: "Vie 18 Sep · 305 reproducciones",
       badge: "CLIP",
       thumbnail: "https://lh3.googleusercontent.com/aida-public/AB6AXuCKuDV7C_6aZYyhi5tu2z1OQld66W9ew608SiUHa3NqIfobUM8rA2zg1aUrTDQ8M1I0dlr7KwtsSlxHrDjlju_ElTynZ8KOI6XMzwgagPKu21q__Hyhgimph3gdWwy7ykxaa_B1XRtaI6xn_h-zm-LSu1Il38Ym74SPPIv8MkZMA-Z-_XHdlsB-6RUvpcXOBDE93EFLAM8dpVEzrxAv27BVEgdxdWq6REqUpyoAUXzDlsc7ONsTYFtF",
-      src: "https://test-videos.co.uk/vids/sintel/mp4/h264/720/Sintel_720_10s_1MB.mp4"
+      src: "https://www.youtube.com/watch?v=k6sY6-PLxko"
     }
   ];
 
