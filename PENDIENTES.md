@@ -87,11 +87,17 @@ simulador de teléfono hasta que descubre el toggle — fricción innecesaria en
 
 **Estado:** ✅ Aplicado el 01-oct-2026.
 
-1. **Video de nubes al 25% de opacidad** (`src/index.css`): el estado final de
-   `@keyframes skyVideoFadeIn` y el fallback `@media (prefers-reduced-motion: reduce)`
-   pasaron de `opacity: 0.65` a `opacity: 0.25`. **Ambos valores deben moverse juntos**:
-   si se sube solo uno, el aspecto del video cambia según la preferencia de animación
-   del sistema operativo del visitante.
+1. **Video de nubes: UNA sola perilla de intensidad** (`src/index.css`). La opacidad se
+   controla **únicamente** con el `opacity` de `.sky-video` (hoy `0.98`). El
+   `@keyframes skyVideoFadeIn` declara **solo el fotograma `from` (`opacity: 0`)**: al no
+   existir un `to`, el navegador interpola hasta el valor base del elemento, así que el
+   número **no se repite en ningún otro sitio**; el bloque `prefers-reduced-motion` solo
+   hace `animation: none` y el video queda en ese mismo valor base. ⚠️ El keyframe no
+   puede quedar vacío ni llevar `to`, o el valor base se ignora.
+   **Para subir/bajar la intensidad: cambiar SOLO el `opacity` de `.sky-video`.**
+   *(Antes estaba duplicado en el `to` del keyframe y en el fallback de reduced-motion;
+   si se movía uno solo, el aspecto del video cambiaba según la preferencia del sistema
+   operativo del visitante.)*
 2. **Foto de fondo de la tarjeta de bienvenida eliminada** (`src/App.tsx`, Inicio): se
    borró el `<div>` con `style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/…')" }}`
    que estaba detrás de "Paz y Gracia / Buenos días, Pastor Samuel". Se **mantuvo** la
@@ -102,6 +108,24 @@ simulador de teléfono hasta que descubre el toggle — fricción innecesaria en
    lenguaje wellness/naturaleza) por **`folded_hands`** (manos en oración), en línea con
    el tema eclesial de la app. Donde antes decía `>eco</span>` ahora dice
    `>folded_hands</span>`.
+
+**Nota — por qué "el cambio no se veía en el celular" (dos causas que se suman):**
+
+1. **El archivo local no es lo que ve el teléfono.** El celular lee el sitio *desplegado*
+   (`https://educores.github.io/IglesiaOS/`). Editar `src/index.css` y mirar el celular no
+   cambia nada hasta hacer `npm run build` + `git push` (GitHub Pages despliega solo) y
+   esperar el deploy + la caché (`Cache-Control: max-age=600`, 10 min → recarga forzada o
+   incógnito).
+2. **`@media (prefers-reduced-motion: reduce)` es condicional, no un bug.** Ese bloque solo
+   se aplica si el sistema operativo del visitante tiene activado "Reducir movimiento"
+   (iOS: Ajustes → Accesibilidad → Movimiento → Reducir movimiento; Android: Ajustes →
+   Accesibilidad → Eliminar animaciones). **Por defecto viene desactivado**, así que el
+   bloque se ignora por completo — y `!important` no sirve de nada dentro de él.
+
+**Bucle de prueba rápido (sin deploy ni caché):** `npm run dev` en el PC y abrir en el
+teléfono `http://192.168.100.20:3000/` (misma Wi‑Fi; la IP puede cambiar, se consulta con
+`Get-NetIPAddress -AddressFamily IPv4`). En dev el `base` es `/`, en build es `/IglesiaOS/`
+(ver `vite.config.ts`). HMR aplica los cambios en vivo.
 
 **Regla para iconos — verificado contra el CDN de Material Symbols:**
 El glifo **`cross` NO existe** (`404`) → no hay un icono de "cruz suelta" en Material
