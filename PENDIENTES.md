@@ -4,37 +4,39 @@
 
 ---
 
-## 🔴 MUY IMPORTANTE — Detección automática de vista (móvil / escritorio)
+## ✅ MUY IMPORTANTE — Detección automática de vista (móvil / escritorio)
 
-**Estado:** Pendiente — acordado en octubre de 2026, se aplicará en el futuro próximo.
-**Archivo a modificar:** `src/App.tsx` (línea ~1055, definición de `viewMode`).
+**Estado:** ✅ Aplicado el 01-oct-2026. Al mismo tiempo se **eliminó el panel superior**
+(selector de pantallas de Stitch, toggle manual "Móvil / Escritorio" y botón "Ocultar panel").
 
-### Problema
-Hoy la vista inicial siempre es `"mobile"`:
+**Archivo modificado:** `src/App.tsx` (definición de `viewMode`).
+
+### Problema (histórico)
+La vista inicial siempre era `"mobile"`:
 
 ```tsx
-const [viewMode, setViewMode] = useState<"mobile" | "desktop">("mobile");
+const [viewMode] = useState<"mobile" | "desktop">("mobile");
 ```
 
-El usuario debe descubrir y pulsar el toggle manual "Móvil / Escritorio" de la barra
+El usuario debía descubrir y pulsar el toggle manual "Móvil / Escritorio" de la barra
 superior. En un producto real, el layout debe adaptarse solo al dispositivo:
 
 - Celular → vista **Móvil** (tab bar, marco de app).
 - Notebook / desktop → vista **Escritorio** (header administrativo, grids amplios).
 
-### Solución acordada
-- Detectar el ancho de pantalla **al cargar**:
+### Solución aplicada
+- Se eliminó el panel superior completo (chrome de demo).
+- `viewMode` se detecta **al cargar** con `window.matchMedia("(max-width: 767px)")`:
   - `< 768px` → `"mobile"`
   - `>= 768px` → `"desktop"`
-  - Con `window.matchMedia("(max-width: 767px)")`.
-- **Mantener el toggle manual** como override (sigue siendo útil para demos y presentaciones).
-- Costo estimado: **~10 líneas**, cero peso adicional en el bundle.
+- El toggle manual ya no existe (vivía en el panel eliminado). Si algún día se quiere
+  recuperar como override para demos, reubicarlo como botón flotante discreto.
 
 ### Criterio de aceptación
-- [ ] En un notebook (≥768px) la app abre en vista Escritorio por defecto.
-- [ ] En un celular (<768px) la app abre en vista Móvil por defecto.
-- [ ] El toggle manual sigue funcionando y puede sobreescribir la detección.
-- [ ] `npm run lint` y `npm run build` en verde; verificar el CSS/JS en producción.
+- [x] En un notebook (≥768px) la app abre en vista Escritorio por defecto.
+- [x] En un celular (<768px) la app abre en vista Móvil por defecto.
+- [x] `npm run lint` y `npm run build` en verde; verificar el JS en producción.
+- [~] Override manual para demos: **no aplicado** — se eliminó junto con el panel (ver arriba).
 
 ### Por qué es MUY IMPORTANTE
 La estrategia de IglesiaOS es web responsive para ambos mundos: móvil para líderes en
