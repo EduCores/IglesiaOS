@@ -50,5 +50,11 @@ simulador de teléfono hasta que descubre el toggle — fricción innecesaria en
    instalable en Android/iOS ("Añadir a pantalla de inicio"), con ícono propio y
    funcionamiento offline. Peso adicional: unos pocos KB.
 2. **Uso de `lottie-react` y `react-player`** (ya instalados el 01-oct-2026):
-   importarlas con carga diferida (`React.lazy` / `import()` dinámico) en las pantallas
-   que las usen, para no inflar la carga inicial.
+   - ✅ `react-player` **integrado en `src/Multimedia.tsx`** (01-oct-2026) con carga
+     diferida (`React.lazy` + `Suspense`): el preview de cámara reproduce video real al
+     iniciar la transmisión, y se añadió la sección "Grabaciones Recientes" con clips
+     reproducibles (YouTube embebido + archivos MP4).
+     **Pendiente:** reemplazar las URLs de demostración (`src` de cada clip y la
+     constante `DEMO_CAMERA_FEED`) por las grabaciones y señales reales del canal.
+   - `lottie-react` aún sin uso — importarla con carga diferida (`React.lazy` /
+     `import()` dinámico) en la pantalla que la use, para no inflar la carga inicial.

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 
 interface SyncChannel {
   id: number;
@@ -9,6 +9,18 @@ interface SyncChannel {
   iconColor: string;
   active: boolean;
 }
+
+// react-player v3 con carga diferida: el chunk se descarga solo al abrir un clip o iniciar el preview.
+const ReactPlayer = lazy(() => import("react-player"));
+
+// Feed de demostración del preview de cámara — reemplazar por la señal real (RTMP/HLS) del canal.
+const DEMO_CAMERA_FEED = "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_1MB.mp4";
+
+const PlayerLoader = () => (
+  <div className="w-full h-full flex items-center justify-center bg-slate-950">
+    <span className="material-symbols-outlined text-[#a1d0c1] text-[28px] animate-spin">progress_activity</span>
+  </div>
+);
 
 export default function MultimediaScreen() {
   const [isStreaming, setIsStreaming] = useState(false);
@@ -55,6 +67,35 @@ export default function MultimediaScreen() {
     { text: `"Señor mi Dios, al contemplar los cielos, el firmamento y las estrellas mil..."`, details: "Cuan Grande es Dios · Verso 1", index: 1 }
   ];
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
+
+  // Biblioteca de clips recientes (react-player) — DEMO: reemplazar cada `src` por las grabaciones reales del canal.
+  const [activeClipId, setActiveClipId] = useState<number | null>(null);
+  const clips = [
+    {
+      id: 1,
+      title: "Culto Dominical · Prédica Completa",
+      meta: "Dom 27 Sep · 412 reproducciones",
+      badge: "HD",
+      thumbnail: "https://lh3.googleusercontent.com/aida-public/AB6AXuCFidNdOOMK-Gc1IlEvVisENzHoO1-ixW45S5GfWQkW_zxYISoGnZIFSjLRpUncMXBHxm39TE7O7BLGp31I3AYuJ4pOmPeEKKz2Kb9snNgg4eyDhI864cehrbiTv5KYXpS5bmooWSPVIVzk7VxUbe4oOzvcj1z-GPoNEfUvZir-Bl4VbQPzNWtTwtWde95Pj2QnUeoaocAuY-bMyMMnBiKM5hKaS3uTljA6Md-suUsf7Xvm6x6myS-3",
+      src: "https://www.youtube.com/watch?v=LXb3EKWsInQ"
+    },
+    {
+      id: 2,
+      title: "Set de Adoración · Cuán Grande es Dios",
+      meta: "Dom 27 Sep · 268 reproducciones",
+      badge: "4K",
+      thumbnail: "https://lh3.googleusercontent.com/aida-public/AB6AXuBXZQ04S41pr2PWBNCWCCtjbco4gMgLaRNTIT55jYfXjLfA-s8KATpoFYyhTwqpYs5UdkYFjVw7OYLn6TQpDlulgjVJ8vpqWhDcv37unHoA_gE7cUmiFPHMwPZLUMmkYunqQzlH0QPDwNX0jIfgQq8UoqbH4XsvcI7Ezmku9lZvUE5G8-vPtiMcPHkG1VrpPsfH-1jMTuoxFTfQ2i0-h1bGvlz79Hj1VRddlOdSAA1jXHSUoplKoXOm",
+      src: "https://test-videos.co.uk/vids/jellyfish/mp4/h264/720/Jellyfish_720_10s_1MB.mp4"
+    },
+    {
+      id: 3,
+      title: "Bautismos & Testimonios · Servicio Especial",
+      meta: "Vie 18 Sep · 305 reproducciones",
+      badge: "CLIP",
+      thumbnail: "https://lh3.googleusercontent.com/aida-public/AB6AXuCKuDV7C_6aZYyhi5tu2z1OQld66W9ew608SiUHa3NqIfobUM8rA2zg1aUrTDQ8M1I0dlr7KwtsSlxHrDjlju_ElTynZ8KOI6XMzwgagPKu21q__Hyhgimph3gdWwy7ykxaa_B1XRtaI6xn_h-zm-LSu1Il38Ym74SPPIv8MkZMA-Z-_XHdlsB-6RUvpcXOBDE93EFLAM8dpVEzrxAv27BVEgdxdWq6REqUpyoAUXzDlsc7ONsTYFtF",
+      src: "https://test-videos.co.uk/vids/sintel/mp4/h264/720/Sintel_720_10s_1MB.mp4"
+    }
+  ];
 
   // Stopwatch effect
   useEffect(() => {
@@ -168,16 +209,34 @@ export default function MultimediaScreen() {
 
         {/* Live Camera Preview Frame */}
         <div className="relative w-full rounded-2xl overflow-hidden bg-slate-950 aspect-video flex flex-col justify-between p-4 shadow-md">
-          <img 
-            className="absolute inset-0 w-full h-full object-cover opacity-80" 
-            alt="Stage Camera Preview" 
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHOEAJgRfUPkFRioj0USwiDMehNcLbIHe-BlD1n0vDsJJe-a9PAog6OSK1Lg9QjnATyKolQj5tIEtbC7sm19NApD35RsTD8UHfuMJNTBhmFF4TuM3-YPWmgKlXidbXt7LO0aFhawu51ddXxNMowWXAQxkwqzp8WV_Hcjx_pGd_UyYLBPsbT6QqM-JieiBRuRmT3Cv_Dse7a7D8v6YX8Tba0jVWqV2rK4Mg3DRo26fY9yuRV0qh3MFP" 
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-slate-950/30 pointer-events-none"></div>
+          {isStreaming ? (
+            <div className="absolute inset-0 [&_video]:w-full [&_video]:h-full [&_video]:object-cover">
+              <Suspense fallback={<PlayerLoader />}>
+                <ReactPlayer
+                  src={DEMO_CAMERA_FEED}
+                  playing
+                  muted
+                  loop
+                  playsInline
+                  width="100%"
+                  height="100%"
+                  style={{ position: "absolute", inset: 0 }}
+                />
+              </Suspense>
+            </div>
+          ) : (
+            <img
+              className="absolute inset-0 w-full h-full object-cover opacity-80"
+              alt="Stage Camera Preview"
+              src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHOEAJgRfUPkFRioj0USwiDMehNcLbIHe-BlD1n0vDsJJe-a9PAog6OSK1Lg9QjnATyKolQj5tIEtbC7sm19NApD35RsTD8UHfuMJNTBhmFF4TuM3-YPWmgKlXidbXt7LO0aFhawu51ddXxNMowWXAQxkwqzp8WV_Hcjx_pGd_UyYLBPsbT6QqM-JieiBRuRmT3Cv_Dse7a7D8v6YX8Tba0jVWqV2rK4Mg3DRo26fY9yuRV0qh3MFP"
+            />
+          )}
+          <div className={`absolute inset-0 bg-gradient-to-t pointer-events-none ${isStreaming ? "from-slate-950/40 via-transparent to-slate-950/15" : "from-slate-950/80 via-transparent to-slate-950/30"}`}></div>
           
           {/* Top floating tags inside preview */}
           <div className="relative z-10 flex items-center justify-between">
             <div className="bg-slate-900/60 backdrop-blur-md px-3 py-1 rounded-full text-white text-[9px] font-bold uppercase tracking-wider flex items-center gap-1.5 shadow-sm">
+              {isStreaming && <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>}
               <span className="material-symbols-outlined text-[#a1d0c1] text-[15px]">videocam</span>
               <span>CAM 1 · Púlpito Principal</span>
             </div>
@@ -187,31 +246,38 @@ export default function MultimediaScreen() {
             </div>
           </div>
 
-          {/* Center Play/Preview Trigger Overlay */}
-          <div className="relative z-10 flex flex-col items-center justify-center my-auto">
-            <button 
-              onClick={handleToggleStream}
-              className={`font-bold text-[11px] px-5 py-3 rounded-full flex items-center gap-2 active:scale-95 transition-all shadow-md cursor-pointer ${
-                isStreaming ? "bg-red-600 text-white shadow-red-950/20" : "bg-[#386458] text-white shadow-[#386458]/35"
-              }`}
-            >
-              <span className="material-symbols-outlined text-[18px]">
-                {isStreaming ? "stop_circle" : "play_circle"}
-              </span>
-              <span>
-                {isStreaming ? "Detener Transmisión en Vivo" : "Iniciar Transmisión (YT & FB)"}
-              </span>
-            </button>
-          </div>
+          {/* Center Play/Preview Trigger Overlay (en vivo se oculta para no tapar el video) */}
+          {!isStreaming && (
+            <div className="relative z-10 flex flex-col items-center justify-center my-auto">
+              <button
+                onClick={handleToggleStream}
+                className="bg-[#386458] hover:bg-[#2c4e45] text-white font-bold text-[11px] px-5 py-3 rounded-full flex items-center gap-2 active:scale-95 transition-all shadow-md shadow-[#386458]/35 cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[18px]">play_circle</span>
+                <span>Iniciar Transmisión (YT & FB)</span>
+              </button>
+            </div>
+          )}
 
           {/* Bottom Audio & Quality Metrics */}
           <div className="relative z-10 flex items-center justify-between text-white text-[10px] font-medium">
+            {isStreaming ? (
+              <button
+                onClick={handleToggleStream}
+                className="bg-red-600 hover:bg-red-700 text-white text-[10px] font-bold px-3.5 py-2 rounded-full flex items-center gap-1.5 active:scale-95 transition-all shadow-md cursor-pointer"
+                style={{ borderRadius: "4px" }}
+              >
+                <span className="material-symbols-outlined text-[15px]">stop_circle</span>
+                <span>Detener Transmisión</span>
+              </button>
+            ) : (
+              <div className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#bdeddd]"></span>
+                <span>Sensor Sony FX3 · Rec. 709</span>
+              </div>
+            )}
             <div className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#bdeddd]"></span>
-              <span>Sensor Sony FX3 · Rec. 709</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="material-symbols-outlined text-[15px] text-[#bdeddd]">timelapse</span>
+              <span className={`material-symbols-outlined text-[15px] ${isStreaming ? "text-red-400" : "text-[#bdeddd]"}`}>timelapse</span>
               <span className="font-mono">{formatTimer(secondsElapsed)}</span>
             </div>
           </div>
@@ -260,6 +326,73 @@ export default function MultimediaScreen() {
                 </button>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Grabaciones Recientes — clips reproducibles (react-player con carga diferida) */}
+        <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="material-symbols-outlined text-[#386458] text-[22px] font-bold">video_library</span>
+              <div>
+                <h2 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Grabaciones Recientes</h2>
+                <p className="text-[10px] text-slate-400 font-medium mt-0.5">Cultos y eventos · Toca un clip para reproducirlo</p>
+              </div>
+            </div>
+            <span className="bg-slate-100 text-slate-500 font-bold text-[9px] uppercase tracking-wider px-2.5 py-0.5 rounded-full">
+              {clips.length} Clips
+            </span>
+          </div>
+
+          <div className="space-y-3">
+            {clips.map((clip) => {
+              const isActive = activeClipId === clip.id;
+              return (
+                <div key={clip.id} className="rounded-xl border border-slate-100 bg-slate-50/60 overflow-hidden">
+                  <button
+                    onClick={() => setActiveClipId(isActive ? null : clip.id)}
+                    className="w-full flex items-center gap-3 p-3 text-left cursor-pointer hover:bg-white transition-all"
+                  >
+                    <div className="relative w-24 h-14 rounded-lg overflow-hidden shrink-0 bg-slate-200">
+                      <img src={clip.thumbnail} alt={clip.title} className="absolute inset-0 w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-slate-950/35 flex items-center justify-center">
+                        <span className="material-symbols-outlined text-white text-[26px] drop-shadow-sm">
+                          {isActive ? "pause_circle" : "play_circle"}
+                        </span>
+                      </div>
+                      <span className="absolute bottom-1 right-1 bg-slate-950/70 text-white text-[8px] font-bold px-1.5 py-0.5 rounded font-mono tracking-wider">
+                        {clip.badge}
+                      </span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-bold text-slate-800 leading-tight line-clamp-1">{clip.title}</p>
+                      <p className="text-[10px] text-slate-400 mt-0.5 font-medium leading-none">{clip.meta}</p>
+                    </div>
+                    <span className="material-symbols-outlined text-slate-300 text-[20px]">
+                      {isActive ? "expand_less" : "expand_more"}
+                    </span>
+                  </button>
+
+                  {isActive && (
+                    <div className="px-3 pb-3 animate-[fadeIn_0.2s_ease-out]">
+                      <div className="relative rounded-lg overflow-hidden bg-slate-950 aspect-video [&_video]:w-full [&_video]:h-full [&_video]:object-cover">
+                        <Suspense fallback={<PlayerLoader />}>
+                          <ReactPlayer
+                            src={clip.src}
+                            playing
+                            controls
+                            playsInline
+                            width="100%"
+                            height="100%"
+                            style={{ position: "absolute", inset: 0 }}
+                          />
+                        </Suspense>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
 
