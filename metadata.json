@@ -1,0 +1,6 @@
+{
+  "name": "Registro de Mayordomía",
+  "description": "Aplicación interactiva y adaptable para el registro rápido de transacciones de mayordomía con diseño responsivo móvil y escritorio.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,131 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   AJUSTES GLOBALES DE ACCESIBILIDAD Y LEGIBILIDAD (MÓVIL Y ESCRITORIO)
+   ========================================================================== */
+
+/* Base de fuente aumentada y jerarquía tipográfica para legibilidad óptima en móviles */
+html, body {
+  font-size: 18px !important; /* Incrementado a 18px como base global */
+  line-height: 1.6 !important;
+  font-family: 'DM Sans', 'Inter', sans-serif !important;
+}
+
+/* Encabezados y Títulos: Inter en peso SemiBold (600) para un diseño sobrio, limpio y refinado */
+h1, h2, h3, h4, h5, h6, 
+.font-display, .font-headline, 
+.font-headline-sm, .font-headline-md, .font-headline-lg, .font-headline-xl,
+.font-bold {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 600 !important; /* SemiBold elegante (600) para evitar trazos toscos */
+}
+
+/* Cuerpo de texto, datos y formularios: DM Sans en pesos Regular (400) y Medium (500) */
+p, span:not(.material-symbols-outlined), label, input, textarea, select, button,
+.font-body, .font-body-sm, .font-body-md, .font-body-lg {
+  font-family: 'DM Sans', sans-serif !important;
+  font-weight: 400 !important; /* Regular */
+}
+
+.font-medium, .font-semibold {
+  font-family: 'DM Sans', sans-serif !important;
+  font-weight: 500 !important; /* Medium (500) para textos informativos o secundarios destacables */
+}
+
+/* Garantizar que la tipografía para iconos de Google no sea afectada por reglas globales */
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined' !important;
+}
+
+/* 
+   REESCRITURA GLOBAL DE TAMAÑOS DE FUENTE (TAILWIND STANDARDS)
+   Asegura que incluso las clases estándar de Tailwind sean sustancialmente más grandes.
+*/
+.text-xs {
+  font-size: 0.85rem !important; /* ~15.3px (Ideal para textos secundarios mínimos) */
+}
+
+.text-sm {
+  font-size: 0.95rem !important; /* ~17.1px (Texto normal muy legible) */
+}
+
+.text-base {
+  font-size: 1.1rem !important;  /* ~19.8px (Excelente para lectura cómoda) */
+}
+
+.text-lg {
+  font-size: 1.25rem !important; /* ~22.5px */
+}
+
+.text-xl {
+  font-size: 1.45rem !important; /* ~26.1px */
+}
+
+.text-2xl {
+  font-size: 1.75rem !important; /* ~31.5px */
+}
+
+.text-3xl {
+  font-size: 2.15rem !important; /* ~38.7px */
+}
+
+.text-4xl {
+  font-size: 2.65rem !important; /* ~47.7px */
+}
+
+/*
+   MAPPING DE TAMAÑOS ARBITRARIOS (STITCH COMPATIBILITY)
+   Como Stitch exporta clases de píxeles fijos como `text-[11px]`, éstas no escalan con el rem.
+   Las interceptamos aquí globalmente para que sean legibles en móvil automáticamente.
+*/
+.text-\[9px\] { font-size: 0.75rem !important; }  /* ~13.5px */
+.text-\[10px\] { font-size: 0.8rem !important; }   /* ~14.4px */
+.text-\[11px\] { font-size: 0.85rem !important; }  /* ~15.3px */
+.text-\[12px\] { font-size: 0.9rem !important; }   /* ~16.2px */
+.text-\[13px\] { font-size: 0.95rem !important; }  /* ~17.1px */
+.text-\[14px\] { font-size: 1.0rem !important; }   /* ~18.0px */
+.text-\[15px\] { font-size: 1.05rem !important; }  /* ~18.9px */
+
+/* Clases específicas del sistema de temas de Stitch / Mindora */
+.text-body-sm, .font-body-sm { font-size: 0.85rem !important; }
+.text-body-md, .font-body-md { font-size: 1.0rem !important; }
+.text-body-lg, .font-body-lg { font-size: 1.15rem !important; }
+.text-label-sm, .font-label-sm { font-size: 0.8rem !important; }
+.text-label-md, .font-label-md { font-size: 0.95rem !important; }
+.text-label-lg, .font-label-lg { font-size: 1.05rem !important; }
+.text-headline-sm, .font-headline-sm { font-size: 1.15rem !important; font-weight: 700 !important; }
+.text-headline-md, .font-headline-md { font-size: 1.35rem !important; font-weight: 700 !important; }
+.text-headline-lg, .font-headline-lg { font-size: 1.65rem !important; font-weight: 800 !important; }
+
+/* 
+   REGLAS GLOBALES DE COMPONENTES
+*/
+
+/* Margen de seguridad para botones e interacciones */
+button, 
+.btn, 
+[role="button"] {
+  border-radius: 4px !important;
+  font-weight: 600 !important;
+}
+
+/* Protección de componentes circulares para que no se cuadren */
+button.rounded-full,
+.toggle-thumb,
+.rounded-full {
+  border-radius: 9999px !important;
+}
+
+/* Ajustes de espaciado adaptativos */
+.px-5 {
+  padding-left: calc(0.25rem * 2) !important;
+  padding-right: calc(0.25rem * 2) !important;
+}
+
+.p-5 {
+  padding: calc(0.25rem * 3) !important;
+}
+
+.rounded-\[28px\] {
+  border-radius: 10px !important;
+}
