@@ -3,8 +3,12 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import {defineConfig} from 'vite';
 
-export default defineConfig(() => {
+export default defineConfig(({ command }) => {
+  // GitHub Pages sirve este proyecto en un subdirectorio (https://educores.github.io/IglesiaOS/),
+  // por lo que el build de producción necesita rutas absolutas con ese prefijo.
+  // En desarrollo (npm run dev) se mantiene la raíz "/".
   return {
+    base: command === 'build' ? '/IglesiaOS/' : '/',
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
