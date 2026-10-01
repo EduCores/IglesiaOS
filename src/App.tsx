@@ -1207,7 +1207,7 @@ export default function App() {
       
 
       {/* Main View Container */}
-      <div className="py-8 px-4 flex justify-center items-start">
+      <div className="py-8 px-0 md:px-4 flex justify-center items-start">
         
         {/* VIEW 1: MOBILE DEVICE VIEW */}
         {viewMode === "mobile" && (
