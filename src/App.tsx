@@ -1030,6 +1030,9 @@ type ScreenId =
   | "bitacora_pastoral"
   | "difusion_whatsapp";
 
+// Fondo de video superior (nubes) — archivo local en public/videos para que funcione en dev y en GitHub Pages
+const SKY_VIDEO_SRC = `${import.meta.env.BASE_URL}videos/nubes1.mp4`;
+
 const NAV_LINKS: { screen: ScreenId; label: string; icon: string }[] = [
   { screen: "inicio", label: "Inicio", icon: "church" },
   { screen: "personas", label: "Personas", icon: "diversity_1" },
@@ -1212,11 +1215,24 @@ export default function App() {
         {/* VIEW 1: MOBILE DEVICE VIEW */}
         {viewMode === "mobile" && (
           <div className="w-full bg-white overflow-hidden relative transition-all duration-500">
+            {/* Fondo de video superior (nubes) — del top hacia abajo */}
+            <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[280px] overflow-hidden" aria-hidden="true">
+              <video
+                className="h-full w-full object-cover"
+                src={SKY_VIDEO_SRC}
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-white/30 to-[#f4faff]" />
+            </div>
             {/* Mobile App Screen Content */}
-            <div className="bg-[#f4faff] min-h-[820px] pt-8 pb-20 flex flex-col relative">
+            <div className="bg-[#f4faff]/60 min-h-[820px] pt-8 pb-20 flex flex-col relative">
               
               {/* Header inside phone screen */}
-              <header className="flex items-center justify-between px-6 py-4 border-b border-slate-200/20 bg-white/60 backdrop-blur-md">
+              <header className="relative z-10 flex items-center justify-between px-6 py-4 border-b border-slate-200/20 bg-white/60 backdrop-blur-md">
                 <button 
                   onClick={() => setIsMenuOpen((open) => !open)}
                   className="w-11 h-11 flex items-center justify-center -ml-2 text-slate-900 hover:bg-slate-200/50 rounded-full transition-all duration-150 active:scale-90"
