@@ -27,7 +27,7 @@ export default function DifusionWhatsappScreen({ onBack }: { onBack?: () => void
   });
 
   const [messageText, setMessageText] = useState(
-    `¡Paz y gracia de Dios, amado(a) {Nombre}! 🌿\n\nEsperamos que estés teniendo una semana llena de Su bendición. Te recordamos con gozo que este domingo nos congregamos en familia en nuestro templo central.\n\n🕊️ Serie actual: 'Caminando en Serenidad y Fe'\n⏰ Horario especial: {Horario}\n📍 Templo Principal & Transmisión en Vivo\n\nAcompáñanos a orar juntos, adorar y compartir la mesa. Si necesitas transporte o apoyo en oración para este fin de semana, haznos saber respondiendo este mensaje.\n\n¡Te esperamos con los brazos abiertos!`
+    `¡Paz y gracia de Dios, amado(a) {Nombre}! 🌿\n\nEsperamos que estés teniendo una semana llena de Su bendición. Te recordamos con gozo que este domingo nos congregamos en familia en nuestro templo central.\n\n🕊️ Serie actual: 'Caminando en Fe y Obediencia'\n⏰ Horario especial: {Horario}\n📍 Templo Principal & Transmisión en Vivo\n\nAcompáñanos a orar juntos, adorar y compartir la mesa. Si necesitas transporte o apoyo en oración para este fin de semana, haznos saber respondiendo este mensaje.\n\n¡Te esperamos con los brazos abiertos!`
   );
 
   const [showMedia, setShowMedia] = useState(true);
@@ -55,7 +55,7 @@ export default function DifusionWhatsappScreen({ onBack }: { onBack?: () => void
       iconColor: "text-[#386458]",
       icon: "church",
       desc: "Invitación, tema pastoral y horario central.",
-      text: `¡Paz y gracia de Dios, amado(a) {Nombre}! 🌿\n\nEsperamos que estés teniendo una semana llena de Su bendición. Te recordamos con gozo que este domingo nos congregamos en familia en nuestro templo central.\n\n🕊️ Serie actual: 'Caminando en Serenidad y Fe'\n⏰ Horario especial: {Horario}\n📍 Templo Principal & Transmisión en Vivo\n\nAcompáñanos a orar juntos, adorar y compartir la mesa. Si necesitas transporte o apoyo en oración para este fin de semana, haznos saber respondiendo este mensaje.\n\n¡Te esperamos con los brazos abiertos!`
+      text: `¡Paz y gracia de Dios, amado(a) {Nombre}! 🌿\n\nEsperamos que estés teniendo una semana llena de Su bendición. Te recordamos con gozo que este domingo nos congregamos en familia en nuestro templo central.\n\n🕊️ Serie actual: 'Caminando en Fe y Obediencia'\n⏰ Horario especial: {Horario}\n📍 Templo Principal & Transmisión en Vivo\n\nAcompáñanos a orar juntos, adorar y compartir la mesa. Si necesitas transporte o apoyo en oración para este fin de semana, haznos saber respondiendo este mensaje.\n\n¡Te esperamos con los brazos abiertos!`
     },
     {
       id: "oracion",

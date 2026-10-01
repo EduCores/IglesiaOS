@@ -59,7 +59,7 @@ function RolesScreen() {
     setShowAddRoleModal(false);
     setNewRoleName("");
     setNewRoleNameDesc("");
-    setSuccessToast(`¡Rol "${newRoleName}" creado con armonía y éxito!`);
+    setSuccessToast(`¡Rol "${newRoleName}" creado en unidad y con éxito!`);
     setTimeout(() => setSuccessToast(null), 3000);
   };
 
@@ -87,11 +87,11 @@ function RolesScreen() {
           <div className="relative z-10 flex flex-col space-y-3">
             <div className="inline-flex items-center space-x-1.5 self-start px-3 py-1 rounded-full bg-white/80 text-[#386458] shadow-sm backdrop-blur-sm">
               <span className="material-symbols-outlined text-[16px] font-bold">verified_user</span>
-              <span className="text-[9px] font-bold uppercase tracking-wider">Gestión Consciente</span>
+              <span className="text-[9px] font-bold uppercase tracking-wider">Gestión Pastoral</span>
             </div>
             <h2 className="text-xl font-bold text-slate-900 tracking-tight leading-none">Roles Definidos</h2>
             <p className="text-xs text-slate-500 leading-relaxed max-w-[280px]">
-              Armonía, privilegios y accesos para el cuidado responsable de tu comunidad.
+              Orden, privilegios y accesos para el cuidado responsable de tu comunidad.
             </p>
           </div>
 
@@ -321,10 +321,10 @@ function FinanzasDashboardScreen({
   const [selectedCategory, setSelectedCategory] = useState<"todos" | "ministerios" | "misiones" | "operaciones">("todos");
 
   const transactions = [
-    { id: 1, title: "Diezmo Mensual Familia Silva", category: "ministerios", amount: 120000, type: "plus", date: "Ayer, 18:30", badgeText: "Diezmo", badgeColor: "bg-[#bdeddd] text-[#214e43]", textColor: "text-[#386458]", bgIconColor: "bg-[#bdeddd]/60", icon: "spa" },
+    { id: 1, title: "Diezmo Mensual Familia Silva", category: "ministerios", amount: 120000, type: "plus", date: "Ayer, 18:30", badgeText: "Diezmo", badgeColor: "bg-[#bdeddd] text-[#214e43]", textColor: "text-[#386458]", bgIconColor: "bg-[#bdeddd]/60", icon: "volunteer_activism" },
     { id: 2, title: "Ofrenda Misión Patagonia", category: "misiones", amount: 65000, type: "plus", date: "14 May, 10:15", badgeText: "Ofrenda", badgeColor: "bg-[#cde5ff] text-[#294964]", textColor: "text-[#42617d]", bgIconColor: "bg-[#cde5ff]/50", icon: "public" },
     { id: 3, title: "Servicios Básicos & Suministros", category: "operaciones", amount: 48500, type: "minus", date: "12 May, 09:40", badgeText: "Gasto", badgeColor: "bg-[#ffd9de] text-[#663a42]", textColor: "text-[#7f4e57]", bgIconColor: "bg-[#ffd9de]", icon: "water_drop" },
-    { id: 4, title: "Retiro de Meditación & Jóvenes", category: "ministerios", amount: 85000, type: "plus", date: "10 May, 17:00", badgeText: "Ofrenda", badgeColor: "bg-[#bdeddd] text-[#214e43]", textColor: "text-[#386458]", bgIconColor: "bg-[#bdeddd]/60", icon: "diversity_1" }
+    { id: 4, title: "Retiro Espiritual de Jóvenes", category: "ministerios", amount: 85000, type: "plus", date: "10 May, 17:00", badgeText: "Ofrenda", badgeColor: "bg-[#bdeddd] text-[#214e43]", textColor: "text-[#386458]", bgIconColor: "bg-[#bdeddd]/60", icon: "diversity_1" }
   ];
 
   const filteredTransactions = transactions.filter(t => 
@@ -440,7 +440,7 @@ function FinanzasDashboardScreen({
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Distribución del Presupuesto</h2>
-              <p className="text-[10px] text-slate-400 mt-0.5">Metas y asignación armónica mensual</p>
+              <p className="text-[10px] text-slate-400 mt-0.5">Metas y asignación fiel mensual</p>
             </div>
             <span className="material-symbols-outlined text-[#386458] text-[20px]">pie_chart</span>
           </div>
@@ -507,9 +507,9 @@ function FinanzasDashboardScreen({
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-bold text-slate-900 truncate">Mayordomía en Paz</p>
-            <p className="text-[10px] text-slate-400 truncate mt-0.5">"Cada contribución fluye como una semilla de bendición y propósito."</p>
+            <p className="text-[10px] text-slate-400 truncate mt-0.5">"Cada contribución siembra bendición y propósito."</p>
           </div>
-          <span className="material-symbols-outlined text-[#386458] text-[20px] shrink-0">spa</span>
+          <span className="material-symbols-outlined text-[#386458] text-[20px] shrink-0">volunteer_activism</span>
         </div>
 
         {/* Recent Transactions List */}
@@ -577,9 +577,9 @@ function ComunicacionesScreen({
   const [successToast, setSuccessToast] = useState<string | null>(null);
 
   const historyItems = [
-    { title: "Meditación Lunar de Primavera", channel: "WhatsApp • 1,420 contactos", date: "Ayer, 19:40", status: "Enviado", badgeColor: "bg-[#bdeddd] text-[#214e43]", dotColor: "bg-[#386458]", bgIconColor: "bg-[#bdeddd]/45", textColor: "text-[#386458]", icon: "mark_chat_read" },
-    { title: "Respirar en Calma - Guía Semanal", channel: "Email • Segmento Serenidad", date: "Mañana, 07:00", status: "Programado", badgeColor: "bg-[#cde5ff] text-[#294964]", dotColor: "bg-[#42617d]", bgIconColor: "bg-[#cde5ff]/60", textColor: "text-[#42617d]", icon: "upcoming" },
-    { title: "Volumen 19: Silencio Interior", channel: "Boletín • Edición imprimible", date: "Editado hace 2h", status: "Borrador", badgeColor: "bg-[#ffd9de] text-[#663a42]", dotColor: "bg-[#7f4e57]", bgIconColor: "bg-[#ffd9de]/80", textColor: "text-[#7f4e57]", icon: "draft" },
+    { title: "Vigilia de Oración de Primavera", channel: "WhatsApp • 1,420 contactos", date: "Ayer, 19:40", status: "Enviado", badgeColor: "bg-[#bdeddd] text-[#214e43]", dotColor: "bg-[#386458]", bgIconColor: "bg-[#bdeddd]/45", textColor: "text-[#386458]", icon: "mark_chat_read" },
+    { title: "Devocional Semanal - Guía de Oración", channel: "Email • Segmento Devocional", date: "Mañana, 07:00", status: "Programado", badgeColor: "bg-[#cde5ff] text-[#294964]", dotColor: "bg-[#42617d]", bgIconColor: "bg-[#cde5ff]/60", textColor: "text-[#42617d]", icon: "upcoming" },
+    { title: "Volumen 19: Devocional Semanal", channel: "Boletín • Edición imprimible", date: "Editado hace 2h", status: "Borrador", badgeColor: "bg-[#ffd9de] text-[#663a42]", dotColor: "bg-[#7f4e57]", bgIconColor: "bg-[#ffd9de]/80", textColor: "text-[#7f4e57]", icon: "draft" },
     { title: "Recordatorio: Campanas Matutinas", channel: "WhatsApp • Grupo General", date: "Lun 14, 06:15", status: "Enviado", badgeColor: "bg-[#bdeddd] text-[#214e43]", dotColor: "bg-[#386458]", bgIconColor: "bg-[#bdeddd]/45", textColor: "text-[#386458]", icon: "notifications_active" }
   ];
 
@@ -608,15 +608,15 @@ function ComunicacionesScreen({
           <div className="absolute -right-6 -bottom-6 w-32 h-32 rounded-full bg-[#386458]/10 blur-2xl pointer-events-none"></div>
           <div className="flex items-center justify-between">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#386458]/10 text-[#386458]">
-              <span className="material-symbols-outlined text-[15px]" style={{ fontVariationSettings: "'FILL' 1" }}>spa</span>
-              <span className="text-[10px] font-bold">Canal Consciente</span>
+              <span className="material-symbols-outlined text-[15px]" style={{ fontVariationSettings: "'FILL' 1" }}>church</span>
+              <span className="text-[10px] font-bold">Canal Pastoral</span>
             </div>
             <span className="text-[11px] text-slate-500 font-medium">Conexión y comunidad</span>
           </div>
           <div className="space-y-1">
             <h2 className="text-lg font-bold text-slate-900 tracking-tight">Comunicaciones del Templo</h2>
             <p className="text-xs text-slate-500 leading-relaxed">
-              Transmite serenidad y guía a tu comunidad a través de canales diseñados para la paz mental.
+              Comparte la Palabra y guía a tu comunidad con canales dedicados a la fe.
             </p>
           </div>
 
@@ -772,7 +772,7 @@ function ComunicacionesScreen({
 }
 
 // ==========================================================================
-// COMPONENTE: PANTALLA 2 - INICIO (Samuel Pastoral)
+// COMPONENTE: PANTALLA 2 - INICIO (Panel Pastoral)
 // ==========================================================================
 function InicioScreen({ 
   onNavigateToForm, 
@@ -989,10 +989,10 @@ function InicioScreen({
           <img src="https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?auto=format&fit=crop&q=80&w=150" alt="Devocional" className="w-14 h-14 rounded-full object-cover shrink-0" />
           <div className="flex flex-col min-w-0 flex-1">
             <div className="flex items-center space-x-1 text-[#386458]">
-              <span className="material-symbols-outlined text-[15px]">self_improvement</span>
+              <span className="material-symbols-outlined text-[15px]">volunteer_activism</span>
               <span className="text-[10px] font-bold uppercase tracking-wider">Pausa Espiritual</span>
             </div>
-            <h4 className="text-xs font-bold text-slate-900 truncate">Momento de Oración & Calma</h4>
+            <h4 className="text-xs font-bold text-slate-900 truncate">Momento de Oración y Alabanza</h4>
             <p className="text-[10px] text-slate-400 mt-0.5 truncate">{isPlayingAudio ? `Reproduciendo... ${audioProgress}%` : "Guía de 5 minutos antes del servicio"}</p>
             {isPlayingAudio && (
               <div className="w-full bg-slate-100 h-1 rounded-full mt-2 overflow-hidden">
@@ -1031,7 +1031,7 @@ type ScreenId =
   | "difusion_whatsapp";
 
 const NAV_LINKS: { screen: ScreenId; label: string; icon: string }[] = [
-  { screen: "inicio", label: "Inicio", icon: "spa" },
+  { screen: "inicio", label: "Inicio", icon: "church" },
   { screen: "personas", label: "Personas", icon: "diversity_1" },
   { screen: "censo_miembro", label: "Ficha Censo", icon: "how_to_reg" },
   { screen: "roles", label: "Roles", icon: "admin_panel_settings" },
@@ -1662,7 +1662,7 @@ export default function App() {
                     activeScreen === "inicio" ? "text-[#386458] font-bold" : "hover:text-[#386458]"
                   }`}
                 >
-                  <span className="material-symbols-outlined text-[22px]" style={{ fontVariationSettings: activeScreen === "inicio" ? "'FILL' 1" : "" }}>spa</span>
+                  <span className="material-symbols-outlined text-[22px]" style={{ fontVariationSettings: activeScreen === "inicio" ? "'FILL' 1" : "" }}>church</span>
                   <span>Inicio</span>
                 </button>
                 <button 

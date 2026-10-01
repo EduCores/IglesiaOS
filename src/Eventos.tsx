@@ -81,7 +81,7 @@ export default function EventosScreen({ onNavigateToLive }: { onNavigateToLive?:
       id: 3,
       numberTag: "03",
       title: "Build My Life",
-      artist: "Housefires • Comunión y Calma",
+      artist: "Housefires • Comunión y Adoración",
       key: "G",
       bpm: 70,
       timeSignature: "4/4",
@@ -92,7 +92,7 @@ export default function EventosScreen({ onNavigateToLive }: { onNavigateToLive?:
       id: 4,
       numberTag: "04",
       title: "Agnus Dei",
-      artist: "Michael W. Smith • Meditación Final",
+      artist: "Michael W. Smith • Oración Final",
       key: "A",
       bpm: 64,
       timeSignature: "4/4",
@@ -244,7 +244,7 @@ export default function EventosScreen({ onNavigateToLive }: { onNavigateToLive?:
               }`}
               style={{ borderRadius: "4px" }}
             >
-              Himnos de Calma
+              Himnos de Adoración
             </button>
             <button 
               onClick={() => setSelectedAtmosphere("intima")}
@@ -417,7 +417,7 @@ export default function EventosScreen({ onNavigateToLive }: { onNavigateToLive?:
         <div className="relative overflow-hidden rounded-xl p-4 flex items-center justify-between bg-slate-50 shadow-inner border border-slate-100">
           <div className="flex flex-col gap-1 pr-3">
             <div className="flex items-center gap-1.5 text-[#386458] text-[9px] font-bold uppercase tracking-wider">
-              <span className="material-symbols-outlined text-[16px] font-bold">spa</span>
+              <span className="material-symbols-outlined text-[16px] font-bold">menu_book</span>
               <span>Preparación Espiritual</span>
             </div>
             <p className="text-[11px] text-slate-600 leading-normal font-medium">

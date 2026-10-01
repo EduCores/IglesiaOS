@@ -276,7 +276,7 @@ export default function CensoMiembroScreen({ onBack, onSuccess }: CensoMiembroPr
           {/* Sección 2: Estado Espiritual & Sacramental */}
           <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex flex-col gap-4">
             <div className="flex items-center gap-2 mb-1">
-              <span className="material-symbols-outlined text-[#386458] text-[20px] font-bold">spa</span>
+              <span className="material-symbols-outlined text-[#386458] text-[20px] font-bold">church</span>
               <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">2. Estado Espiritual</h3>
             </div>
             

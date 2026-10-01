@@ -67,7 +67,7 @@ export default function PastoralScreen({ onNavigateToSacramentos, onNavigateToBi
       title: "Discipulado: Hna. María",
       tag: "Privado",
       timeAgo: "Ayer",
-      content: "Sesión orientada a la serenidad espiritual. Enfoque en la lectura de Efesios y herramientas para cultivar paz interior ante la incertidumbre.",
+      content: "Sesión de consejería pastoral. Enfoque en la lectura de Efesios y la oración para confiar en Dios ante la incertidumbre.",
       icon: "lock",
       badgeBg: "bg-[#ffd9de] text-[#663a42]",
       badgeText: "tertiary",
@@ -134,12 +134,12 @@ export default function PastoralScreen({ onNavigateToSacramentos, onNavigateToBi
         {/* Cabecera Contextual */}
         <section className="flex flex-col items-start pt-2">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#e0f0fb] text-[#386458] mb-2 backdrop-blur-md">
-            <span className="material-symbols-outlined text-[15px]" style={{ fontVariationSettings: "'FILL' 1" }}>spa</span>
+            <span className="material-symbols-outlined text-[15px]" style={{ fontVariationSettings: "'FILL' 1" }}>volunteer_activism</span>
             <span className="text-[10px] font-bold tracking-wide uppercase">Cuidado & Acompañamiento</span>
           </div>
           <h2 className="text-xl font-bold text-slate-900 tracking-tight">Gestión Pastoral</h2>
           <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-            Acompañamiento espiritual consciente y cercano para tu comunidad.
+            Acompañamiento espiritual y pastoral para tu comunidad.
           </p>
         </section>
 
@@ -311,7 +311,7 @@ export default function PastoralScreen({ onNavigateToSacramentos, onNavigateToBi
           ))}
         </section>
 
-        {/* Tarjeta de Reflexión Pastoral Meditativa */}
+        {/* Tarjeta de Reflexión Pastoral */}
         <section className="relative rounded-xl overflow-hidden shadow-md border border-slate-100">
           <div 
             className="bg-cover bg-center w-full min-h-[170px] relative p-5 flex flex-col justify-between" 
@@ -321,7 +321,7 @@ export default function PastoralScreen({ onNavigateToSacramentos, onNavigateToBi
             
             <div className="relative z-10 flex items-center justify-between text-white">
               <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md">
-                <span className="material-symbols-outlined text-[15px]">self_improvement</span>
+                <span className="material-symbols-outlined text-[15px]">menu_book</span>
                 <span className="text-[10px] font-bold uppercase tracking-wider">Reflexión Pastoral</span>
               </div>
               <span className="material-symbols-outlined text-[20px] text-white/80">format_quote</span>
@@ -329,7 +329,7 @@ export default function PastoralScreen({ onNavigateToSacramentos, onNavigateToBi
 
             <div className="relative z-10 mt-6 space-y-1">
               <p className="text-xs font-bold text-white italic leading-relaxed">
-                “El pastor que cuida con calma y presencia restaura el corazón afligido.”
+                “El pastor que ora y acompaña restaura el corazón afligido.”
               </p>
               <p className="text-[10px] text-white/70 font-semibold uppercase tracking-wider">
                 Paz y paciencia para la jornada de hoy

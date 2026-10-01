@@ -72,7 +72,7 @@ export default function DirectorioScreen({
       secondaryBadge: "Bautizado",
       secondaryBadgeIcon: "verified",
       secondaryBadge2: "Madurez: Nivel 3",
-      secondaryBadgeIcon2: "psychology_alt",
+      secondaryBadgeIcon2: "military_tech",
       footerText: "Servicio: Domingo Mañana",
       primaryBtnText: "Contactar",
       secondaryBtnIcon: "call"
