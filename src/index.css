@@ -153,10 +153,11 @@ input[type="radio"] {
 }
 
 /* Video de nubes superior: 35% de transparencia (opacidad 65%)
-   con fade in al cargar y fade out hacia abajo (máscara) */
+   con fade in al cargar y fade out hacia abajo (máscara).
+   Nítido hasta 154px y se funde hasta desaparecer a los 420px. */
 .sky-video-wrap {
-  -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 154px, transparent 420px);
+  mask-image: linear-gradient(to bottom, black 154px, transparent 420px);
 }
 
 .sky-video {

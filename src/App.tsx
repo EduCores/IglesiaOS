@@ -1216,7 +1216,7 @@ export default function App() {
         {viewMode === "mobile" && (
           <div className="w-full bg-[#f4faff] overflow-hidden relative transition-all duration-500">
             {/* Fondo de video superior (nubes) — del top hacia abajo */}
-            <div className="sky-video-wrap pointer-events-none absolute inset-x-0 top-0 z-0 h-[280px] overflow-hidden" aria-hidden="true">
+            <div className="sky-video-wrap pointer-events-none absolute inset-x-0 top-0 z-0 h-[420px] overflow-hidden" aria-hidden="true">
               <video
                 className="sky-video h-full w-full object-cover"
                 src={SKY_VIDEO_SRC}
