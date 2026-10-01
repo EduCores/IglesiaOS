@@ -150,3 +150,24 @@ input[type="radio"] {
 .rounded-\[28px\] {
   border-radius: 10px !important;
 }
+
+/* Video de nubes superior: 35% de transparencia (opacidad 65%)
+   con fade in al cargar y fade out hacia abajo (máscara) */
+.sky-video-wrap {
+  -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+}
+
+.sky-video {
+  opacity: 0;
+  animation: skyVideoFadeIn 1.6s ease-out forwards;
+}
+
+@keyframes skyVideoFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.65;
+  }
+}
