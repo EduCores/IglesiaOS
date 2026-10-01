@@ -1214,7 +1214,7 @@ export default function App() {
         
         {/* VIEW 1: MOBILE DEVICE VIEW */}
         {viewMode === "mobile" && (
-          <div className="w-full bg-white overflow-hidden relative transition-all duration-500">
+          <div className="w-full bg-[#f4faff] overflow-hidden relative transition-all duration-500">
             {/* Fondo de video superior (nubes) — del top hacia abajo */}
             <div className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[280px] overflow-hidden" aria-hidden="true">
               <video
@@ -1226,7 +1226,7 @@ export default function App() {
                 playsInline
                 preload="metadata"
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-white/30 to-[#f4faff]" />
+              <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-white/60 to-[#f4faff]" />
             </div>
             {/* Mobile App Screen Content */}
             <div className="bg-[#f4faff]/60 min-h-[820px] pt-8 pb-20 flex flex-col relative">
