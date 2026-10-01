@@ -97,6 +97,15 @@ export default function MultimediaScreen() {
     }
   ];
 
+  // Fondo de video — cualquier video de la pantalla (feed de cámara o clips) puede activarse como fondo del contenido.
+  const [backgroundVideo, setBackgroundVideo] = useState<{ label: string; src: string } | null>(null);
+  const hasBackground = backgroundVideo !== null;
+  const isCameraBackground = backgroundVideo?.src === DEMO_CAMERA_FEED;
+
+  const toggleBackground = (label: string, src: string) => {
+    setBackgroundVideo(prev => (prev && prev.src === src ? null : { label, src }));
+  };
+
   // Stopwatch effect
   useEffect(() => {
     let interval: any = null;
@@ -169,10 +178,46 @@ export default function MultimediaScreen() {
         </div>
       )}
 
-      <div className="flex flex-col w-full px-5 space-y-5">
+      {/* Fondo de Video — capa ambiente detrás del contenido, activable desde el feed de cámara o los clips */}
+      {backgroundVideo && (
+        <div className="absolute inset-0 z-0 pointer-events-none [&_video]:w-full [&_video]:h-full [&_video]:object-cover">
+          <Suspense fallback={null}>
+            <ReactPlayer
+              src={backgroundVideo.src}
+              playing
+              muted
+              loop
+              playsInline
+              width="100%"
+              height="100%"
+              style={{ position: "absolute", inset: 0 }}
+            />
+          </Suspense>
+          <div className="absolute inset-0 bg-slate-950/45"></div>
+        </div>
+      )}
+
+      <div className="relative z-10 flex flex-col w-full px-5 space-y-5">
         
+        {/* Chip de control del fondo activo */}
+        {backgroundVideo && (
+          <div className="flex items-center justify-between bg-slate-900/75 backdrop-blur-md text-white rounded-full pl-3.5 pr-1.5 py-1.5 shadow-lg border border-white/15">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="material-symbols-outlined text-[#a1d0c1] text-[16px]">wallpaper</span>
+              <span className="text-[10px] font-bold truncate">Fondo activo · {backgroundVideo.label}</span>
+            </div>
+            <button
+              onClick={() => setBackgroundVideo(null)}
+              title="Quitar fondo"
+              className="p-1.5 rounded-full hover:bg-white/15 active:scale-95 transition-all cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-[16px]">close</span>
+            </button>
+          </div>
+        )}
+
         {/* Status & Network Monitor Strip */}
-        <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-100 flex flex-col gap-1.5 mt-2">
+        <div className={`rounded-2xl p-4 border flex flex-col gap-1.5 mt-2 transition-colors duration-300 ${hasBackground ? "bg-white/75 backdrop-blur-xl shadow-lg shadow-slate-950/5 border-white/60" : "bg-white shadow-sm border-slate-100"}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="relative flex h-2.5 w-2.5">
@@ -240,9 +285,18 @@ export default function MultimediaScreen() {
               <span className="material-symbols-outlined text-[#a1d0c1] text-[15px]">videocam</span>
               <span>CAM 1 · Púlpito Principal</span>
             </div>
-            <div className="bg-slate-900/60 backdrop-blur-md px-2.5 py-1 rounded-full text-white text-[9px] font-bold uppercase tracking-wider flex items-center gap-1 shadow-sm">
-              <span className="material-symbols-outlined text-[#f4b6bf] text-[14px]">graphic_eq</span>
-              <span>Mixer L/R -12dB</span>
+            <div className="flex items-center gap-1.5">
+              <div className="bg-slate-900/60 backdrop-blur-md px-2.5 py-1 rounded-full text-white text-[9px] font-bold uppercase tracking-wider flex items-center gap-1 shadow-sm">
+                <span className="material-symbols-outlined text-[#f4b6bf] text-[14px]">graphic_eq</span>
+                <span>Mixer L/R -12dB</span>
+              </div>
+              <button
+                onClick={() => toggleBackground("Feed de cámara · Púlpito", DEMO_CAMERA_FEED)}
+                title={isCameraBackground ? "Quitar feed de cámara como fondo" : "Usar feed de cámara como fondo"}
+                className={`backdrop-blur-md p-1.5 rounded-full shadow-sm transition-all active:scale-95 cursor-pointer ${isCameraBackground ? "bg-[#386458] text-white" : "bg-slate-900/60 text-white hover:text-[#a1d0c1]"}`}
+              >
+                <span className="material-symbols-outlined text-[15px]">wallpaper</span>
+              </button>
             </div>
           </div>
 
@@ -284,7 +338,7 @@ export default function MultimediaScreen() {
         </div>
 
         {/* Synchronized Output Channels */}
-        <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 space-y-4">
+        <div className={`rounded-2xl p-5 border space-y-4 transition-colors duration-300 ${hasBackground ? "bg-white/75 backdrop-blur-xl shadow-lg shadow-slate-950/5 border-white/60" : "bg-white shadow-sm border-slate-100"}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-[#386458] text-[22px] font-bold">cast_connected</span>
@@ -330,7 +384,7 @@ export default function MultimediaScreen() {
         </div>
 
         {/* Grabaciones Recientes — clips reproducibles (react-player con carga diferida) */}
-        <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 space-y-4">
+        <div className={`rounded-2xl p-5 border space-y-4 transition-colors duration-300 ${hasBackground ? "bg-white/75 backdrop-blur-xl shadow-lg shadow-slate-950/5 border-white/60" : "bg-white shadow-sm border-slate-100"}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-[#386458] text-[22px] font-bold">video_library</span>
@@ -347,31 +401,43 @@ export default function MultimediaScreen() {
           <div className="space-y-3">
             {clips.map((clip) => {
               const isActive = activeClipId === clip.id;
+              const isBackgroundClip = backgroundVideo?.src === clip.src;
               return (
                 <div key={clip.id} className="rounded-xl border border-slate-100 bg-slate-50/60 overflow-hidden">
-                  <button
-                    onClick={() => setActiveClipId(isActive ? null : clip.id)}
-                    className="w-full flex items-center gap-3 p-3 text-left cursor-pointer hover:bg-white transition-all"
-                  >
-                    <div className="relative w-24 h-14 rounded-lg overflow-hidden shrink-0 bg-slate-200">
-                      <img src={clip.thumbnail} alt={clip.title} className="absolute inset-0 w-full h-full object-cover" />
-                      <div className="absolute inset-0 bg-slate-950/35 flex items-center justify-center">
-                        <span className="material-symbols-outlined text-white text-[26px] drop-shadow-sm">
-                          {isActive ? "pause_circle" : "play_circle"}
+                  <div className="flex items-center">
+                    <button
+                      onClick={() => setActiveClipId(isActive ? null : clip.id)}
+                      className="flex-1 flex items-center gap-3 p-3 text-left cursor-pointer hover:bg-white transition-all min-w-0"
+                    >
+                      <div className="relative w-24 h-14 rounded-lg overflow-hidden shrink-0 bg-slate-200">
+                        <img src={clip.thumbnail} alt={clip.title} className="absolute inset-0 w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-slate-950/35 flex items-center justify-center">
+                          <span className="material-symbols-outlined text-white text-[26px] drop-shadow-sm">
+                            {isActive ? "pause_circle" : "play_circle"}
+                          </span>
+                        </div>
+                        <span className="absolute bottom-1 right-1 bg-slate-950/70 text-white text-[8px] font-bold px-1.5 py-0.5 rounded font-mono tracking-wider">
+                          {clip.badge}
                         </span>
                       </div>
-                      <span className="absolute bottom-1 right-1 bg-slate-950/70 text-white text-[8px] font-bold px-1.5 py-0.5 rounded font-mono tracking-wider">
-                        {clip.badge}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-bold text-slate-800 leading-tight line-clamp-1">{clip.title}</p>
+                        <p className="text-[10px] text-slate-400 mt-0.5 font-medium leading-none">{clip.meta}</p>
+                      </div>
+                    </button>
+                    <div className="flex items-center gap-1.5 pr-3 shrink-0">
+                      <button
+                        onClick={() => toggleBackground(clip.title, clip.src)}
+                        title={isBackgroundClip ? "Quitar como fondo" : "Usar como fondo"}
+                        className={`p-2 rounded-full transition-all active:scale-95 cursor-pointer ${isBackgroundClip ? "bg-[#386458] text-white shadow-sm" : "text-slate-400 hover:bg-slate-100 hover:text-[#386458]"}`}
+                      >
+                        <span className="material-symbols-outlined text-[18px]">wallpaper</span>
+                      </button>
+                      <span className="material-symbols-outlined text-slate-300 text-[20px]">
+                        {isActive ? "expand_less" : "expand_more"}
                       </span>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-bold text-slate-800 leading-tight line-clamp-1">{clip.title}</p>
-                      <p className="text-[10px] text-slate-400 mt-0.5 font-medium leading-none">{clip.meta}</p>
-                    </div>
-                    <span className="material-symbols-outlined text-slate-300 text-[20px]">
-                      {isActive ? "expand_less" : "expand_more"}
-                    </span>
-                  </button>
+                  </div>
 
                   {isActive && (
                     <div className="px-3 pb-3 animate-[fadeIn_0.2s_ease-out]">
@@ -397,7 +463,7 @@ export default function MultimediaScreen() {
         </div>
 
         {/* Projection & Slides Controller */}
-        <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 space-y-4">
+        <div className={`rounded-2xl p-5 border space-y-4 transition-colors duration-300 ${hasBackground ? "bg-white/75 backdrop-blur-xl shadow-lg shadow-slate-950/5 border-white/60" : "bg-white shadow-sm border-slate-100"}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-[#386458] text-[22px] font-bold">slideshow</span>
@@ -461,7 +527,7 @@ export default function MultimediaScreen() {
         </div>
 
         {/* Live Attendance & Chat Hub */}
-        <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 space-y-4">
+        <div className={`rounded-2xl p-5 border space-y-4 transition-colors duration-300 ${hasBackground ? "bg-white/75 backdrop-blur-xl shadow-lg shadow-slate-950/5 border-white/60" : "bg-white shadow-sm border-slate-100"}`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-[#42617d] text-[22px] font-bold">group</span>

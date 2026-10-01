@@ -54,6 +54,11 @@ simulador de teléfono hasta que descubre el toggle — fricción innecesaria en
      diferida (`React.lazy` + `Suspense`): el preview de cámara reproduce video real al
      iniciar la transmisión, y se añadió la sección "Grabaciones Recientes" con clips
      reproducibles (YouTube embebido + archivos MP4).
+   - ✅ **Videos como fondo** (01-oct-2026): el feed de cámara y cada clip de
+     "Grabaciones Recientes" pueden activarse como fondo del contenido principal con el
+     botón `wallpaper` (toggle). Aparece un chip "Fondo activo · …" para quitarlo, y
+     mientras hay fondo los paneles pasan a glass translúcido (`bg-white/75` +
+     `backdrop-blur`); sin fondo, el diseño queda idéntico al original.
      **Pendiente:** reemplazar las URLs de demostración (`src` de cada clip y la
      constante `DEMO_CAMERA_FEED`) por las grabaciones y señales reales del canal.
    - `lottie-react` aún sin uso — importarla con carga diferida (`React.lazy` /
