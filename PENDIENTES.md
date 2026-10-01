@@ -4,6 +4,43 @@
 
 ---
 
+## ✅ CORREGIDO — El video de fondo (nubes) no se veía: codec incompatible
+
+**Estado:** ✅ Aplicado el 01-oct-2026.
+
+**Síntoma:** `public/videos/nubes1.mp4` respondía HTTP 200 en GitHub Pages (ruta y
+despliegue correctos), el `<video>` existía en el DOM y la CSS se aplicaba, pero en el
+celular **no se veía absolutamente nada**. Se intentó arreglar con transparencias,
+`z-index`, quitar velos y `pb-*` durante varias iteraciones: todo en vano.
+
+**Causa raíz real (nada que ver con CSS, capas ni caché):**
+```text
+Stream #0:0: Video: mpeg4 (Advanced Simple Profile) (mp4v / 0x7634706D), 852x480, 30fps
+Stream #0:1: Audio: aac (mp4a), 48000 Hz, stereo, 2 kb/s   ← prácticamente silencio
+```
+El archivo estaba en **MPEG-4 Parte 2 (`mp4v`)**, un codec que **los navegadores móviles
+no decodifican** (Chrome/Android y Safari/iOS solo aceptan **H.264 / `avc1`** en MP4).
+El `<video>` cargaba el contenedor, no podía decodificar la pista de video y por eso el
+elemento quedaba en blanco (o transparente) sin lanzar error visible.
+
+**Solución aplicada:** recodificar a H.264 con `moov` al inicio (`faststart`) y sin audio,
+usando el ffmpeg local del sistema:
+```powershell
+& 'C:\Program Files\Replay\resources\bin\ffmpeg.exe' -y -i 'public\videos\nubes1.mp4' `
+  -an -c:v libx264 -profile:v main -level 3.1 -pix_fmt yuv420p -crf 26 -preset medium `
+  -movflags +faststart 'public\videos\nubes1_h264.mp4'
+```
+Resultado: 5.87 MB → **1.90 MB**, `Video: h264 (Main) (avc1), yuv420p, 852x480, 30 fps`,
+`moov` inmediatamente después de `ftyp`. Verificado en `public/` y en `dist/`.
+
+**Regla para el futuro — CUALQUIER video nuevo debe cumplir:**
+- [ ] Codec de video **H.264 (`avc1`)**, perfil `main` o `high`, `-pix_fmt yuv420p`.
+- [ ] Codec de audio **AAC (`mp4a`)** si lleva sonido (o `-an` si es fondo mudo).
+- [ ] Flag **`-movflags +faststart`** (sin él, algunos móviles/redes no arrancan).
+- [ ] Comprobar con: `ffmpeg -hide_banner -i archivo.mp4` y verificar que diga `avc1`.
+- [ ] Nunca usar `.mp4` codificado con `mp4v` / MPEG-4 Parte 2, `.wmv`, `.avi` o `.mov` con HEVC sin fallback.
+
+---
 ## ✅ MUY IMPORTANTE — Detección automática de vista (móvil / escritorio)
 
 **Estado:** ✅ Aplicado el 01-oct-2026. Al mismo tiempo se **eliminó el panel superior**
