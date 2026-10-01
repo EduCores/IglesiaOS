@@ -130,6 +130,7 @@ input[type="radio"] {
 
 .p-5 {
   padding: calc(0.25rem * 3) !important;
+  margin-top: .55rem !important;
 }
 
 /* Sin aire vertical global en móvil: el contenido empieza pegado arriba
