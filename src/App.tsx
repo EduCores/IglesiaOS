@@ -1254,7 +1254,6 @@ export default function App() {
                     <div className="flex items-center justify-between px-4 py-3 bg-[#386458] text-white">
                       <div className="flex items-center gap-2">
                         <span className="material-symbols-outlined text-[18px]">apps</span>
-                        <span className="text-[11px] font-bold uppercase tracking-wider">Navegación del sitio</span>
                       </div>
                       <button
                         onClick={() => setIsMenuOpen(false)}
