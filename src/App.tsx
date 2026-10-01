@@ -1211,13 +1211,7 @@ export default function App() {
         
         {/* VIEW 1: MOBILE DEVICE VIEW */}
         {viewMode === "mobile" && (
-          <div className="w-full max-w-[410px] bg-white rounded-[44px] shadow-[0_25px_60px_-15px_rgba(15,23,42,0.15)] border-[10px] border-slate-900 overflow-hidden relative transition-all duration-500">
-            {/* Notch cutout */}
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-6 bg-slate-900 rounded-b-2xl z-40 flex items-center justify-center">
-              <div className="w-3 h-3 bg-slate-800 rounded-full mr-2"></div>
-              <div className="w-1.5 h-1.5 bg-slate-800 rounded-full"></div>
-            </div>
-
+          <div className="w-full bg-white overflow-hidden relative transition-all duration-500">
             {/* Mobile App Screen Content */}
             <div className="bg-[#f4faff] min-h-[820px] pt-8 pb-20 flex flex-col relative">
               
