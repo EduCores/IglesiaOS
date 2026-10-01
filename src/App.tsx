@@ -1011,12 +1011,51 @@ function InicioScreen({
 }
 
 // ==========================================================================
+// NAVEGACIÓN PRINCIPAL (MENÚ HAMBURGUESA)
+// ==========================================================================
+type ScreenId =
+  | "inicio"
+  | "formulario"
+  | "comunicaciones"
+  | "finanzas"
+  | "roles"
+  | "personas"
+  | "celulas"
+  | "multimedia"
+  | "pastoral"
+  | "eventos"
+  | "culto_vivo"
+  | "censo_miembro"
+  | "sacramentos"
+  | "bitacora_pastoral"
+  | "difusion_whatsapp";
+
+const NAV_LINKS: { screen: ScreenId; label: string; icon: string }[] = [
+  { screen: "inicio", label: "Inicio", icon: "spa" },
+  { screen: "personas", label: "Personas", icon: "diversity_1" },
+  { screen: "censo_miembro", label: "Ficha Censo", icon: "how_to_reg" },
+  { screen: "roles", label: "Roles", icon: "admin_panel_settings" },
+  { screen: "celulas", label: "Células", icon: "groups_3" },
+  { screen: "pastoral", label: "Pastoral", icon: "volunteer_activism" },
+  { screen: "bitacora_pastoral", label: "Bitácora", icon: "menu_book" },
+  { screen: "sacramentos", label: "Sacramentos", icon: "water_drop" },
+  { screen: "eventos", label: "Eventos", icon: "calendar_month" },
+  { screen: "culto_vivo", label: "Culto en Vivo", icon: "live_tv" },
+  { screen: "multimedia", label: "Multimedia", icon: "podcasts" },
+  { screen: "finanzas", label: "Finanzas", icon: "account_balance_wallet" },
+  { screen: "formulario", label: "Form. Diezmo", icon: "payments" },
+  { screen: "comunicaciones", label: "Comunicaciones", icon: "grid_view" },
+  { screen: "difusion_whatsapp", label: "Difusión WA", icon: "send" },
+];
+
+// ==========================================================================
 // COMPONENTE PRINCIPAL (MAIN WRAPPER & STATE MANAGER)
 // ==========================================================================
 export default function App() {
   const [viewMode, setViewMode] = useState<"mobile" | "desktop">("mobile");
   const [isHeaderCollapsed, setIsHeaderCollapsed] = useState(false);
-  const [activeScreen, setActiveScreen] = useState<"inicio" | "formulario" | "comunicaciones" | "finanzas" | "roles" | "personas" | "celulas" | "multimedia" | "pastoral" | "eventos" | "culto_vivo" | "censo_miembro" | "sacramentos" | "bitacora_pastoral" | "difusion_whatsapp">("inicio");
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeScreen, setActiveScreen] = useState<ScreenId>("inicio");
   
   // Form states (Formulario)
   const [amount, setAmount] = useState<number>(120000);
@@ -1387,11 +1426,12 @@ export default function App() {
               {/* Header inside phone screen */}
               <header className="flex items-center justify-between px-6 py-4 border-b border-slate-200/20 bg-white/60 backdrop-blur-md">
                 <button 
-                  onClick={resetForm}
+                  onClick={() => setIsMenuOpen((open) => !open)}
                   className="w-11 h-11 flex items-center justify-center -ml-2 text-slate-900 hover:bg-slate-200/50 rounded-full transition-all duration-150 active:scale-90"
                   aria-label="Menú"
+                  aria-expanded={isMenuOpen}
                 >
-                  <span className="material-symbols-outlined text-[22px]">bubble_chart</span>
+                  <span className="material-symbols-outlined text-[22px]">{isMenuOpen ? "close" : "menu"}</span>
                 </button>
                 <h1 className="font-display font-bold text-base text-slate-900 tracking-tight capitalize">
                   {activeScreen === "inicio" ? "Inicio" : activeScreen === "formulario" ? "Consagración" : activeScreen === "finanzas" ? "Finanzas" : activeScreen === "roles" ? "Roles" : activeScreen === "personas" ? "Personas" : activeScreen === "celulas" ? "Células" : activeScreen === "multimedia" ? "Multimedia" : activeScreen === "pastoral" ? "Pastoral" : activeScreen === "eventos" ? "Eventos" : activeScreen === "culto_vivo" ? "Culto en Vivo" : activeScreen === "censo_miembro" ? "Ficha Censo" : activeScreen === "sacramentos" ? "Sacramentos" : activeScreen === "bitacora_pastoral" ? "Bitácora" : "Más"}
@@ -1402,6 +1442,57 @@ export default function App() {
                   <span className="material-symbols-outlined text-[18px]">person</span>
                 </button>
               </header>
+
+              {/* MENÚ DESPLEGABLE: LINKS DEL SITIO (HAMBURGUESA) */}
+              {isMenuOpen && (
+                <>
+                  {/* Overlay para cerrar al tocar fuera */}
+                  <div
+                    className="absolute inset-0 bg-slate-900/30 backdrop-blur-[2px] z-40 animate-[fadeIn_0.2s_ease-out]"
+                    onClick={() => setIsMenuOpen(false)}
+                  />
+                  {/* Panel de navegación */}
+                  <nav className="absolute top-[104px] left-3 right-3 z-50 bg-white rounded-2xl shadow-[0_25px_60px_-15px_rgba(15,23,42,0.35)] border border-slate-100 overflow-hidden animate-[scaleIn_0.15s_ease-out]">
+                    <div className="flex items-center justify-between px-4 py-3 bg-[#386458] text-white">
+                      <div className="flex items-center gap-2">
+                        <span className="material-symbols-outlined text-[18px]">apps</span>
+                        <span className="text-[11px] font-bold uppercase tracking-wider">Navegación del sitio</span>
+                      </div>
+                      <button
+                        onClick={() => setIsMenuOpen(false)}
+                        className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-white/15 transition-all active:scale-90 cursor-pointer"
+                        aria-label="Cerrar menú"
+                      >
+                        <span className="material-symbols-outlined text-[16px]">close</span>
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-2 gap-1 p-2 max-h-[420px] overflow-y-auto">
+                      {NAV_LINKS.map((link) => (
+                        <button
+                          key={link.screen}
+                          onClick={() => {
+                            setActiveScreen(link.screen);
+                            setIsMenuOpen(false);
+                          }}
+                          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left transition-all cursor-pointer ${
+                            activeScreen === link.screen
+                              ? "bg-[#386458] text-white shadow-sm"
+                              : "text-slate-700 hover:bg-[#386458]/5 hover:text-[#386458]"
+                          }`}
+                        >
+                          <span
+                            className="material-symbols-outlined text-[20px] shrink-0"
+                            style={{ fontVariationSettings: activeScreen === link.screen ? "'FILL' 1" : "" }}
+                          >
+                            {link.icon}
+                          </span>
+                          <span className="text-xs font-bold truncate">{link.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </nav>
+                </>
+              )}
 
               {/* RENDERIZADO DE PANTALLA ACTIVA MÓVIL */}
               {activeScreen === "inicio" ? (
