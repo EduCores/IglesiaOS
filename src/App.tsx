@@ -1226,7 +1226,7 @@ export default function App() {
             </div>
             <div>
               <h2 className="font-display font-bold text-sm tracking-tight">Consagración de Mayordomía</h2>
-              <p className="text-[11px] text-slate-500 font-medium">15 pantallas conectadas desde Stitch con identidad visual Serene Mindfulness</p>
+              <p className="text-[11px] text-slate-500 font-medium">15 pantallas conectadas</p>
             </div>
           </div>
 
