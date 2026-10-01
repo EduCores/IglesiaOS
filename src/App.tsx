@@ -828,12 +828,12 @@ function InicioScreen({
         <div className="absolute -top-16 -left-20 w-80 h-80 rounded-full bg-[#386458]/10 blur-3xl pointer-events-none"></div>
         
         {/* Warm Welcome Hero Card */}
-        <div className="relative w-full rounded-[10px] overflow-hidden bg-white/80 backdrop-blur-md p-5 shadow-sm border border-slate-100">
+        <div className="relative w-full rounded-[10px] overflow-hidden bg-white/40 p-5 shadow-sm border border-slate-100">
           <div 
             className="absolute inset-0 z-0 opacity-25 pointer-events-none bg-cover bg-center" 
             style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuA_RHG1CHPqdPv6UwBtKhAOVuoJE_n4QZESNqBBh3_qpYgNebQNWPoCHyzR1ltb5A6iaV7NSem_8S431GE3_MjDlTMGJo-TGOZ0YCtSQVquwFrQiboiXjcu-OqDC8H5l6MuI_GWePvFFszpl8KQdRywTDiueEUs2vDAxq2ckQyVaCDz2sXu-f2s4dz8btyvlDx1F2t3-fZNvamOQTClZjf204_g8dMEIw5TZQ3F2A93NlwOK52TzAOo')" }}
           ></div>
-          <div className="absolute inset-0 z-0 bg-gradient-to-t from-white via-white/80 to-transparent"></div>
+          <div className="absolute inset-0 z-0 bg-gradient-to-t from-white/50 via-white/25 to-transparent"></div>
           
           <div className="relative z-10 flex flex-col space-y-3.5">
             <div className="flex items-center justify-between">
@@ -1239,7 +1239,7 @@ export default function App() {
             <div className="bg-transparent min-h-[820px] pt-8 pb-20 flex flex-col relative">
               
               {/* Header inside phone screen */}
-              <header className="relative z-10 flex items-center justify-between px-6 py-4 border-b border-slate-200/20 bg-white/60 backdrop-blur-md">
+              <header className="relative z-10 flex items-center justify-between px-6 py-4 border-b border-slate-200/20 bg-transparent">
                 <button 
                   onClick={() => setIsMenuOpen((open) => !open)}
                   className="w-11 h-11 flex items-center justify-center -ml-2 text-slate-900 hover:bg-slate-200/50 rounded-full transition-all duration-150 active:scale-90"
