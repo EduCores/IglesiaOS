@@ -790,13 +790,13 @@ function InicioScreen({
   const progressIntervalRef = useRef<any>(null);
 
   const daysData = [
-    { day: "L", height: "h-7", count: "120 asistencias" },
-    { day: "M", height: "h-10", count: "210 asistencias" },
-    { day: "M", height: "h-9", count: "190 asistencias" },
-    { day: "J", height: "h-12", count: "340 asistencias" },
-    { day: "V", height: "h-14", count: "480 asistencias" },
-    { day: "S", height: "h-11", count: "290 asistencias" },
-    { day: "D", height: "h-16", count: "850+ asistencias", active: true },
+    { day: "L", height: "h-14", count: "120 asistencias", barColor: "bg-[#d5e9e1]" },
+    { day: "M", height: "h-20", count: "210 asistencias", barColor: "bg-[#a8d2c4]" },
+    { day: "M", height: "h-[72px]", count: "190 asistencias", barColor: "bg-[#c0ded3]" },
+    { day: "J", height: "h-24", count: "340 asistencias", barColor: "bg-[#507d70]" },
+    { day: "V", height: "h-28", count: "480 asistencias", barColor: "bg-[#386458]" },
+    { day: "S", height: "h-[88px]", count: "290 asistencias", barColor: "bg-[#7fb3a1]" },
+    { day: "D", height: "h-32", count: "850+ asistencias", barColor: "bg-[#214e43]", active: true },
   ];
 
   const toggleCulto = () => {
@@ -896,16 +896,16 @@ function InicioScreen({
             <span className="text-[10px] text-[#386458] font-bold px-2 py-0.5 rounded-full bg-[#bdeddd]/60">Semana Activa</span>
           </div>
 
-          <div className="flex items-end justify-between pt-2 px-1 h-20 relative">
+          <div className="flex items-end justify-between pt-4 pb-1 px-1 min-h-44 relative">
             {daysData.map((d, idx) => (
               <div 
                 key={idx}
                 onMouseEnter={() => setActiveDayInfo(`${d.day}: ${d.count}`)}
                 onMouseLeave={() => setActiveDayInfo(null)}
-                className="flex flex-col items-center space-y-1.5 cursor-pointer group"
+                className="flex flex-col items-center space-y-2 cursor-pointer group"
               >
-                <div className={`w-5 rounded-full transition-all duration-300 group-hover:opacity-80 ${d.height} ${
-                  d.active ? "bg-[#386458] shadow-[0_2px_8px_rgba(56,100,88,0.3)]" : "bg-[#e0f0fb]"
+                <div className={`w-5 rounded-full transition-all duration-300 group-hover:opacity-80 ${d.height} ${d.barColor} ${
+                  d.active ? "shadow-[0_2px_8px_rgba(56,100,88,0.35)]" : ""
                 }`}></div>
                 <span className={`text-[10px] ${d.active ? "text-[#386458] font-bold" : "text-slate-400"}`}>{d.day}</span>
               </div>
