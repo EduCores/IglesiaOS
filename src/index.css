@@ -133,18 +133,19 @@ input[type="radio"] {
   margin-top: .55rem !important;
 }
 
-/* Sin aire vertical global en móvil: el contenido empieza pegado arriba
-   y termina pegado abajo (el nav inferior es fixed, no necesita reserva) */
+/* Sin aire arriba en móvil pero CON reserva abajo: el nav inferior es fixed
+   y flota sobre el contenido, así que el final necesita espacio libre
+   (altura del nav + safe-area de iPhone) para no quedar tapado */
 .pt-8 {
   padding-top: calc(var(--spacing) * 0) !important;
 }
 
 .pb-20 {
-  padding-bottom: calc(var(--spacing) * 0) !important;
+  padding-bottom: calc(var(--spacing) * 22 + env(safe-area-inset-bottom, 0px)) !important;
 }
 
 .pb-24 {
-  padding-bottom: calc(var(--spacing) * 0) !important;
+  padding-bottom: calc(var(--spacing) * 26 + env(safe-area-inset-bottom, 0px)) !important;
 }
 
 .rounded-\[28px\] {

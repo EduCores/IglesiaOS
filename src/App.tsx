@@ -1678,7 +1678,7 @@ export default function App() {
               )}
 
               {/* Bottom App-styled Navigation Bar */}
-              <nav className="border-t border-slate-100 bg-white/95 backdrop-blur-md py-2 px-1 flex items-center justify-around text-slate-400 text-[10px] font-medium fixed bottom-0 inset-x-0 z-30">
+              <nav className="border-t border-slate-100 bg-white/95 backdrop-blur-md pt-2 px-1 flex items-center justify-around text-slate-400 text-[10px] font-medium fixed bottom-0 inset-x-0 z-30" style={{ paddingBottom: "calc(0.5rem + env(safe-area-inset-bottom, 0px))" }}>
                 <button 
                   onClick={() => setActiveScreen("inicio")}
                   className={`flex flex-col items-center gap-1 cursor-pointer transition-colors ${
