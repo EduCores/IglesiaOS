@@ -132,6 +132,20 @@ input[type="radio"] {
   padding: calc(0.25rem * 3) !important;
 }
 
+/* Sin aire vertical global en móvil: el contenido empieza pegado arriba
+   y termina pegado abajo (el nav inferior es fixed, no necesita reserva) */
+.pt-8 {
+  padding-top: calc(var(--spacing) * 0) !important;
+}
+
+.pb-20 {
+  padding-bottom: calc(var(--spacing) * 0) !important;
+}
+
+.pb-24 {
+  padding-bottom: calc(var(--spacing) * 0) !important;
+}
+
 .rounded-\[28px\] {
   border-radius: 10px !important;
 }

@@ -1244,7 +1244,7 @@ export default function App() {
                     onClick={() => setIsMenuOpen(false)}
                   />
                   {/* Panel de navegación */}
-                  <nav className="absolute top-[104px] left-3 right-3 z-50 bg-white rounded-2xl shadow-[0_25px_60px_-15px_rgba(15,23,42,0.35)] border border-slate-100 overflow-hidden animate-[scaleIn_0.15s_ease-out]">
+                  <nav className="absolute top-[72px] left-3 right-3 z-50 bg-white rounded-2xl shadow-[0_25px_60px_-15px_rgba(15,23,42,0.35)] border border-slate-100 overflow-hidden animate-[scaleIn_0.15s_ease-out]">
                     <div className="flex items-center justify-between px-4 py-3 bg-[#386458] text-white">
                       <div className="flex items-center gap-2">
                         <span className="material-symbols-outlined text-[18px]">apps</span>
@@ -1655,7 +1655,7 @@ export default function App() {
               )}
 
               {/* Bottom App-styled Navigation Bar */}
-              <nav className="border-t border-slate-100 bg-white/95 backdrop-blur-md py-2 px-1 flex items-center justify-around text-slate-400 text-[10px] font-medium absolute bottom-0 inset-x-0 z-30">
+              <nav className="border-t border-slate-100 bg-white/95 backdrop-blur-md py-2 px-1 flex items-center justify-around text-slate-400 text-[10px] font-medium fixed bottom-0 inset-x-0 z-30">
                 <button 
                   onClick={() => setActiveScreen("inicio")}
                   className={`flex flex-col items-center gap-1 cursor-pointer transition-colors ${
