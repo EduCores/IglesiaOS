@@ -85,7 +85,7 @@ export default function DifusionWhatsappScreen({ onBack }: { onBack?: () => void
       id: "boletin",
       title: "Boletín Semanal",
       tag: "Semanal",
-      tagColor: "text-slate-650",
+      tagColor: "text-slate-600",
       tagBg: "bg-slate-100",
       iconBg: "bg-slate-200/70",
       iconColor: "text-slate-700",
@@ -148,32 +148,26 @@ export default function DifusionWhatsappScreen({ onBack }: { onBack?: () => void
         </div>
       )}
 
-      {/* Header Toolbar */}
-      <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4 px-1">
-        <div className="flex items-center gap-2">
-          {onBack && (
-            <button 
-              onClick={onBack}
-              className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 cursor-pointer"
-            >
-              <span className="material-symbols-outlined text-[20px] font-bold">arrow_back</span>
-            </button>
-          )}
-          <span className="text-xs font-bold text-slate-850 uppercase tracking-wider">Sesión En Curso</span>
-        </div>
-        <button 
-          onClick={onBack}
-          className="text-slate-400 hover:text-slate-600 text-xs font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer"
-        >
-          <span className="material-symbols-outlined text-[16px]">close</span>
-          <span>Descartar</span>
-        </button>
+      {/* Barra de herramientas: una sola fila (← + rótulo) con una única
+          salida; sin borde ni botón de cierre duplicado a la derecha. */}
+      <div className="flex items-center gap-2 mb-3 px-5">
+        {onBack && (
+          <button
+            onClick={onBack}
+            aria-label="Volver"
+            title="Volver"
+            className="w-9 h-9 shrink-0 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 cursor-pointer transition-colors"
+          >
+            <span className="material-symbols-outlined text-[18px] font-bold">arrow_back</span>
+          </button>
+        )}
+        <span className="min-w-0 truncate text-xs text-slate-500">Difusión en curso</span>
       </div>
 
-      <div className="flex flex-col w-full px-4 space-y-5">
+      <div className="flex flex-col w-full px-5 space-y-5">
         
         {/* Status / API Connection Card */}
-        <div className="w-full bg-slate-50 border border-slate-100 rounded-xl p-4 shadow-sm flex items-center justify-between">
+        <div className="w-full bg-transparent border border-slate-100 rounded-xl p-4 shadow-sm flex flex-wrap items-center justify-between">
           <div className="flex items-center gap-3 min-w-0">
             <div className="w-2.5 h-2.5 rounded-full bg-[#386458] animate-pulse shrink-0"></div>
             <div className="flex flex-col min-w-0">
@@ -197,7 +191,7 @@ export default function DifusionWhatsappScreen({ onBack }: { onBack?: () => void
             <span className="text-[10px] text-[#386458] font-bold uppercase tracking-wider">{selectedAudience.count.toLocaleString()} destinatarios</span>
           </div>
 
-          <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 scrollbar-hide">
+          <div className="flex gap-2 overflow-x-auto pb-1 -mx-5 px-5 scrollbar-hide">
             {audienceOptions.map((opt) => {
               const isSelected = selectedAudience.id === opt.id;
               return (
@@ -276,7 +270,7 @@ export default function DifusionWhatsappScreen({ onBack }: { onBack?: () => void
                 <button 
                   key={token}
                   onClick={() => handleInsertToken(token)}
-                  className="px-2.5 py-1.5 rounded-full bg-slate-50 border border-slate-150 text-[#386458] text-[10px] font-bold flex items-center gap-1 hover:bg-slate-100 cursor-pointer"
+                  className="px-2.5 py-1.5 rounded-full bg-slate-50 border border-slate-200 text-[#386458] text-[10px] font-bold flex items-center gap-1 hover:bg-slate-100 cursor-pointer"
                   style={{ borderRadius: "4px" }}
                   type="button"
                 >
@@ -313,7 +307,7 @@ export default function DifusionWhatsappScreen({ onBack }: { onBack?: () => void
           {/* Media Attachment Area */}
           <div className="mt-4 pt-4 border-t border-slate-100 flex flex-col gap-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-slate-850 uppercase tracking-wider flex items-center gap-1.5">
+              <span className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
                 <span className="material-symbols-outlined text-[18px] text-[#386458] font-bold">attachment</span>
                 Adjunto Multimedia Opcional
               </span>
@@ -376,7 +370,7 @@ export default function DifusionWhatsappScreen({ onBack }: { onBack?: () => void
           <div className="flex items-center justify-between mb-3 px-1">
             <div className="flex items-center gap-1.5">
               <span className="material-symbols-outlined text-[#386458] text-[18px] font-bold">smartphone</span>
-              <span className="text-xs font-bold text-slate-850 uppercase tracking-wider">Vista Previa en Vivo</span>
+              <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">Vista Previa en Vivo</span>
             </div>
             <span className="text-[10px] text-slate-400 font-bold uppercase">Receptor: Juan Pérez</span>
           </div>
@@ -441,7 +435,7 @@ export default function DifusionWhatsappScreen({ onBack }: { onBack?: () => void
                 <div className="flex flex-col gap-1.5 pt-1.5 border-t border-slate-50">
                   <button 
                     onClick={() => alert("Simulando acción: Asistencia confirmada.")}
-                    className="w-full py-2 px-3 rounded-lg bg-slate-50 hover:bg-slate-100 text-[#386458] text-[10px] font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-slate-150"
+                    className="w-full py-2 px-3 rounded-lg bg-slate-50 hover:bg-slate-100 text-[#386458] text-[10px] font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-slate-200"
                     type="button"
                   >
                     <span className="material-symbols-outlined text-[16px] font-bold">how_to_reg</span>
@@ -479,6 +473,8 @@ export default function DifusionWhatsappScreen({ onBack }: { onBack?: () => void
             <button 
               type="button"
               onClick={() => setAntiSpamActive(!antiSpamActive)}
+              role="switch"
+              aria-checked={antiSpamActive}
               className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full p-0.5 transition-colors duration-300 ${
                 antiSpamActive ? "bg-[#386458]" : "bg-slate-200"
               }`}

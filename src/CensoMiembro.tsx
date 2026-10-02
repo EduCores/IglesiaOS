@@ -93,32 +93,26 @@ export default function CensoMiembroScreen({ onBack, onSuccess }: CensoMiembroPr
         </div>
       )}
 
-      {/* Header Form Toolbar */}
-      <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4 px-1">
-        <div className="flex items-center gap-2">
-          {onBack && (
-            <button 
-              onClick={onBack}
-              className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 cursor-pointer"
-            >
-              <span className="material-symbols-outlined text-[20px] font-bold">arrow_back</span>
-            </button>
-          )}
-          <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">Formulario de Ingreso</span>
-        </div>
-        <button 
-          onClick={onBack}
-          className="text-slate-400 hover:text-slate-600 text-xs font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer"
-        >
-          <span className="material-symbols-outlined text-[16px]">close</span>
-          <span>Descartar</span>
-        </button>
+      {/* Barra de herramientas: una sola fila (← + rótulo) con una única
+          salida; sin borde ni botón de cierre duplicado a la derecha. */}
+      <div className="flex items-center gap-2 mb-3 px-5">
+        {onBack && (
+          <button
+            onClick={onBack}
+            aria-label="Volver"
+            title="Volver"
+            className="w-9 h-9 shrink-0 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 cursor-pointer transition-colors"
+          >
+            <span className="material-symbols-outlined text-[18px] font-bold">arrow_back</span>
+          </button>
+        )}
+        <span className="min-w-0 truncate text-xs text-slate-500">Formulario de Ingreso</span>
       </div>
 
-      <div className="flex flex-col w-full px-4 space-y-5">
+      <div className="flex flex-col w-full px-5 space-y-5">
         
         {/* Header Sereno */}
-        <div className="relative w-full rounded-2xl bg-[#e0f0fb] p-5 overflow-hidden shadow-sm border border-slate-100/50">
+        <div className="relative w-full rounded-2xl bg-transparent p-5 overflow-hidden shadow-sm border border-slate-100/50">
           <div className="relative z-10 flex flex-col items-center text-center">
             <div className="w-12 h-12 rounded-full bg-[#bdeddd] flex items-center justify-center mb-3 text-[#386458] shadow-sm">
               <span className="material-symbols-outlined text-[24px]" style={{ fontVariationSettings: "'FILL' 1" }}>church</span>
@@ -163,7 +157,7 @@ export default function CensoMiembroScreen({ onBack, onSuccess }: CensoMiembroPr
               className="text-[11px] font-bold uppercase tracking-wider text-[#386458] bg-[#bdeddd]/50 px-4 py-1.5 rounded-full hover:bg-[#bdeddd] transition-colors cursor-pointer"
               style={{ borderRadius: "4px" }}
             >
-              Subir foto fraternal
+              Subir foto
             </button>
             <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-2">Formato JPG o PNG (Max 5MB)</span>
           </div>
@@ -391,6 +385,8 @@ export default function CensoMiembroScreen({ onBack, onSuccess }: CensoMiembroPr
               <button 
                 type="button"
                 onClick={() => setIsFamilyHead(!isFamilyHead)}
+                role="switch"
+                aria-checked={isFamilyHead}
                 className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full p-0.5 transition-colors duration-300 ${
                   isFamilyHead ? "bg-[#386458]" : "bg-slate-200"
                 }`}

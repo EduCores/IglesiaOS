@@ -1,0 +1,66 @@
+# Instrucciones globales — IglesiaOS
+
+Reglas permanentes del proyecto. **Verificar y adaptar siempre** en cada cambio.
+
+## 1. Claro y oscuro: obligatorio en el mismo cambio
+- **Toda superficie o componente nuevo** (panel, tarjeta, menú flotante, chip,
+  pastilla, toast, modal, banner) debe definirse **en claro y en oscuro a la
+  vez**. Nunca entregar algo que solo funcione en claro.
+- El tema vive en la clase `.dark` de `<html>` (gestionada por
+  `src/useTheme.ts`); `@custom-variant dark` está declarado en `src/index.css`.
+- Los remapeos nocturnos se escriben en el bloque **MODO OSCURO** de
+  `src/index.css` (selectores por substring `[class*="..."]`). No reordenar ese
+  bloque: los hovers claros van ANTES que sus tokens base porque todas las
+  reglas son `!important` y gana la última escrita.
+- Antes de dar por cerrado un cambio de UI: `npm run lint` y `npm run build`,
+  revisar el bundle en `dist/assets` y confirmarlo visualmente en **ambos
+  temas** (`npm run dev`; en el teléfono `http://<IP-lan>:3000/`).
+
+## 2. Lenguaje visual (resumen; detalle en src/index.css)
+- **Vidrio de acento** (chips, pastillas, avatares): hex claro con alfa `42`
+  (~26%) en el bloque VIDRIO DE ACENTO + remapeo oscuro con alfa `33`.
+- **"Sin tarjeta"** (cabeceras y avisos): `bg-transparent` con el mismo borde y
+  sombra de un panel, y el círculo del icono en menta `#bdeddd`.
+- **Paneles** (tarjetas de contenido): superficie estándar `bg-white rounded-xl
+  p-4 shadow-sm border border-slate-100` (+ `relative overflow-hidden` si
+  llevan adornos). **Nunca** `bg-gradient-to-*` ni sombras a medida como
+  superficie de panel: el degradado es `background-image` y el bloque MODO
+  OSCURO solo remapea `background-color`, así que el panel se queda
+  **brillante en nocturno**. Se cambia solo el contenedor, nunca su contenido.
+  Para la superficie usa `bg-white` (remapea a vidrio en nocturno); evita
+  `bg-slate-50` como superficie de panel (es token de campos y hovers:
+  remapea sólido).
+- **Barra de herramientas de sub-pantallas** (Sacramentos, Bitácora Pastoral,
+  Censo Miembro, Check-In Niños, Confirmación de Registro, Difusión WhatsApp,
+  Onboarding Setup): una sola fila `← + rótulo`, `mb-3 px-5`, sin borde
+  inferior. El rótulo va en `text-xs text-slate-500`, sin mayúsculas ni
+  `tracking-wider`, con `truncate min-w-0` (nunca debe desbordar en 360px).
+  Una sola salida: el ← (`onBack`). No reintroducir a la derecha el botón
+  "Cerrar / Descartar / Volver": repetía esa misma acción y ensanchaba la fila.
+- **Menú flotante de navegación**: clase `.menu-vidrio` (30% de transparencia
+  = blanco al 70%, `#ffffffb3`; en oscuro el mismo 30% sobre `#152834`,
+  `#152834b3`) + `blur(5px)`. No volver a `bg-white` sólido. **Largo
+  automático**: sin `max-h-*` ni scroll interno; el panel crece con las
+  secciones.
+- Todo acento nuevo como texto (`#386458`, `#214e43`, …) necesita su remapeo
+  aclarado en el bloque MODO OSCURO para mantener contraste.
+- **Tintes semánticos de Tailwind** (`bg-rose-50`, `bg-emerald-50`, `bg-red-50`,
+  `border-*-100`, `text-*-600`): cada tinte nuevo necesita su remapeo en el
+  bloque MODO OSCURO (ver barrido del 02-oct-2026 en PENDIENTES.md).
+- **Gradientes-velo blancos** (`from-white/50 …` sobre un panel): remapear el
+  `background-image` en oscuro; el remapeo de `background-color` no los alcanza
+  (ver `[class*="from-white/50"]` en el bloque MODO OSCURO).
+- **Interruptores**: todos llevan `role="switch"` + `aria-checked`; el pulgar
+  (`bg-white`) se mantiene claro en nocturno con la regla
+  `.dark [role="switch"] [class*="bg-white"]`, y el carril apagado
+  (`bg-slate-200` sin hover propio) tiene su propio remapeo.
+
+## 3. Otras reglas ya acordadas (ver PENDIENTES.md)
+- **Iconos Material**: verificar que existan antes de usarlos (HEAD al CDN →
+  200; un nombre inexistente renderiza un hueco vacío sin error de consola).
+- **Videos**: H.264 (`avc1`), `yuv420p`, `-movflags +faststart`; nunca `mp4v`.
+- **Tamaños de letra**: las clases `text-xs`…`text-[15px]` están reescritas
+  globalmente en `src/index.css`; respetar esa escala en vez de añadir px sueltos.
+- **Tailwind v4** (sin `tailwind.config`): utilidades arbitrarias con corchetes;
+  lo que Tailwind no genera (keyframes, `.scrollbar-hide`, vidrios) se define y
+  documenta en `src/index.css`.

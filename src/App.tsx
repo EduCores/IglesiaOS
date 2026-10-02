@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { useTheme } from "./useTheme";
 import DirectorioScreen from "./Directorio";
 import CelulasScreen from "./Celulas";
 import MultimediaScreen from "./Multimedia";
@@ -9,6 +10,10 @@ import CensoMiembroScreen from "./CensoMiembro";
 import SacramentosScreen from "./Sacramentos";
 import BitacoraPastoralScreen from "./BitacoraPastoral";
 import DifusionWhatsappScreen from "./DifusionWhatsapp";
+import OnboardingSetupScreen from "./OnboardingSetup";
+import CheckinNinosScreen from "./CheckinNinos";
+import OfflineSyncScreen from "./OfflineSync";
+import ConfirmacionRegistroScreen from "./ConfirmacionRegistro";
 
 // ==========================================================================
 // COMPONENTE: PANTALLA 5 - ROLES DEFINIDOS (Nueva pantalla de Stitch)
@@ -79,13 +84,13 @@ function RolesScreen() {
           </div>
         )}
 
-        {/* Ambient Misty Header Banner */}
-        <div className="relative overflow-hidden rounded-lg bg-gradient-to-br from-[#e7f6ff] via-[#e0f0fb] to-[#bddefe]/40 p-5 shadow-sm border border-slate-100 backdrop-blur-md">
+        {/* Cabecera de la pantalla: panel estándar (antes degradado) */}
+        <div className="bg-white rounded-xl p-4 shadow-sm border border-slate-100 flex flex-col justify-between relative overflow-hidden">
           <div className="absolute -right-10 -top-10 w-40 h-40 rounded-full bg-[#386458]/10 blur-2xl pointer-events-none"></div>
           <div className="absolute -left-8 -bottom-8 w-32 h-32 rounded-full bg-blue-100/30 blur-xl pointer-events-none"></div>
           
           <div className="relative z-10 flex flex-col space-y-3">
-            <div className="inline-flex items-center space-x-1.5 self-start px-3 py-1 rounded-full bg-white/80 text-[#386458] shadow-sm backdrop-blur-sm">
+            <div className="inline-flex items-center space-x-1.5 self-start px-3 py-1 rounded-full bg-[#386458]/10 text-[#386458] shadow-sm">
               <span className="material-symbols-outlined text-[16px] font-bold">verified_user</span>
               <span className="text-[9px] font-bold uppercase tracking-wider">Gestión Pastoral</span>
             </div>
@@ -100,7 +105,7 @@ function RolesScreen() {
             <button 
               onClick={() => setSelectedFilter("todos")}
               className={`px-4 py-1.5 text-[11px] font-bold transition-all cursor-pointer ${
-                selectedFilter === "todos" ? "bg-[#386458] text-white shadow-sm" : "bg-white/70 text-slate-600 hover:bg-white"
+                selectedFilter === "todos" ? "bg-[#386458] text-white shadow-sm" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               }`}
               style={{ borderRadius: "4px" }}
             >
@@ -109,7 +114,7 @@ function RolesScreen() {
             <button 
               onClick={() => setSelectedFilter("liderazgo")}
               className={`px-4 py-1.5 text-[11px] font-bold transition-all cursor-pointer ${
-                selectedFilter === "liderazgo" ? "bg-[#386458] text-white shadow-sm" : "bg-white/70 text-slate-600 hover:bg-white"
+                selectedFilter === "liderazgo" ? "bg-[#386458] text-white shadow-sm" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               }`}
               style={{ borderRadius: "4px" }}
             >
@@ -118,7 +123,7 @@ function RolesScreen() {
             <button 
               onClick={() => setSelectedFilter("ministerios")}
               className={`px-4 py-1.5 text-[11px] font-bold transition-all cursor-pointer ${
-                selectedFilter === "ministerios" ? "bg-[#386458] text-white shadow-sm" : "bg-white/70 text-slate-600 hover:bg-white"
+                selectedFilter === "ministerios" ? "bg-[#386458] text-white shadow-sm" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               }`}
               style={{ borderRadius: "4px" }}
             >
@@ -127,7 +132,7 @@ function RolesScreen() {
             <button 
               onClick={() => setSelectedFilter("apoyo")}
               className={`px-4 py-1.5 text-[11px] font-bold transition-all cursor-pointer ${
-                selectedFilter === "apoyo" ? "bg-[#386458] text-white shadow-sm" : "bg-white/70 text-slate-600 hover:bg-white"
+                selectedFilter === "apoyo" ? "bg-[#386458] text-white shadow-sm" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               }`}
               style={{ borderRadius: "4px" }}
             >
@@ -336,7 +341,7 @@ function FinanzasDashboardScreen({
       <div className="flex flex-col w-full px-5 space-y-5 relative">
         
         {/* Balance Consolidado Card */}
-        <div className="relative w-full overflow-hidden rounded-[10px] bg-gradient-to-b from-[#e7f6ff] via-[#e0f0fb] to-[#daebf5]/80 p-5 shadow-[0_12px_32px_-8px_rgba(47,62,70,0.08)] backdrop-blur-xl border border-slate-200/40">
+        <div className="w-full bg-white rounded-xl p-4 shadow-sm border border-slate-100 flex flex-col justify-between relative overflow-hidden">
           <div className="absolute -right-8 -top-8 w-44 h-44 rounded-full bg-[#386458]/10 blur-2xl pointer-events-none"></div>
           <div className="absolute -left-10 -bottom-10 w-36 h-36 rounded-full bg-blue-100/40 blur-xl pointer-events-none"></div>
           
@@ -624,7 +629,7 @@ function ComunicacionesScreen({
             <button 
               onClick={() => setSelectedFilter("todos")}
               className={`px-4 py-2 rounded-full text-[11px] font-bold transition-all whitespace-nowrap cursor-pointer active:scale-95 ${
-                selectedFilter === "todos" ? "bg-[#386458] text-white shadow-sm" : "bg-slate-50 text-slate-600 hover:bg-slate-100"
+                selectedFilter === "todos" ? "bg-[#386458] text-white shadow-sm" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               }`}
               style={{ borderRadius: "4px" }}
             >
@@ -633,7 +638,7 @@ function ComunicacionesScreen({
             <button 
               onClick={() => setSelectedFilter("campañas")}
               className={`px-4 py-2 rounded-full text-[11px] font-bold transition-all whitespace-nowrap cursor-pointer active:scale-95 ${
-                selectedFilter === "campañas" ? "bg-[#386458] text-white shadow-sm" : "bg-slate-50 text-slate-600 hover:bg-slate-100"
+                selectedFilter === "campañas" ? "bg-[#386458] text-white shadow-sm" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               }`}
               style={{ borderRadius: "4px" }}
             >
@@ -642,7 +647,7 @@ function ComunicacionesScreen({
             <button 
               onClick={() => setSelectedFilter("lecturas")}
               className={`px-4 py-2 rounded-full text-[11px] font-bold transition-all whitespace-nowrap cursor-pointer active:scale-95 ${
-                selectedFilter === "lecturas" ? "bg-[#386458] text-white shadow-sm" : "bg-slate-50 text-slate-600 hover:bg-slate-100"
+                selectedFilter === "lecturas" ? "bg-[#386458] text-white shadow-sm" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               }`}
               style={{ borderRadius: "4px" }}
             >
@@ -851,7 +856,7 @@ function InicioScreen({
 
             <div>
               <h2 className="text-xl font-bold text-slate-900 tracking-tight">Buenos días, Pastor Samuel</h2>
-              <p className="text-[12px] text-slate-500 italic mt-1 leading-relaxed">"La paz os dejo, mi paz os doy; que sus corazones descansen hoy con alegría."</p>
+              <p className="text-[12px] text-slate-500 italic mt-1 leading-relaxed">"La paz os dejo, mi paz os doy; que sus corazones descansen hoy con alegría." <span className="not-italic font-bold text-[11px] text-[#386458]">— Juan 14:27</span></p>
             </div>
 
             <div className="grid grid-cols-3 gap-2 pt-1.5">
@@ -1033,7 +1038,11 @@ type ScreenId =
   | "censo_miembro"
   | "sacramentos"
   | "bitacora_pastoral"
-  | "difusion_whatsapp";
+  | "difusion_whatsapp"
+  | "onboarding_setup"
+  | "checkin_ninos"
+  | "offline_sync"
+  | "confirmacion_registro";
 
 // Fondo de video superior (nubes) — archivo local en public/videos para que funcione en dev y en GitHub Pages
 const SKY_VIDEO_SRC = `${import.meta.env.BASE_URL}videos/nubes1.mp4`;
@@ -1054,7 +1063,90 @@ const NAV_LINKS: { screen: ScreenId; label: string; icon: string }[] = [
   { screen: "formulario", label: "Form. Diezmo", icon: "payments" },
   { screen: "comunicaciones", label: "Comunicaciones", icon: "grid_view" },
   { screen: "difusion_whatsapp", label: "Difusión WA", icon: "send" },
+  { screen: "onboarding_setup", label: "Configuración", icon: "rocket_launch" },
+  { screen: "checkin_ninos", label: "Check-In Niños", icon: "child_care" },
+  { screen: "confirmacion_registro", label: "Confirmación", icon: "task_alt" },
+  { screen: "offline_sync", label: "Sin Conexión", icon: "cloud_off" },
 ];
+
+// ==========================================================================
+// MENÚ DE MÓDULOS (lo comparten la hamburguesa móvil y el header de escritorio)
+// ==========================================================================
+function NavMenuPanel({
+  activeScreen,
+  onSelect,
+  onClose,
+  positionClass,
+}: {
+  activeScreen: ScreenId;
+  onSelect: (screen: ScreenId) => void;
+  onClose: () => void;
+  positionClass: string;
+}) {
+  return (
+    <>
+      {/* Overlay para cerrar al tocar fuera */}
+      <div
+        className="absolute inset-0 bg-slate-900/30 backdrop-blur-[2px] z-40 animate-[fadeIn_0.2s_ease-out]"
+        onClick={onClose}
+      />
+      {/* Panel de navegación */}
+      {/* Menú flotante en vidrio neutro: 30% de transparencia (blanco al 70%)
+          + blur(5px) en claro; el mismo 30% sobre #152834 en oscuro — clase
+          .menu-vidrio documentada en src/index.css. Sin cabecera verde (se
+          cierra tocando fuera o al elegir una sección) y con largo
+          automático: el panel crece según el nº de secciones, sin tope de
+          alto ni scroll interno. */}
+      <nav className={`menu-vidrio absolute z-50 rounded-[8px] shadow-[0_25px_60px_-15px_rgba(15,23,42,0.35)] border border-slate-100 overflow-hidden animate-[scaleIn_0.15s_ease-out] ${positionClass}`}>
+        <div className="grid grid-cols-2 gap-1 p-2">
+          {NAV_LINKS.map((link) => (
+            <button
+              key={link.screen}
+              onClick={() => {
+                onSelect(link.screen);
+                onClose();
+              }}
+              className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left transition-all cursor-pointer ${
+                activeScreen === link.screen
+                  ? "bg-[#386458] text-white shadow-sm"
+                  : "text-slate-700 hover:bg-[#386458]/5 hover:text-[#386458]"
+              }`}
+            >
+              <span
+                className="material-symbols-outlined text-[20px] shrink-0"
+                style={{ fontVariationSettings: activeScreen === link.screen ? "'FILL' 1" : "" }}
+              >
+                {link.icon}
+              </span>
+              <span className="text-xs font-bold truncate">{link.label}</span>
+            </button>
+          ))}
+        </div>
+      </nav>
+    </>
+  );
+}
+
+// ==========================================================================
+// TOGGLE CLARO / OSCURO (se usa en el header móvil y en el de escritorio)
+// ==========================================================================
+function ThemeToggle({ theme, onToggle }: { theme: "light" | "dark"; onToggle: () => void }) {
+  const isDark = theme === "dark";
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      aria-label={isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
+      title={isDark ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}
+      aria-pressed={isDark}
+      className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full bg-slate-900/5 text-slate-800 hover:bg-slate-900/10 active:scale-90 transition-all cursor-pointer dark:bg-white/10 dark:text-amber-200 dark:hover:bg-white/15"
+    >
+      <span className="material-symbols-outlined text-[20px]">
+        {isDark ? "light_mode" : "dark_mode"}
+      </span>
+    </button>
+  );
+}
 
 // ==========================================================================
 // COMPONENTE PRINCIPAL (MAIN WRAPPER & STATE MANAGER)
@@ -1066,6 +1158,7 @@ export default function App() {
   );
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeScreen, setActiveScreen] = useState<ScreenId>("inicio");
+  const { theme, toggleTheme } = useTheme();
   
   // Form states (Formulario)
   const [amount, setAmount] = useState<number>(120000);
@@ -1211,7 +1304,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f4faff] text-[#0e1d25] font-sans antialiased selection:bg-[#386458]/10 selection:text-[#386458]">
+    <div className="min-h-screen bg-[#f4faff] text-[#0e1d25] font-sans antialiased selection:bg-[#386458]/10 selection:text-[#386458] dark:bg-[#0b151c] dark:text-slate-100 transition-colors">
       
 
       {/* Main View Container */}
@@ -1219,7 +1312,7 @@ export default function App() {
         
         {/* VIEW 1: MOBILE DEVICE VIEW */}
         {viewMode === "mobile" && (
-          <div className="w-full bg-[#f4faff] overflow-hidden relative transition-all duration-500">
+          <div className="w-full bg-[#f4faff] overflow-hidden relative transition-all duration-500 dark:bg-[#0b151c]">
             {/* Fondo de video superior (nubes) — del top hacia abajo */}
             <div className="sky-video-wrap pointer-events-none absolute inset-x-0 top-0 z-0 h-[420px] overflow-hidden" aria-hidden="true">
               <video
@@ -1254,63 +1347,27 @@ export default function App() {
                   <span className="material-symbols-outlined text-[22px]">{isMenuOpen ? "close" : "menu"}</span>
                 </button>
                 <h1 className="font-display font-bold text-base text-slate-900 tracking-tight capitalize">
-                  {activeScreen === "inicio" ? "Inicio" : activeScreen === "formulario" ? "Consagración" : activeScreen === "finanzas" ? "Finanzas" : activeScreen === "roles" ? "Roles" : activeScreen === "personas" ? "Personas" : activeScreen === "celulas" ? "Células" : activeScreen === "multimedia" ? "Multimedia" : activeScreen === "pastoral" ? "Pastoral" : activeScreen === "eventos" ? "Eventos" : activeScreen === "culto_vivo" ? "Culto en Vivo" : activeScreen === "censo_miembro" ? "Ficha Censo" : activeScreen === "sacramentos" ? "Sacramentos" : activeScreen === "bitacora_pastoral" ? "Bitácora" : "Más"}
+                  {activeScreen === "inicio" ? "Inicio" : activeScreen === "formulario" ? "Consagración" : activeScreen === "finanzas" ? "Finanzas" : activeScreen === "roles" ? "Roles" : activeScreen === "personas" ? "Personas" : activeScreen === "celulas" ? "Células" : activeScreen === "multimedia" ? "Multimedia" : activeScreen === "pastoral" ? "Pastoral" : activeScreen === "eventos" ? "Eventos" : activeScreen === "culto_vivo" ? "Culto en Vivo" : activeScreen === "censo_miembro" ? "Ficha Censo" : activeScreen === "sacramentos" ? "Sacramentos" : activeScreen === "bitacora_pastoral" ? "Bitácora" : activeScreen === "difusion_whatsapp" ? "Whatsapp" : activeScreen === "onboarding_setup" ? "Configuración" : activeScreen === "checkin_ninos" ? "Check-In Niños" : activeScreen === "offline_sync" ? "Sin Conexión" : activeScreen === "confirmacion_registro" ? "Confirmación" : "Más"}
                 </h1>
-                <button 
-                  className="w-8 h-8 rounded-full bg-[#386458] flex items-center justify-center text-white hover:scale-105 active:scale-95 transition-all cursor-pointer shadow-sm hover:shadow"
-                >
-                  <span className="material-symbols-outlined text-[18px]">person</span>
-                </button>
+                <div className="flex items-center gap-1.5">
+                  <ThemeToggle theme={theme} onToggle={toggleTheme} />
+                  <button
+                    className="w-8 h-8 rounded-full bg-[#386458] flex items-center justify-center text-white hover:scale-105 active:scale-95 transition-all cursor-pointer shadow-sm hover:shadow"
+                    aria-label="Perfil"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">person</span>
+                  </button>
+                </div>
               </header>
 
               {/* MENÚ DESPLEGABLE: LINKS DEL SITIO (HAMBURGUESA) */}
               {isMenuOpen && (
-                <>
-                  {/* Overlay para cerrar al tocar fuera */}
-                  <div
-                    className="absolute inset-0 bg-slate-900/30 backdrop-blur-[2px] z-40 animate-[fadeIn_0.2s_ease-out]"
-                    onClick={() => setIsMenuOpen(false)}
-                  />
-                  {/* Panel de navegación */}
-                  <nav className="absolute top-[72px] left-3 right-3 z-50 bg-white rounded-2xl shadow-[0_25px_60px_-15px_rgba(15,23,42,0.35)] border border-slate-100 overflow-hidden animate-[scaleIn_0.15s_ease-out]">
-                    <div className="flex items-center justify-between px-4 py-3 bg-[#386458] text-white">
-                      <div className="flex items-center gap-2">
-                        <span className="material-symbols-outlined text-[18px]">apps</span>
-                      </div>
-                      <button
-                        onClick={() => setIsMenuOpen(false)}
-                        className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-white/15 transition-all active:scale-90 cursor-pointer"
-                        aria-label="Cerrar menú"
-                      >
-                        <span className="material-symbols-outlined text-[16px]">close</span>
-                      </button>
-                    </div>
-                    <div className="grid grid-cols-2 gap-1 p-2 max-h-[420px] overflow-y-auto">
-                      {NAV_LINKS.map((link) => (
-                        <button
-                          key={link.screen}
-                          onClick={() => {
-                            setActiveScreen(link.screen);
-                            setIsMenuOpen(false);
-                          }}
-                          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left transition-all cursor-pointer ${
-                            activeScreen === link.screen
-                              ? "bg-[#386458] text-white shadow-sm"
-                              : "text-slate-700 hover:bg-[#386458]/5 hover:text-[#386458]"
-                          }`}
-                        >
-                          <span
-                            className="material-symbols-outlined text-[20px] shrink-0"
-                            style={{ fontVariationSettings: activeScreen === link.screen ? "'FILL' 1" : "" }}
-                          >
-                            {link.icon}
-                          </span>
-                          <span className="text-xs font-bold truncate">{link.label}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </nav>
-                </>
+                <NavMenuPanel
+                  activeScreen={activeScreen}
+                  onSelect={setActiveScreen}
+                  onClose={() => setIsMenuOpen(false)}
+                  positionClass="top-[72px] left-3 right-3"
+                />
               )}
 
               {/* RENDERIZADO DE PANTALLA ACTIVA MÓVIL */}
@@ -1347,7 +1404,10 @@ export default function App() {
                   onNavigateToBitacora={() => setActiveScreen("bitacora_pastoral")}
                 />
               ) : activeScreen === "eventos" ? (
-                <EventosScreen onNavigateToLive={() => setActiveScreen("culto_vivo")} />
+                <EventosScreen
+                  onNavigateToLive={() => setActiveScreen("culto_vivo")}
+                  onNavigateToCheckin={() => setActiveScreen("checkin_ninos")}
+                />
               ) : activeScreen === "culto_vivo" ? (
                 <CultoVivoScreen />
               ) : activeScreen === "censo_miembro" ? (
@@ -1367,13 +1427,25 @@ export default function App() {
                 <DifusionWhatsappScreen 
                   onBack={() => setActiveScreen("comunicaciones")}
                 />
+              ) : activeScreen === "onboarding_setup" ? (
+                <OnboardingSetupScreen onBack={() => setActiveScreen("inicio")} />
+              ) : activeScreen === "checkin_ninos" ? (
+                <CheckinNinosScreen onBack={() => setActiveScreen("eventos")} />
+              ) : activeScreen === "offline_sync" ? (
+                <OfflineSyncScreen onBack={() => setActiveScreen("inicio")} />
+              ) : activeScreen === "confirmacion_registro" ? (
+                <ConfirmacionRegistroScreen
+                  onBack={() => setActiveScreen("inicio")}
+                  onRegisterAnother={() => setActiveScreen("censo_miembro")}
+                  onGoHome={() => setActiveScreen("inicio")}
+                />
               ) : isSuccess ? (
                 /* SUCCESS / RECEIPT SCREEN */
                 <div className="flex-1 px-5 flex flex-col justify-center items-center py-10 animate-[fadeIn_0.3s_ease-out]">
                   <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center text-[#386458] mb-6 shadow-sm border border-emerald-100">
                     <span className="material-symbols-outlined text-[44px] font-bold">check_circle</span>
                   </div>
-                  <h3 className="font-display font-bold text-2xl text-[#386458] mb-2 text-center text-wrap-balance">¡Consagración Exitosa!</h3>
+                  <h3 className="font-display font-bold text-2xl text-[#386458] mb-2 text-center text-balance">¡Consagración Exitosa!</h3>
                   <p className="text-sm text-slate-500 text-center mb-6 max-w-xs">
                     Tu recibo digital ha sido enviado exitosamente al correo <span className="font-semibold text-slate-800">{email}</span>.
                   </p>
@@ -1419,9 +1491,9 @@ export default function App() {
                 <div className="flex-1 px-5 space-y-5">
                   
                   {/* Status card */}
-                  <div className="bg-[#eaf1f6] rounded-[28px] p-4.5 flex items-center justify-between border border-slate-100 shadow-sm">
+                  <div className="bg-transparent rounded-[28px] p-4.5 flex items-center justify-between border border-slate-100 shadow-sm">
                     <div className="flex items-center gap-3">
-                      <div className="w-11 h-11 bg-white rounded-full flex items-center justify-center text-[#386458] shadow-sm">
+                      <div className="w-11 h-11 bg-[#bdeddd] rounded-full flex items-center justify-center text-[#386458] shadow-sm">
                         <span className="material-symbols-outlined text-[22px]" style={{ fontVariationSettings: "'FILL' 1" }}>volunteer_activism</span>
                       </div>
                       <div>
@@ -1561,6 +1633,8 @@ export default function App() {
                       <span className="text-xs text-slate-500 font-medium">Miembro o Donante</span>
                       <button
                         onClick={() => setIsAnonymous(!isAnonymous)}
+                        role="switch"
+                        aria-checked={isAnonymous}
                         className={`w-11 h-6 rounded-full transition-all duration-300 relative focus:outline-none cursor-pointer ${
                           isAnonymous ? "bg-[#386458]" : "bg-slate-200"
                         }`}
@@ -1737,8 +1811,8 @@ export default function App() {
 
         {/* VIEW 2: ADAPTIVE DESKTOP FULL VIEW */}
         {viewMode === "desktop" && (
-          <div className="w-full max-w-5xl bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-slate-200/60 overflow-hidden transition-all duration-500">
-            <div className="bg-[#f4faff] min-h-[750px] p-8 flex flex-col relative">
+          <div className="w-full max-w-5xl bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-slate-200/60 overflow-hidden transition-all duration-500 dark:bg-[#101f29] dark:border-slate-700/50">
+            <div className="bg-[#f4faff] min-h-[750px] p-8 flex flex-col relative dark:bg-[#0b151c]">
               
               {/* Header block for Desktop Layout */}
               <header className="flex items-center justify-between border-b border-slate-200/50 pb-5 mb-8">
@@ -1752,7 +1826,7 @@ export default function App() {
                   </button>
                   <div>
                     <h1 className="font-display font-bold text-2xl text-[#0e1d25] tracking-tight">
-                      {activeScreen === "inicio" ? "Inicio de Gestión Pastoral" : activeScreen === "formulario" ? "Consagración de Mayordomía" : activeScreen === "finanzas" ? "Consolidación Financiera" : activeScreen === "roles" ? "Definición de Roles" : "Canales de Comunicaciones"}
+                      {activeScreen === "inicio" ? "Inicio de Gestión Pastoral" : activeScreen === "formulario" ? "Consagración de Mayordomía" : activeScreen === "finanzas" ? "Consolidación Financiera" : activeScreen === "roles" ? "Definición de Roles" : activeScreen === "onboarding_setup" ? "Configuración Inicial" : activeScreen === "checkin_ninos" ? "Check-In Niños & Familias" : activeScreen === "offline_sync" ? "Sincronización Offline" : activeScreen === "confirmacion_registro" ? "Confirmación de Registro" : "Canales de Comunicaciones"}
                     </h1>
                     <p className="text-xs text-slate-400 font-medium">Plataforma Integrada para Iglesias y Congregaciones</p>
                   </div>
@@ -1760,14 +1834,34 @@ export default function App() {
 
                 <div className="flex items-center gap-4">
                   <div className="text-right hidden sm:block">
-                    <p className="text-sm font-bold text-slate-800">Célula Betania</p>
-                    <p className="text-[11px] text-emerald-600 font-bold uppercase tracking-wider">Modo Integrado</p>
+                    <p className="text-sm font-bold text-slate-800 dark:text-slate-100">Célula Betania</p>
+                    <p className="text-[11px] text-emerald-600 dark:text-emerald-300 font-bold uppercase tracking-wider">Modo Integrado</p>
                   </div>
+                  <button
+                    type="button"
+                    onClick={() => setIsMenuOpen((open) => !open)}
+                    className="w-10 h-10 flex items-center justify-center rounded-full text-slate-700 hover:bg-slate-200/50 transition-all duration-150 active:scale-90 cursor-pointer"
+                    aria-label="Menú de módulos"
+                    aria-expanded={isMenuOpen}
+                  >
+                    <span className="material-symbols-outlined text-[22px]">{isMenuOpen ? "close" : "apps"}</span>
+                  </button>
+                  <ThemeToggle theme={theme} onToggle={toggleTheme} />
                   <div className="w-11 h-11 rounded-full bg-[#386458] flex items-center justify-center text-white shadow-md">
                     <span className="material-symbols-outlined text-[20px]">person</span>
                   </div>
                 </div>
               </header>
+
+              {/* MENÚ DESPLEGABLE: MISMOS LINKS QUE EN MÓVIL (ESCRITORIO) */}
+              {isMenuOpen && (
+                <NavMenuPanel
+                  activeScreen={activeScreen}
+                  onSelect={setActiveScreen}
+                  onClose={() => setIsMenuOpen(false)}
+                  positionClass="top-[100px] right-8 w-[440px]"
+                />
+              )}
 
               {/* RENDERIZADO DE PANTALLA ACTIVA ESCRITORIO */}
               {activeScreen === "inicio" ? (
@@ -1815,7 +1909,10 @@ export default function App() {
                 </div>
               ) : activeScreen === "eventos" ? (
                 <div className="w-full">
-                  <EventosScreen onNavigateToLive={() => setActiveScreen("culto_vivo")} />
+                  <EventosScreen 
+                    onNavigateToLive={() => setActiveScreen("culto_vivo")}
+                    onNavigateToCheckin={() => setActiveScreen("checkin_ninos")}
+                  />
                 </div>
               ) : activeScreen === "culto_vivo" ? (
                 <div className="w-full">
@@ -1838,6 +1935,36 @@ export default function App() {
                 <div className="w-full">
                   <DifusionWhatsappScreen 
                     onBack={() => setActiveScreen("comunicaciones")}
+                  />
+                </div>
+              ) : activeScreen === "multimedia" ? (
+                <div className="w-full">
+                  <MultimediaScreen />
+                </div>
+              ) : activeScreen === "bitacora_pastoral" ? (
+                <div className="w-full">
+                  <BitacoraPastoralScreen
+                    onBack={() => setActiveScreen("pastoral")}
+                  />
+                </div>
+              ) : activeScreen === "onboarding_setup" ? (
+                <div className="w-full">
+                  <OnboardingSetupScreen onBack={() => setActiveScreen("inicio")} />
+                </div>
+              ) : activeScreen === "checkin_ninos" ? (
+                <div className="w-full">
+                  <CheckinNinosScreen onBack={() => setActiveScreen("eventos")} />
+                </div>
+              ) : activeScreen === "offline_sync" ? (
+                <div className="w-full">
+                  <OfflineSyncScreen onBack={() => setActiveScreen("inicio")} />
+                </div>
+              ) : activeScreen === "confirmacion_registro" ? (
+                <div className="w-full">
+                  <ConfirmacionRegistroScreen
+                    onBack={() => setActiveScreen("inicio")}
+                    onRegisterAnother={() => setActiveScreen("censo_miembro")}
+                    onGoHome={() => setActiveScreen("inicio")}
                   />
                 </div>
               ) : isSuccess ? (
@@ -1878,7 +2005,7 @@ export default function App() {
                       {prayerRequest && (
                         <div className="col-span-2 pt-1">
                           <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Petición de Oración</span>
-                          <p className="text-xs text-slate-600 italic bg-slate-50 p-3 rounded-lg border border-slate-150 mt-1">
+                          <p className="text-xs text-slate-600 italic bg-slate-50 p-3 rounded-lg border border-slate-200 mt-1">
                             "{prayerRequest}"
                           </p>
                         </div>
@@ -1913,9 +2040,9 @@ export default function App() {
                   <div className="lg:col-span-6 space-y-6">
                     
                     {/* Status card */}
-                    <div className="bg-[#eaf1f6] rounded-[28px] p-6 flex items-center justify-between border border-slate-100 shadow-sm">
+                    <div className="bg-transparent rounded-[28px] p-6 flex items-center justify-between border border-slate-100 shadow-sm">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-[#386458] shadow-sm">
+                        <div className="w-12 h-12 bg-[#bdeddd] rounded-full flex items-center justify-center text-[#386458] shadow-sm">
                           <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>volunteer_activism</span>
                         </div>
                         <div>
@@ -2009,6 +2136,8 @@ export default function App() {
                         <span className="text-sm text-slate-500 font-medium">Miembro o Donante</span>
                         <button
                           onClick={() => setIsAnonymous(!isAnonymous)}
+                          role="switch"
+                          aria-checked={isAnonymous}
                           className={`w-11 h-6 rounded-full transition-all duration-300 relative focus:outline-none cursor-pointer ${
                             isAnonymous ? "bg-[#386458]" : "bg-slate-200"
                           }`}

@@ -52,7 +52,7 @@ export default function CultoVivoScreen() {
               <div>
                 <span className="text-[9px] text-[#bdeddd] font-bold uppercase tracking-widest leading-none">Servicio Dominical Principal</span>
                 <h2 className="text-base font-bold text-white tracking-tight mt-0.5">Culto de Adoración & Santa Cena</h2>
-                <p className="text-[11px] text-slate-350 line-clamp-1 mt-0.5 font-medium leading-none">Comunidad central, pan compartido y renovación espiritual matutina</p>
+                <p className="text-[11px] text-slate-400 line-clamp-1 mt-0.5 font-medium leading-none">Comunidad central, pan compartido y renovación espiritual matutina</p>
               </div>
 
               <div className="flex items-center justify-between pt-1 border-t border-white/10">
@@ -124,7 +124,7 @@ export default function CultoVivoScreen() {
             {/* Timeline Wrapper */}
             <div className="relative pl-6 space-y-4">
               {/* Continuous Soft Vertical Guide Line */}
-              <div className="absolute left-2 top-3 bottom-4 w-0.5 bg-slate-150 rounded-full"></div>
+              <div className="absolute left-2 top-3 bottom-4 w-0.5 bg-slate-200 rounded-full"></div>
 
               {/* Hito 1: 09:30 AM */}
               <div className="relative flex items-start gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-100">
@@ -151,7 +151,7 @@ export default function CultoVivoScreen() {
                     <span className="text-[10px] font-bold text-[#42617d] uppercase">10:15 AM</span>
                     <span className="px-2 py-0.5 rounded-full bg-[#bddefe] text-[#294964] text-[9px] font-bold uppercase tracking-wider">En Curso</span>
                   </div>
-                  <h4 className="text-xs font-bold text-slate-850 mt-1 leading-snug">Apertura de Puertas & Bienvenida de Ujieres</h4>
+                  <h4 className="text-xs font-bold text-slate-800 mt-1 leading-snug">Apertura de Puertas & Bienvenida de Ujieres</h4>
                   <p className="text-[10px] text-slate-500 mt-1 leading-relaxed">Música ambiental suave, entrega de folletos y guía de asientos principales.</p>
                 </div>
               </div>
@@ -164,7 +164,7 @@ export default function CultoVivoScreen() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-[10px] font-bold text-slate-500 uppercase">10:30 AM</span>
-                    <span className="text-[10px] text-slate-450 font-bold uppercase tracking-wider">10 min</span>
+                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">10 min</span>
                   </div>
                   <h4 className="text-xs font-bold text-slate-800 mt-1 leading-snug">Apertura y Oración Inicial</h4>
                   <p className="text-[10px] text-slate-400 mt-1 leading-relaxed">Pastor Samuel • Bienvenida fraterna y lectura del Salmo 84.</p>
@@ -197,7 +197,7 @@ export default function CultoVivoScreen() {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
                     <span className="text-[10px] font-bold text-slate-500 uppercase">11:15 AM</span>
-                    <span className="text-[10px] text-slate-450 font-bold uppercase tracking-wider">8 min</span>
+                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">8 min</span>
                   </div>
                   <h4 className="text-xs font-bold text-slate-800 mt-1 leading-snug">Momento de Ofrenda & Gratitud</h4>
                   <p className="text-[10px] text-slate-400 mt-1 leading-relaxed">Instrucciones en pantalla • Código QR y sobres en pasillos laterales.</p>
@@ -243,7 +243,7 @@ export default function CultoVivoScreen() {
             <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-xs font-bold text-slate-850 uppercase tracking-wider">Equipo de Servidores</h3>
+                  <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Equipo de Servidores</h3>
                   <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">24 asignados • 4 áreas activas</p>
                 </div>
                 <span className="px-3 py-1 rounded-full bg-[#bdeddd] text-[#214e43] text-[9px] font-bold uppercase tracking-wider">100% Confirmado</span>
@@ -282,7 +282,7 @@ export default function CultoVivoScreen() {
         {activeTab === "checklist" && (
           <div className="flex flex-col space-y-4 animate-[fadeIn_0.2s_ease-out]">
             <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-3">
-              <h3 className="text-xs font-bold text-slate-850 uppercase tracking-wider mb-2">Checklist Pre-Culto</h3>
+              <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Checklist Pre-Culto</h3>
               
               {checklist.map((item) => (
                 <label 
@@ -309,7 +309,7 @@ export default function CultoVivoScreen() {
           <div className="flex items-center justify-between px-1">
             <div>
               <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Próximos Encuentros</h3>
-              <p className="text-[10px] text-slate-450 font-medium">Fechas destacadas en la agenda comunitaria</p>
+              <p className="text-[10px] text-slate-500 font-medium">Fechas destacadas en la agenda comunitaria</p>
             </div>
             <button 
               onClick={() => alert("Mostrando calendario anual de eventos...")}

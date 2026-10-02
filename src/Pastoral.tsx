@@ -236,7 +236,7 @@ export default function PastoralScreen({ onNavigateToSacramentos, onNavigateToBi
                   </div>
                 </div>
                 <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${
-                  appt.id % 2 === 0 ? "bg-[#bdeddd] text-[#214e43]" : "bg-slate-150 text-slate-500"
+                  appt.id % 2 === 0 ? "bg-[#bdeddd] text-[#214e43]" : "bg-slate-200 text-slate-500"
                 }`}>
                   {appt.status}
                 </span>
@@ -333,6 +333,11 @@ export default function PastoralScreen({ onNavigateToSacramentos, onNavigateToBi
               </p>
               <p className="text-[10px] text-white/70 font-semibold uppercase tracking-wider">
                 Paz y paciencia para la jornada de hoy
+              </p>
+              {/* Versículo del día: formato «texto» — Libro x:y, igual que
+                  OfflineSync (#155) y ConfirmacionRegistro (#135). */}
+              <p className="text-[10px] text-white/85 font-semibold italic leading-relaxed pt-1">
+                «La paz os dejo, mi paz os doy; no se turbe vuestro corazón, ni tenga miedo.» — Juan 14:27
               </p>
             </div>
           </div>

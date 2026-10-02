@@ -174,7 +174,7 @@ export default function CelulasScreen() {
         </button>
 
         {/* Mapa Interactivo de Zonas y Geolocalización */}
-        <div className="bg-white rounded-lg p-4 shadow-sm border border-slate-150 space-y-3">
+        <div className="bg-white rounded-lg p-4 shadow-sm border border-slate-200 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-[20px] text-[#386458] font-bold">pin_drop</span>
@@ -370,7 +370,7 @@ export default function CelulasScreen() {
         </div>
 
         {/* Tarjeta Pastoral de Acompañamiento / Recursos */}
-        <div className="rounded-xl p-4 bg-gradient-to-br from-[#bdeddd]/30 to-[#e7f6ff] shadow-sm flex items-center gap-3 border border-slate-100">
+        <div className="rounded-xl p-4 bg-white shadow-sm flex items-center gap-3 border border-slate-100">
           <div className="w-11 h-11 rounded-full bg-[#386458] text-white flex items-center justify-center shrink-0 shadow-sm">
             <span className="material-symbols-outlined text-[22px]">auto_stories</span>
           </div>

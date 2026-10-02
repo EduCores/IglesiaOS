@@ -45,32 +45,26 @@ export default function BitacoraPastoralScreen({ onBack }: { onBack?: () => void
   return (
     <div className="flex-1 pb-24 relative overflow-hidden flex flex-col justify-between animate-[fadeIn_0.25s_ease-out] font-body-md text-body-md text-[#0e1d25]">
       
-      {/* Header Toolbar */}
-      <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4 px-1">
-        <div className="flex items-center gap-2">
-          {onBack && (
-            <button 
-              onClick={onBack}
-              className="w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 cursor-pointer"
-            >
-              <span className="material-symbols-outlined text-[20px] font-bold">arrow_back</span>
-            </button>
-          )}
-          <span className="text-xs font-bold text-slate-850 uppercase tracking-wider">Pastoral Visit Log</span>
-        </div>
-        <button 
-          onClick={onBack}
-          className="text-slate-400 hover:text-slate-600 text-xs font-bold uppercase tracking-wider flex items-center gap-1 cursor-pointer"
-        >
-          <span className="material-symbols-outlined text-[16px]">close</span>
-          <span>Cerrar</span>
-        </button>
+      {/* Barra de herramientas: una sola fila (← + rótulo) con una única
+          salida; sin borde ni botón de cierre duplicado a la derecha. */}
+      <div className="flex items-center gap-2 mb-3 px-5">
+        {onBack && (
+          <button
+            onClick={onBack}
+            aria-label="Volver"
+            title="Volver"
+            className="w-9 h-9 shrink-0 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 cursor-pointer transition-colors"
+          >
+            <span className="material-symbols-outlined text-[18px] font-bold">arrow_back</span>
+          </button>
+        )}
+        <span className="min-w-0 truncate text-xs text-slate-500">Bitácora de Visitas</span>
       </div>
 
-      <div className="flex flex-col w-full px-4 space-y-5">
+      <div className="flex flex-col w-full px-5 space-y-5">
         
         {/* Privacy Assurance Banner */}
-        <div className="w-full bg-[#e0f0fb] rounded-xl p-4 shadow-sm flex items-center justify-between border border-slate-100">
+        <div className="w-full bg-transparent rounded-xl p-4 shadow-sm flex items-center justify-between border border-slate-100">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 rounded-full bg-[#bdeddd] flex items-center justify-center shrink-0 border border-white">
               <span className="material-symbols-outlined text-[#386458] text-[20px] font-bold" style={{ fontVariationSettings: "'FILL' 1" }}>lock</span>
@@ -317,7 +311,7 @@ export default function BitacoraPastoralScreen({ onBack }: { onBack?: () => void
           </div>
 
           {/* Privacy Visibility Level Toggle */}
-          <div className="bg-slate-100 p-1 rounded-full flex items-center justify-between text-center border border-slate-150">
+          <div className="bg-slate-100 p-1 rounded-full flex items-center justify-between text-center border border-slate-200">
             <button 
               type="button"
               onClick={() => setPrivacyLevel("solo_pastor")}
@@ -405,7 +399,7 @@ export default function BitacoraPastoralScreen({ onBack }: { onBack?: () => void
             <button 
               type="button"
               onClick={() => alert("Mostrando listado de versículos de consuelo y victoria...")}
-              className="px-2.5 py-1 rounded-full bg-white border border-slate-150 text-[#386458] text-[9px] font-bold uppercase tracking-wider shrink-0 transition-colors cursor-pointer"
+              className="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-[#386458] text-[9px] font-bold uppercase tracking-wider shrink-0 transition-colors cursor-pointer"
               style={{ borderRadius: "4px" }}
             >
               Cambiar

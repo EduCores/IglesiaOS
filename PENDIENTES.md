@@ -4,6 +4,141 @@
 
 ---
 
+## ✅ CORREGIDO — Barrido claro/oscuro: tintes, gradientes-velo y toggles en toda la App
+
+**Estado:** ✅ Aplicado el 02-oct-2026, tras auditar token por token los 18 módulos.
+
+**Síntoma:** además de los paneles degradados ya convertidos, quedaban errores de tema en ambos sentidos:
+
+- *Oscuro*: tintes de Tailwind sin remapeo (aviso rosa `bg-rose-50/70`, círculos
+  `bg-emerald-50` de los estados de éxito de Consagración, badge `bg-red-50`
+  "EN VIVO" de Multimedia, rampa menta del gráfico de asistencia, chips
+  `#daebf5`/`#aacaea`, `bg-slate-200` de carriles y badges, `bg-slate-300` de
+  separadores); textos hex sin regla (`text-[#001d32]`, `text-[#002019]`,
+  `text-[#43627e]` y el hover `text-[#2c4e45]`) y semánticos (`text-red-600`,
+  `text-rose-500`, `text-emerald-600`); el pulgar `bg-white` de los toggles
+  desaparecía sobre el carril (remapeo vidrio de `bg-white`); y el velo
+  gradiente de la tarjeta de bienvenida (Inicio) quedaba blanco lechoso — es
+  `background-image`, así que escapaba al remapeo de `background-color`.
+- *Claro*: las pastillas de filtro de Roles (`bg-white/70`) y el chip "Gestión
+  Pastoral" (`bg-white/80`) se quedaban sin superficie sobre el panel ya blanco.
+
+**Solución aplicada** (`src/index.css`, bloque MODO OSCURO + ajustes en los módulos):
+
+- Tintes semánticos: `bg-emerald-50` → `#bdeddd33`; `bg-rose-50` y `bg-red-50`
+  → `#ffd9de33`; bordes `border-emerald-100` / `border-blue-100` /
+  `border-rose-100` → vidrio del mismo tono; textos `text-red-600` →
+  `#fca5a5`, `text-rose-500` → `#fda4af`, `text-emerald-600` → `#6ee7b7`.
+- Tokens sin remapeo: `#daebf5` y `#aacaea` → `#9bc8f02e` (serie azul); rampa
+  menta `#d5e9e1` / `#c0ded3` / `#a8d2c4` / `#7fb3a1` → vidrio menta con alfas
+  crecientes (`1f`/`2e`/`3d`/`4d`) para conservar la progresión del gráfico;
+  chips `bg-[#386458]/10` y `/5` → menta translúcido; halos `bg-blue-100` →
+  `#9bc8f01f`; `bg-slate-200` sólido (con exclusión del hover claro) →
+  `#24404f`; `bg-slate-300` → `#2e4756`; bordes `border-slate-50` / `300`
+  remapeados.
+- Velo de Inicio: `.dark [class*="from-white/50"]` invierte el gradiente a
+  vidrio nocturno (única vía posible: es `background-image`).
+- Toggles: los 6 interruptores de la App llevan `role="switch"` +
+  `aria-checked`, y el pulgar `bg-white` se mantiene claro en oscuro con
+  `.dark [role="switch"] [class*="bg-white"] { background-color: #cfe0ea }`.
+- Claro: las 7 pastillas de filtro (4 en Roles + 3 en Comunicaciones) pasaron a
+  `bg-slate-100 text-slate-600 hover:bg-slate-200` (ese hover también funciona
+  en oscuro); el chip "Gestión Pastoral" pasó a `bg-[#386458]/10`, el patrón ya
+  usado por "Canal Pastoral".
+
+**Repaso fino (mismo día, tras revisión del usuario):**
+- `bg-[#e7f6ff]` pasa a **vidrio** `#1528343b` en sus usos de chip/tarjeta
+  (KPI de Células, pills "Este mes"/"Atención" de Pastoral, tarjetas de
+  Onboarding/Confirmación, banner de reflexión). El combo campo/botón con
+  hover `#e0f0fb` (Eventos, Pastoral) conserva su superficie sólida por su
+  regla específica.
+- Las dos tarjetas de cabecera con `bg-slate-50` (Onboarding Setup y Check-In
+  Niños) pasan a `bg-white`: `bg-slate-50` es token de campos y hovers (su
+  remapeo nocturno es sólido) y como superficie de panel no aplicaba.
+- "Pilares de Configuración" (Onboarding) en `flex flex-wrap gap-2.5`, con
+  tarjetas `flex-1 min-w-[260px]`: en escritorio se acomodan en fila con
+  envolvido; en móvil, una por fila a ancho completo.
+- "Onboarding" se rotula **"Configuración" / "Configuración Inicial"** (menú,
+  cabecera móvil y barra de la pantalla).
+
+**Regla permanente** (`.clinerules` §2): todo tinte semántico nuevo necesita su
+remapeo nocturno; los gradientes-velo blancos se remapean por
+`background-image`; los interruptores llevan `role="switch"` y pulgar claro en
+oscuro.
+
+---
+
+## ✅ CORREGIDO — Paneles con degradado: fuera de estilo y brillantes en oscuro
+
+**Estado:** ✅ Aplicado el 02-oct-2026.
+
+**Síntoma:** quedaban paneles con superficie degradada
+(`bg-gradient-to-br from-[#e7f6ff] via-[#e0f0fb] …`) que no habían recibido el
+estilo de panel estándar: en claro se veían azulados (llamativos) frente al
+resto —blancos— y en oscuro **se quedaban brillantes**, porque el bloque MODO
+OSCURO remapea `background-color` por substring y un degradado es
+`background-image` (ninguna regla lo toca).
+
+**Solución aplicada** (solo el contenedor; el contenido no se tocó):
+- `App.tsx` #88 — cabecera de la pantalla de Roles → `bg-white rounded-xl p-4
+  shadow-sm border border-slate-100 flex flex-col justify-between relative
+  overflow-hidden` (mismo estilo que los paneles de estadísticas de Pastoral).
+- `App.tsx` #344 — tarjeta "Balance Consolidado" (Finanzas) → mismo estilo
+  (antes: degradado + `shadow-[0_12px_…]` + `backdrop-blur-xl` a medida).
+- `Celulas.tsx` #373 — tarjeta "Guía de Estudio Semanal" → `bg-white` en lugar
+  del degradado menta; ya conservaba el resto del estilo estándar.
+
+**Revisados y NO convertidos (a propósito):**
+- Banner verde "Próximo Culto" (`Eventos.tsx`) y tarjeta de Reflexión Pastoral
+  (`Pastoral.tsx`): son acentos oscuros con texto blanco; volver el panel
+  blanco rompería su contenido.
+- Scrims sobre foto/vídeo (`bg-gradient-to-t from-slate-900/…` en Sacramentos,
+  Pastoral, CultoVivo, Multimedia, Difusión WhatsApp e Inicio) y
+  anillos/círculos de icono: no son paneles.
+
+**Detectado en la revisión → RESUELTO el 02-oct-2026:** los tintes semánticos
+de Tailwind (`bg-rose-50/70` del aviso devocional, `bg-emerald-50` de los
+círculos de éxito de Consagración y `bg-red-50` del badge "EN VIVO") recibieron
+su remapeo nocturno a vidrio (`#ffd9de33` / `#bdeddd33`), junto con sus bordes
+`border-*-100` y sus textos semánticos. Detalle completo en la sección
+"Barrido claro/oscuro" de arriba.
+
+**Ojo (claro) → RESUELTO el 02-oct-2026:** las pastillas de filtro de Roles
+pasaron de `bg-white/70` a `bg-slate-100 text-slate-600 hover:bg-slate-200`
+(se unificaron también las 3 de Comunicaciones), así que ahora se distinguen
+sobre el panel blanco y conservan hover visible en oscuro.
+
+---
+
+## ✅ CORREGIDO — Barras de herramientas: grandes, anchas, desbordaban y con restos en inglés
+
+**Estado:** ✅ Aplicado el 02-oct-2026 en las 7 pantallas con barra: Sacramentos,
+Bitácora Pastoral, Censo Miembro, Check-In Niños, Confirmación de Registro,
+Difusión WhatsApp y Onboarding Setup.
+
+**Síntoma:** la franja superior se veía grande y **desbordaba** en móviles de
+360px: el rótulo iba en mayúsculas con `tracking-wider` y, al otro extremo
+(`justify-between`), un segundo botón de cierre (`Cerrar` / `Descartar` /
+`Volver`) **repetía la misma acción del ←**, dejando la fila con ~380px de ancho.
+
+**Solución aplicada:**
+- Una sola fila compacta: el ← de siempre (`w-9 h-9`, icono a 18px) + rótulo
+  sobrio `text-xs text-slate-500`, sin mayúsculas ni tracking y con
+  `truncate min-w-0` (nunca vuelve a desbordar).
+- Se eliminó el botón de cierre derecho, el borde inferior y el
+  `style={{ borderBottomWidth: "0px" }}` que arrastraban 4 archivos.
+- Rótulos en español y case normal: "Baptism Request Form" → "Solicitud de
+  Bautismo", "Pastoral Visit Log" → "Bitácora de Visitas", "Sesión en curso",
+  "Confirmación de registro", "Difusión en curso".
+- `src/index.css` (MODO OSCURO): nuevo
+  `.dark [class*="hover:bg-slate-200"]:hover { background-color: #24404f }`;
+  el remapeo base `!important` de `bg-slate-100` anulaba el hover en nocturno.
+
+**Regla permanente:** `.clinerules` §2 — las barras de sub-pantallas llevan una
+sola salida (el ←) y el rótulo en minúsculas de caja, con `truncate`.
+
+---
+
 ## ✅ CORREGIDO — El video de fondo (nubes) no se veía: codec incompatible
 
 **Estado:** ✅ Aplicado el 01-oct-2026.

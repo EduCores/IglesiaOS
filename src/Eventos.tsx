@@ -23,7 +23,7 @@ interface Rehearsal {
   confirmed: boolean;
 }
 
-export default function EventosScreen({ onNavigateToLive }: { onNavigateToLive?: () => void }) {
+export default function EventosScreen({ onNavigateToLive, onNavigateToCheckin }: { onNavigateToLive?: () => void; onNavigateToCheckin?: () => void }) {
   const [selectedTab, setSelectedTab] = useState<"domingo" | "repertorio">("domingo");
   const [selectedAtmosphere, setSelectedAtmosphere] = useState<"todos" | "calma" | "intima" | "contemporaneo" | "agradecimiento">("todos");
   const [playingSongId, setPlayingSongId] = useState<number | null>(null);
@@ -193,6 +193,25 @@ export default function EventosScreen({ onNavigateToLive }: { onNavigateToLive?:
               </button>
             </div>
           </div>
+        </section>
+
+        {/* Acción Rápida: Check-In Ministerio Infantil */}
+        <section className="flex items-center gap-3 rounded-xl bg-white border border-slate-100 p-4 shadow-sm">
+          <div className="w-10 h-10 rounded-full bg-[#bdeddd]/40 text-[#386458] flex items-center justify-center shrink-0">
+            <span className="material-symbols-outlined text-[20px] font-bold">child_care</span>
+          </div>
+          <div className="min-w-0">
+            <p className="text-xs font-bold text-slate-900 leading-none">Check-In Niños & Familias</p>
+            <p className="text-[10px] text-slate-400 font-semibold mt-1.5">Registra el ingreso seguro del ministerio infantil.</p>
+          </div>
+          <button
+            onClick={() => onNavigateToCheckin ? onNavigateToCheckin() : alert("Abriendo Check-In del Ministerio Infantil...")}
+            className="ml-auto shrink-0 px-3.5 py-2 rounded-full bg-[#386458] text-white text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 cursor-pointer hover:bg-[#2c4e45] transition-colors"
+            style={{ borderRadius: "4px" }}
+          >
+            <span className="material-symbols-outlined text-[15px] font-bold">how_to_reg</span>
+            <span>Abrir</span>
+          </button>
         </section>
 
         {/* Segmented Controls / Pill Tabs */}
