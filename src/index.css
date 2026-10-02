@@ -168,8 +168,8 @@ input[type="radio"] {
 
 /* Máscara: nítido hasta 154px y se funde hasta desaparecer a 420px */
 .sky-video-wrap {
-  -webkit-mask-image: linear-gradient(to bottom, black 154px, transparent 420px);
-  mask-image: linear-gradient(to bottom, black 154px, transparent 420px);
+  -webkit-mask-image: linear-gradient(to bottom, rgb(244, 250, 255) 154px, transparent 420px);
+  mask-image: linear-gradient(to bottom, rgb(244, 250, 255) 154px, transparent 420px);
 }
 
 .sky-video {

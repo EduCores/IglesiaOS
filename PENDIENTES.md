@@ -41,6 +41,70 @@ Resultado: 5.87 MB → **1.90 MB**, `Video: h264 (Main) (avc1), yuv420p, 852x480
 - [ ] Nunca usar `.mp4` codificado con `mp4v` / MPEG-4 Parte 2, `.wmv`, `.avi` o `.mov` con HEVC sin fallback.
 
 ---
+## ✅ CORREGIDO — El video de nubes tenía un **fade a negro incrustado en el archivo**
+
+**Estado:** ✅ Aplicado el 01-oct-2026.
+
+**Síntoma:** aun con codec y CSS correctos, el fondo de nubes aparecía **negro** al cargar
+la pantalla y otra vez negro cada vez que el clip se reiniciaba (el `<video>` lleva `loop`).
+Se sospechó de la máscara CSS, del `opacity` y del fondo, pero nada de eso lo explicaba.
+
+**Causa raíz (medida, no supuesta):** el **propio MP4** traía un *fade* de negro al
+principio y al final. Se midió la luminancia media por fotograma:
+
+| t (video original) | luminancia YAVG | lectura |
+|---|---|---|
+| 0,0 s | **16** | negro (fade de entrada) |
+| 0,7 s | 28 | `blackdetect` marca negro puro 0→0,7 s |
+| 2,0 s | 102 | subiendo |
+| 3,6 s | 159 | ya pleno (meseta ~160) |
+| 85,2 s | 153 | empieza a caer (fade de salida) |
+| 87,0 s | 99 | cayendo |
+| 88,3–89,0 s | 0 | `blackdetect` marca negro puro 88,33→88,97 s |
+
+> La **máscara CSS solo usa el canal alfa** (`linear-gradient(... black 154px, transparent 420px)`):
+> el color `black` vs `rgb(244, 250, 255)` produce **píxeles idénticos** (comprobado con
+> Edge headless + muestreo de píxeles). Ningún cambio de CSS puede quitar un negro que ya
+> está grabado dentro del video.
+
+**Cómo se midió (repetible):**
+```powershell
+$ff = 'C:\Program Files\Replay\resources\bin\ffmpeg.exe'
+# 1) Localizar el negro puro
+& $ff -hide_banner -i 'public\videos\nubes1.mp4' -vf 'blackdetect=d=0.05:pix_th=0.10' -an -f null NUL 2>&1 |
+  Select-String 'black_start'
+# 2) Luminancia por fotograma (dónde empieza/termina la rampa)
+& $ff -hide_banner -ss 0 -t 6 -i 'public\videos\nubes1.mp4' `
+  -vf 'signalstats,metadata=print:key=lavfi.signalstats.YAVG' -an -f null NUL 2>&1
+```
+
+**Solución aplicada — recortar el fade, no re-exportar.**
+El original (`videos\nubes1.mp4`, mpeg4 + AAC) tiene **el mismo negro**, así que re-exportarlo
+tampoco lo quitaba: había que **cortar**. Se recorta de **4,0 s a 85,0 s** (81 s de nubes
+limpias) y se re-codifica **desde el original mpeg4** (no desde el H.264 ya convertido, para
+no acumular pérdida) con la misma receta de la sección anterior:
+```powershell
+& 'C:\Program Files\Replay\resources\bin\ffmpeg.exe' -y -ss 4.0 -i 'videos\nubes1.mp4' -t 81.0 `
+  -an -c:v libx264 -profile:v main -level 3.1 -pix_fmt yuv420p -crf 26 -preset medium `
+  -movflags +faststart 'public\videos\nubes1.mp4'
+```
+Resultado: **81,0 s**, **1,58 MB** (antes 89 s / 1,81 MB), `h264 (Main) / avc1 / yuv420p / 852x480 / 30 fps`.
+Verificación: `blackdetect` **no encuentra ningún segmento negro**; en el inicio (t=0) la
+luminancia ya es **159** (antes 16) y al final (t=80,8 s) **153,6** (antes negro).
+
+**Respaldos:** el archivo anterior con fade se guardó como
+`videos\nubes1_h264_con-fade-negro.mp4` (no se despliega, `public/` sí se despliega).
+El recortado se copió también a `dist\videos\nubes1.mp4` (mismo hash).
+
+**Nota — el `loop` ya no parpadea en negro:** ahora el bucle salta de un fotograma de nubes
+al otro sin negro. Si algún día se quiere un empalme más suave, se puede añadir un
+*crossfade* al final del clip con `xfade`, pero **no** es necesario para el objetivo.
+
+**Regla para el futuro:** ante "se ve negro/oscuro", **medir el archivo primero**
+(`blackdetect` + `signalstats`) antes de tocar CSS. Un *fade* incrustado en el video no se
+arregla con estilos.
+
+---
 ## ✅ MUY IMPORTANTE — Detección automática de vista (móvil / escritorio)
 
 **Estado:** ✅ Aplicado el 01-oct-2026. Al mismo tiempo se **eliminó el panel superior**
