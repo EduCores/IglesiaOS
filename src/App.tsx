@@ -789,6 +789,14 @@ function InicioScreen({
   const [audioProgress, setAudioProgress] = useState(0);
   const progressIntervalRef = useRef<any>(null);
 
+  const capitalizeEs = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+  const todayLabel = (() => {
+    const now = new Date();
+    const weekday = new Intl.DateTimeFormat("es-ES", { weekday: "long" }).format(now);
+    const monthShort = new Intl.DateTimeFormat("es-ES", { month: "short" }).format(now).replace(".", "");
+    return `${capitalizeEs(weekday)}, ${now.getDate()} de ${capitalizeEs(monthShort)}`;
+  })();
+
   const daysData = [
     { day: "L", height: "h-14", count: "120 asistencias", barColor: "bg-[#d5e9e1]" },
     { day: "M", height: "h-20", count: "210 asistencias", barColor: "bg-[#a8d2c4]" },
@@ -838,7 +846,7 @@ function InicioScreen({
                 <span className="material-symbols-outlined text-[15px]" style={{ fontVariationSettings: "'FILL' 1" }}>folded_hands</span>
                 <span className="text-[11px] font-bold tracking-wide">Paz y Gracia</span>
               </div>
-              <span className="text-[11px] text-slate-500/80 font-medium">Domingo, 27 de Oct</span>
+              <span className="text-[11px] text-slate-500/80 font-medium">{todayLabel}</span>
             </div>
 
             <div>
