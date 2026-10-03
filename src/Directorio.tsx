@@ -294,7 +294,8 @@ export default function DirectorioScreen({
           {filteredMembers.map((m) => (
             <div 
               key={m.id}
-              className="bg-white rounded-xl p-4 shadow-sm flex flex-col gap-3.5 border border-slate-100"
+              className="bg-white rounded-xl p-4 shadow-sm flex flex-wrap gap-3.5 border border-slate-100"
+              style={{ display: "flex", flexWrap: "wrap" }}
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">

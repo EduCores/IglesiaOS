@@ -585,6 +585,19 @@ section[class*="bg-white"]:not([class*="rounded-full"]):not([class*="max-w-sm"])
   backdrop-filter: blur(5px);
 }
 
+/* Bottom-nav (barra fija inferior) — BACKDROP-FILTER EXPLÍCITO.
+   La clase `backdrop-blur-md` de Tailwind ya emite esta misma cadena de
+   variables, pero aquí queda declarada a propósito —igual que .menu-vidrio—
+   para que el desenfoque esté garantizado en AMBOS temas (claro y oscuro)
+   sin depender del scope de ninguna regla: esta no va dentro de `.dark`.
+   El `-webkit-` va primero porque Safari/iOS lo exige (dispositivo de
+   referencia). Conserva `backdrop-blur-md` en el markup: es quien define
+   `--tw-backdrop-blur` (blur de 12px). */
+.bottom-nav {
+  -webkit-backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
+  backdrop-filter: var(--tw-backdrop-blur, ) var(--tw-backdrop-brightness, ) var(--tw-backdrop-contrast, ) var(--tw-backdrop-grayscale, ) var(--tw-backdrop-hue-rotate, ) var(--tw-backdrop-invert, ) var(--tw-backdrop-opacity, ) var(--tw-backdrop-saturate, ) var(--tw-backdrop-sepia, );
+}
+
 /* Nota sobre el acento #e0f0fb: las cabeceras y tarjetas de estado que
    deben verse "sin tarjeta" —la de Censo y Nuevo Miembro, el aviso de
    confidencialidad de la Bitácora Pastoral, las tarjetas de estado de
