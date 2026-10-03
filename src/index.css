@@ -203,6 +203,42 @@ input[type="radio"] {
   mask-image: linear-gradient(to bottom, rgb(244, 250, 255) 154px, transparent 420px);
 }
 
+/* FOOTER VIDEO (fondo inferior) — espejo INVERSO del header.
+   El header se funde hacia ABAJO (nítido arriba, transparente a 420px);
+   el footer se funde hacia ARRIBA: transparente en el borde SUPERIOR
+   (fundido 30→60px) y nítido hacia abajo, donde el bottom-nav (z-30)
+   cubre la franja inferior. OJO con la dirección del gradiente: los
+   stops de `to bottom` se miden desde arriba, y con `to top` se medían
+   desde abajo — solo dejaba visible 60px en el fondo, ocultos tras el
+   nav, y el video "no aparecía". El video va DETRÁS del contenido y
+   del nav (z-0): es fondo de la app completa, nunca los tapa. Fundidos
+   de entrada/salida con la misma receta del header (keyframes solo
+   `from`, interpolan al valor base).
+   Random: el componente FooterVideo (App.tsx) elige src al azar entre
+   footer1..5.mp4 y cambia al terminar cada video (`onEnded`) con
+   fundido de salida (clase .is-fading) + fundido de entrada. */
+.footer-video-wrap {
+  -webkit-mask-image: linear-gradient(to bottom, transparent 30px, rgb(244, 250, 255) 60px);
+  mask-image: linear-gradient(to bottom, transparent 30px, rgb(244, 250, 255) 60px);
+}
+
+.footer-video {
+  opacity: 0.98;
+  animation: skyVideoFadeIn 1.6s ease-out;
+  transition: opacity 0.8s ease-out;
+}
+
+.footer-video.is-fading {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer-video {
+    animation: none;
+    transition: none;
+  }
+}
+
 .sky-video {
   opacity: 0.98;
   animation: skyVideoFadeIn 1.6s ease-out;
@@ -284,6 +320,49 @@ input[type="radio"] {
 /* Menú flotante de navegación: el mismo 30% de transparencia que en claro,
    aplicado al vidrio nocturno #152834 (70% de opacidad = #152834b3) —
    definición y razonamiento en .menu-vidrio. */
+/* --------------------------------------------------------------
+   PANELES EN CLARO — espejo del vidrio nocturno (pedido explícito
+   del usuario; valores aportados por él):
+     fondo → #ffffff12 (blanco ~7 %)
+     borde → oklch(0.97 0.01 0 / 0) (transparente).
+   Es la copia en claro de lo que `.dark [class*="bg-white"]`
+   (`#15283430`) hace en oscuro.
+   Alcance ESTRECHO a div/section de panel —nunca global—: se
+   excluyen pastillas y botones (rounded-full), modales (max-w-sm),
+   superficies con opacidad propia (bg-white/…), paneles con hover
+   propio (hover:bg-…) y piezas con fondo oscuro dedicado
+   (dark:bg-…/dark:border-…). Sin `!important` a propósito: así el
+   `!important` del bloque MODO OSCURO sigue ganando en nocturno.
+   No extender sin revisar botones, modales, switches y hovers.
+   -------------------------------------------------------------- */
+div[class*="bg-white"]:not([class*="rounded-full"]):not([class*="max-w-sm"]):not([class*="bg-white/"]):not([class*="hover:bg-"]):not([class*="dark:bg-"]):not([class*="dark:border-"]),
+section[class*="bg-white"]:not([class*="rounded-full"]):not([class*="max-w-sm"]):not([class*="bg-white/"]):not([class*="hover:bg-"]):not([class*="dark:bg-"]):not([class*="dark:border-"]) {
+  background-color: #ffffff12;
+}
+div[class*="bg-white"]:not([class*="rounded-full"]):not([class*="max-w-sm"]):not([class*="bg-white/"]):not([class*="hover:bg-"]):not([class*="dark:bg-"]):not([class*="dark:border-"])[class*="border-slate-100"],
+section[class*="bg-white"]:not([class*="rounded-full"]):not([class*="max-w-sm"]):not([class*="bg-white/"]):not([class*="hover:bg-"]):not([class*="dark:bg-"]):not([class*="dark:border-"])[class*="border-slate-100"] {
+  border-color: oklch(0.97 0.01 0 / 0);
+}
+@layer utilities {
+  /* Bordes blancos de iconos (anillos de avatar/círculos).
+     Tu regla `.border-white { border-color: #ffffff00; }` es correcta,
+     pero escrita fuera de capa Tailwind la pisa con la suya propia
+     (`.border-white{border-color:var(--color-white)}`, que viene
+     después en el bundle). Dentro de `@layer utilities` gana la
+     nuestra por orden. Solo el token exacto `border-white` en ambos
+     temas; los translúcidos (`border-white/10`, `/15`, …) se
+     conservan —incluido el spinner `border-white/30` + `border-t-white`
+     de App.tsx:1744. Sin `!important` para no interferir con el
+     bloque MODO OSCURO.
+     NOTA: Tailwind v4 minifica `#ffffff00` a `#fff0` en el bundle;
+     es el mismo color, la regla aplica igual. */
+  .border-white {
+    border-color: #ffffff00;
+  }
+}
+
+
+
 .dark .menu-vidrio { background-color: #152834b3; }
 .dark [class*="bg-slate-50"]:not([class*="hover:bg-slate-50"]) { background-color: #152834 !important; }
 .dark [class*="bg-slate-100"]:not([class*="hover:bg-slate-100"]) { background-color: #1c3140 !important; }
@@ -462,6 +541,12 @@ input[type="radio"] {
   background: linear-gradient(to bottom, rgba(11, 21, 28, 0.15), rgba(11, 21, 28, 0.55), #0b151c) !important;
 }
 .dark .sky-video { opacity: 0.55; }
+/* Velo sobre el video del footer → versión nocturna (espejo inverso:
+   transparente arriba, nocturno abajo donde nace el bottom-nav). */
+.dark .footer-video-wrap > div:last-child {
+  background: linear-gradient(to top, rgba(11, 21, 28, 0.15), rgba(11, 21, 28, 0.55), #0b151c) !important;
+}
+.dark .footer-video { opacity: 0.55; }
 @media (prefers-reduced-motion: reduce) {
   .sky-video {
     animation: none;

@@ -609,7 +609,7 @@ function ComunicacionesScreen({
           </div>
         )}
 
-        <div className="relative w-full rounded-2xl p-5 bg-white/80 backdrop-blur-md shadow-sm border border-slate-100 flex flex-col space-y-3 overflow-hidden">
+        <div className="relative w-full rounded-2xl p-5 shadow-sm flex flex-col space-y-3 overflow-hidden">
           <div className="absolute -right-6 -bottom-6 w-32 h-32 rounded-full bg-[#386458]/10 blur-2xl pointer-events-none"></div>
           <div className="flex items-center justify-between">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#386458]/10 text-[#386458]">
@@ -1047,6 +1047,61 @@ type ScreenId =
 // Fondo de video superior (nubes) — archivo local en public/videos para que funcione en dev y en GitHub Pages
 const SKY_VIDEO_SRC = `${import.meta.env.BASE_URL}videos/nubes1.mp4`;
 
+// Videos del footer (fondo inferior) — H.264 + faststart en public/videos
+// (convertidos desde videos/Footer1..5.mp4 con ffmpeg: libx264, yuv420p,
+// 854x480, crf 26, +faststart). Se alternan al azar al terminar cada uno.
+const FOOTER_VIDEO_SRCS = [1, 2, 3, 4, 5].map(
+  (n) => `${import.meta.env.BASE_URL}videos/footer${n}.mp4`
+);
+
+function pickRandomFooterSrc(except?: string): string {
+  const pool = FOOTER_VIDEO_SRCS.filter((s) => s !== except);
+  const list = pool.length > 0 ? pool : FOOTER_VIDEO_SRCS;
+  return list[Math.floor(Math.random() * list.length)];
+}
+
+// Video del footer: fondo inferior con fundidos de entrada/salida.
+// El bottom del video coincide con el top del bottom-nav (el <nav> va
+// ENCIMA con z-30, el video DEBAJO con z-0): nunca lo tapa.
+function FooterVideo() {
+  const [src, setSrc] = useState<string>(() => pickRandomFooterSrc());
+  const [fading, setFading] = useState(false);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+
+  const handleEnded = () => {
+    setFading(true);
+    window.setTimeout(() => {
+      setSrc((prev) => pickRandomFooterSrc(prev));
+      setFading(false);
+    }, 800);
+  };
+
+  return (
+    <div className="footer-video-wrap pointer-events-none fixed inset-x-0 bottom-0 z-0 h-[280px] overflow-hidden" aria-hidden="true">
+      <video
+        key={src}
+        className={`footer-video h-full w-full object-cover${fading ? " is-fading" : ""}`}
+        src={src}
+        autoPlay
+        muted
+        playsInline
+        preload="auto"
+        disablePictureInPicture
+        onEnded={handleEnded}
+        ref={(v) => {
+          videoRef.current = v;
+          if (v) {
+            v.muted = true;
+            v.play().catch(() => {});
+          }
+          return undefined;
+        }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-white/10 via-white/25 to-[#f4faff]" />
+    </div>
+  );
+}
+
 const NAV_LINKS: { screen: ScreenId; label: string; icon: string }[] = [
   { screen: "inicio", label: "Inicio", icon: "church" },
   { screen: "personas", label: "Personas", icon: "diversity_1" },
@@ -1333,11 +1388,16 @@ export default function App() {
               />
               <div className="absolute inset-0 bg-gradient-to-b from-white/10 via-white/25 to-[#f4faff]" />
             </div>
+            {/* Fondo de video inferior (footer) — fondo de la app completa,
+               igual que el video del header: va ANTES del contenido para
+               quedar DETRÁS de él (z-0), fixed al viewport, y el bottom-nav
+               va ENCIMA (fixed z-30). Nunca tapa el contenido ni el nav. */}
+            <FooterVideo />
             {/* Mobile App Screen Content */}
             <div className="bg-transparent min-h-[820px] pt-8 pb-20 flex flex-col relative">
               
               {/* Header inside phone screen */}
-              <header className="relative z-10 flex items-center justify-between px-6 py-4 border-b border-slate-200/20 bg-transparent">
+              <header className="relative z-10 flex items-center justify-between px-6 py-4 bg-transparent">
                 <button 
                   onClick={() => setIsMenuOpen((open) => !open)}
                   className="w-11 h-11 flex items-center justify-center -ml-2 text-slate-900 hover:bg-slate-200/50 rounded-full transition-all duration-150 active:scale-90"

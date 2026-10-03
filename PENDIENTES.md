@@ -4,6 +4,25 @@
 
 ---
 
+## ✅ CORREGIDO — Paneles en claro con la transparencia del modo oscuro
+
+**Estado:** ✅ Aplicado el 03-oct-2026, con los valores aportados por el usuario.
+
+**Pedido:** los paneles en oscuro se ven bien (vidrio `#15283430`); en claro
+seguían blancos sólidos. Copiar la transparencia a la versión light.
+
+**Solución aplicada** (`src/index.css`, bloque "PANELES EN CLARO", justo antes
+del MODO OSCURO):
+- Fondo `#ffffff12` + borde `oklch(0.97 0.01 0 / 0)` (valores del usuario, tal
+  cual, sin `!important` para que el `!important` nocturno siga ganando en
+  oscuro).
+- Alcance estrecho a `div`/`section` de panel (nunca global): excluye
+  `rounded-full` (pastillas, botones, pulgares de switch), `max-w-sm` (los 4
+  modales), `bg-white/…` (velos ya diseñados: hero, ritmo, devocional,
+  bottom-nav, modo fondo de Multimedia), `hover:bg-…` (no anular su feedback)
+  y `dark:bg-`/`dark:border-` (piezas con fondo oscuro dedicado, p. ej. la
+  tarjeta de escritorio `App.tsx:1815`).
+
 ## ✅ CORREGIDO — Barrido claro/oscuro: tintes, gradientes-velo y toggles en toda la App
 
 **Estado:** ✅ Aplicado el 02-oct-2026, tras auditar token por token los 18 módulos.

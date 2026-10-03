@@ -29,7 +29,10 @@ Reglas permanentes del proyecto. **Verificar y adaptar siempre** en cada cambio.
   **brillante en nocturno**. Se cambia solo el contenedor, nunca su contenido.
   Para la superficie usa `bg-white` (remapea a vidrio en nocturno); evita
   `bg-slate-50` como superficie de panel (es token de campos y hovers:
-  remapea sólido).
+  remapea sólido). En claro rige además el bloque PANELES EN CLARO
+  (`#ffffff12` + borde transparente, solo `div`/`section` de panel con
+  exclusiones); no globalizarlo a `.bg-white` (rompería botones, modales
+  y switches).
 - **Barra de herramientas de sub-pantallas** (Sacramentos, Bitácora Pastoral,
   Censo Miembro, Check-In Niños, Confirmación de Registro, Difusión WhatsApp,
   Onboarding Setup): una sola fila `← + rótulo`, `mb-3 px-5`, sin borde

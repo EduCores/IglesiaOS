@@ -136,7 +136,7 @@ export default function OnboardingSetupScreen({ onBack }: { onBack?: () => void 
 
           <div className="flex flex-wrap gap-2.5">
             {pillars.map((pillar) => (
-              <div key={pillar.id} className="flex-1 min-w-[260px] rounded-xl bg-white border border-slate-100 p-4 shadow-sm flex items-start gap-3.5 justify-between">
+              <div key={pillar.id} className="flex-1 min-w-[260px] rounded-xl bg-white border border-slate-100 p-4 shadow-sm flex flex-wrap items-start gap-3.5 justify-between">
                 <div className="flex items-start gap-3 min-w-0">
                   <div className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 shadow-sm border border-white ${
                     pillar.status === "completado" ? "bg-[#bdeddd] text-[#214e43]" : "bg-slate-50 text-slate-500"
