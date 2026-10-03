@@ -285,8 +285,8 @@ input[type="radio"] {
    aplicado al vidrio nocturno #152834 (70% de opacidad = #152834b3) —
    definición y razonamiento en .menu-vidrio. */
 .dark .menu-vidrio { background-color: #152834b3; }
-.dark [class*="bg-slate-50"] { background-color: #152834 !important; }
-.dark [class*="bg-slate-100"] { background-color: #1c3140 !important; }
+.dark [class*="bg-slate-50"]:not([class*="hover:bg-slate-50"]) { background-color: #152834 !important; }
+.dark [class*="bg-slate-100"]:not([class*="hover:bg-slate-100"]) { background-color: #1c3140 !important; }
 /* Hover claro de esos controles (p. ej. `bg-slate-100 hover:bg-slate-200`,
    con o sin sufijo `/50`): sin remapeo propio, el `!important` de la línea
    anterior anula el hover y en oscuro el botón no responde al tacto.
@@ -314,6 +314,55 @@ input[type="radio"] {
 .dark [class*="bg-[#daebf5]"] { background-color: #9bc8f02e !important; }
 .dark [class*="bg-[#aacaea]"] { background-color: #9bc8f02e !important; }
 
+/* ==============================================================
+   HOVERS Y ESTADOS INTERACTIVOS EN OSCURO
+   --------------------------------------------------------------
+   Los remapeos de abajo casan por substring, así que también
+   alcanzan a las variantes `hover:` / `group-hover:` (p. ej.
+   `hover:bg-[#386458]/5` contiene `bg-[#386458]/5`). Sin corrección,
+   el tinte se aplica SIEMPRE en oscuro y el control queda "marcado"
+   sin pasar el cursor (era el caso del menú de navegación, las
+   tarjetas de Inicio y varios botones). Por eso cada token con
+   variante hover lleva:
+     1) su regla :hover propia (este bloque, ANTES que los tokens
+        base, como indica la convención del archivo), y
+     2) una exclusión :not() en su regla base (más abajo).
+   Las :hover ganan por especificidad (0,3,0 > 0,2,0). Donde un
+   control combina base+hover del MISMO token, la excepción "combo"
+   (al final de este bloque) conserva su superficie en reposo; en
+   esos casos puntuales el hover queda neutro, como ya ocurría.
+   ============================================================== */
+.dark [class*="hover:bg-slate-50"]:hover { background-color: #152834 !important; }
+.dark [class*="hover:bg-slate-100"]:hover { background-color: #1c3140 !important; }
+.dark [class*="hover:bg-[#ccdce7]"]:hover { background-color: #1c3140 !important; }
+.dark [class*="hover:bg-[#d8e7f0]"]:hover { background-color: #1c3140 !important; }
+.dark [class*="hover:bg-[#aecdf5]"]:hover { background-color: #9bc8f02e !important; }
+.dark [class*="hover:bg-[#a1d0c1]"]:hover { background-color: #bdeddd33 !important; }
+.dark [class*="hover:bg-[#f4b6bf]"]:hover { background-color: #ffd9de33 !important; }
+.dark [class*="hover:bg-[#bddefe]"]:hover { background-color: #9bc8f02e !important; }
+.dark [class*="hover:bg-[#bdeddd]"]:hover { background-color: #bdeddd33 !important; }
+.dark [class*="hover:bg-[#ffd9de]"]:hover { background-color: #ffd9de33 !important; }
+.dark [class*="hover:bg-[#386458]/10"]:hover { background-color: #7fb89f24 !important; }
+.dark [class*="hover:bg-[#386458]/5"]:hover { background-color: #7fb89f1a !important; }
+.dark [class*="hover:text-slate-800"]:hover { color: #e2ebf0 !important; }
+.dark [class*="hover:text-slate-700"]:hover { color: #cbd8e0 !important; }
+.dark [class*="hover:text-slate-600"]:hover { color: #aebdc7 !important; }
+.dark [class*="hover:text-[#7f4e57]"]:hover { color: #eab7bf !important; }
+.dark [class*="hover:text-[#386458]"]:hover { color: #7fb89f !important; }
+.dark [class*="hover:text-[#2c4e45]"]:hover { color: #8fd3bd !important; }
+/* Iconos `group-hover:` (lápiz de edición del Formulario): se encienden
+   solo al pasar el cursor sobre su grupo. */
+.dark .group:hover [class*="group-hover:text-[#386458]"] { color: #7fb89f !important; }
+/* Combos base+hover del mismo token: conservan su superficie en reposo
+   (las reglas base los excluyen por el :not()). Van DESPUÉS de las
+   :hover a propósito: mismo 0,3,0, gana la última escrita y el reposo
+   queda intacto. */
+.dark [class*="bg-slate-50/"][class*="hover:bg-slate-50"] { background-color: #15283480 !important; }
+.dark [class*="bg-[#bdeddd]/"][class*="hover:bg-[#bdeddd]"] { background-color: #bdeddd33 !important; }
+.dark [class*="bg-[#bdeddd]"][class*="hover:bg-[#a1d0c1]"] { background-color: #bdeddd33 !important; }
+.dark [class*="bg-[#bddefe]"][class*="hover:bg-[#bddefe]"] { background-color: #9bc8f02e !important; }
+.dark [class*="bg-[#ffd9de]"][class*="hover:bg-[#ffd9de]"] { background-color: #ffd9de33 !important; }
+
 /* Chips, pastillas y avatares de acento → vidrio nocturno. Mismo
    criterio que la pastilla de Pastoral (#e0f0fb → #1528343b, el
    mismo tono translúcido que usa bg-white en oscuro). Los acentos
@@ -326,20 +375,20 @@ input[type="radio"] {
    hover claro ganara (p. ej. #ccdce7), quedaría ilegible con los
    textos de acento aclarados de más abajo. No reordenar sin releer
    este comentario. */
-.dark [class*="bg-[#ccdce7]"] { background-color: #1c3140 !important; }
-.dark [class*="bg-[#d8e7f0]"] { background-color: #1c3140 !important; }
-.dark [class*="bg-[#aecdf5]"] { background-color: #9bc8f02e !important; }
-.dark [class*="bg-[#a1d0c1]"] { background-color: #bdeddd33 !important; }
-.dark [class*="bg-[#f4b6bf]"] { background-color: #ffd9de33 !important; }
-.dark [class*="bg-[#bddefe]"] { background-color: #9bc8f02e !important; }
-.dark [class*="bg-[#e0f0fb]"] { background-color: #1528343b !important; }
+.dark [class*="bg-[#ccdce7]"]:not([class*="hover:bg-[#ccdce7]"]) { background-color: #1c3140 !important; }
+.dark [class*="bg-[#d8e7f0]"]:not([class*="hover:bg-[#d8e7f0]"]) { background-color: #1c3140 !important; }
+.dark [class*="bg-[#aecdf5]"]:not([class*="hover:bg-[#aecdf5]"]) { background-color: #9bc8f02e !important; }
+.dark [class*="bg-[#a1d0c1]"]:not([class*="hover:bg-[#a1d0c1]"]) { background-color: #bdeddd33 !important; }
+.dark [class*="bg-[#f4b6bf]"]:not([class*="hover:bg-[#f4b6bf]"]) { background-color: #ffd9de33 !important; }
+.dark [class*="bg-[#bddefe]"]:not([class*="hover:bg-[#bddefe]"]) { background-color: #9bc8f02e !important; }
+.dark [class*="bg-[#e0f0fb]"]:not([class*="hover:bg-[#e0f0fb]"]) { background-color: #1528343b !important; }
 /* Campo o botón con base #e7f6ff y hover/focus #e0f0fb: mantiene su
    superficie sólida en oscuro; si se volviera vidrio, el campo
    perdería cuerpo contra el fondo. */
 .dark [class*="bg-[#e7f6ff]"][class*="bg-[#e0f0fb]"] { background-color: #152834 !important; }
-.dark [class*="bg-[#bdeddd]"] { background-color: #bdeddd33 !important; }
+.dark [class*="bg-[#bdeddd]"]:not([class*="hover:bg-[#bdeddd]"]):not([class*="hover:bg-[#a1d0c1]"]) { background-color: #bdeddd33 !important; }
 .dark [class*="bg-[#cde5ff]"] { background-color: #cde5ff33 !important; }
-.dark [class*="bg-[#ffd9de]"] { background-color: #ffd9de33 !important; }
+.dark [class*="bg-[#ffd9de]"]:not([class*="hover:bg-[#ffd9de]"]) { background-color: #ffd9de33 !important; }
 /* Rampa menta del gráfico "Ritmo Comunitario" (Inicio): conserva la
    progresión de la serie con alfas crecientes del vidrio menta. */
 .dark [class*="bg-[#d5e9e1]"] { background-color: #bdeddd1f !important; }
@@ -348,8 +397,8 @@ input[type="radio"] {
 .dark [class*="bg-[#7fb3a1]"] { background-color: #bdeddd4d !important; }
 /* Chips verdes del acento institucional translúcido (bg-[#386458]/10 y
    /5), usados en cabeceras y badges: en claro tiñen de verde suave. */
-.dark [class*="bg-[#386458]/10"] { background-color: #7fb89f24 !important; }
-.dark [class*="bg-[#386458]/5"] { background-color: #7fb89f1a !important; }
+.dark [class*="bg-[#386458]/10"]:not([class*="hover:bg-[#386458]/10"]) { background-color: #7fb89f24 !important; }
+.dark [class*="bg-[#386458]/5"]:not([class*="hover:bg-[#386458]/5"]) { background-color: #7fb89f1a !important; }
 /* Halos decorativos azules de las cabeceras (Roles, Balance). */
 .dark [class*="bg-blue-100"] { background-color: #9bc8f01f !important; }
 /* Tintes semánticos de Tailwind (éxito y error) sin remapeo previo:
@@ -374,11 +423,12 @@ input[type="radio"] {
 .dark [class*="border-blue-100"] { border-color: #9bc8f04d !important; }
 .dark [class*="border-rose-100"] { border-color: #ffd9de4d !important; }
 
-/* Textos oscuros → claros */
+/* Textos oscuros → claros (las :hover de acento y los group-hover:
+   viven en el bloque HOVERS de arriba) */
 .dark [class*="text-slate-900"] { color: #eef4f7 !important; }
-.dark [class*="text-slate-800"] { color: #e2ebf0 !important; }
-.dark [class*="text-slate-700"] { color: #cbd8e0 !important; }
-.dark [class*="text-slate-600"] { color: #aebdc7 !important; }
+.dark [class*="text-slate-800"]:not([class*="hover:text-slate-800"]) { color: #e2ebf0 !important; }
+.dark [class*="text-slate-700"]:not([class*="hover:text-slate-700"]) { color: #cbd8e0 !important; }
+.dark [class*="text-slate-600"]:not([class*="hover:text-slate-600"]) { color: #aebdc7 !important; }
 .dark [class*="text-[#0e1d25]"] { color: #eef4f7 !important; }
 .dark [class*="text-slate-500"] { color: #8fa3b0 !important; }
 
@@ -389,7 +439,7 @@ input[type="radio"] {
 .dark [class*="text-[#294964]"] { color: #a6c8e2 !important; }
 .dark [class*="text-[#42617d]"] { color: #9fbcd4 !important; }
 .dark [class*="text-[#663a42]"] { color: #e3a8b1 !important; }
-.dark [class*="text-[#7f4e57]"] { color: #eab7bf !important; }
+.dark [class*="text-[#7f4e57]"]:not([class*="hover:text-[#7f4e57]"]) { color: #eab7bf !important; }
 .dark [class*="text-[#331018]"] { color: #f0c8cf !important; }
 .dark [class*="text-[#404845]"] { color: #cbd8e0 !important; }
 .dark [class*="text-[#001d32]"] { color: #a6c8e2 !important; }
@@ -398,10 +448,10 @@ input[type="radio"] {
 
 /* Acento institucional como texto: en oscuro el verde #386458
    necesita más brillo para mantener contraste. */
-.dark [class*="text-[#386458]"] { color: #7fb89f !important; }
+.dark [class*="text-[#386458]"]:not([class*="hover:text-[#386458]"]):not([class*="group-hover:text-[#386458]"]) { color: #7fb89f !important; }
 /* Hover de enlace verde más oscuro: en nocturno se aclara en vez de
    apagarse (misma especificidad que la regla anterior → va después). */
-.dark [class*="text-[#2c4e45]"] { color: #8fd3bd !important; }
+.dark [class*="text-[#2c4e45]"]:not([class*="hover:text-[#2c4e45]"]) { color: #8fd3bd !important; }
 /* Semánticos de estado como texto: legibles sobre el fondo nocturno. */
 .dark [class*="text-emerald-600"] { color: #6ee7b7 !important; }
 .dark [class*="text-red-600"] { color: #fca5a5 !important; }
