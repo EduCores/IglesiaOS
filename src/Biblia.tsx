@@ -10,6 +10,74 @@ import {
   type VersiculoDia,
 } from "./lib/biblia";
 
+// Combo propio (no <select> nativo): el desplegable nativo lo pinta cada
+// navegador a su manera y no respeta el tema en todos; este sí, en claro y oscuro.
+function ComboBox({
+  id,
+  abierto,
+  onToggle,
+  value,
+  placeholder,
+  options,
+  onChange,
+  disabled,
+}: {
+  id: string;
+  abierto: string | null;
+  onToggle: (id: string | null) => void;
+  value: string;
+  placeholder?: string;
+  options: { value: string; label: string }[];
+  onChange: (value: string) => void;
+  disabled?: boolean;
+}) {
+  const open = abierto === id;
+  const actual = options.find((o) => o.value === value);
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        disabled={disabled}
+        aria-expanded={open}
+        aria-label={placeholder ?? "Seleccionar"}
+        onClick={() => onToggle(open ? null : id)}
+        className="w-full px-3 py-2.5 text-xs border border-slate-200 rounded-xl focus:border-[#386458] bg-white outline-none font-semibold text-slate-800 flex items-center justify-between gap-2 disabled:opacity-40 cursor-pointer disabled:cursor-default"
+      >
+        <span className="truncate">{actual?.label ?? placeholder ?? "Seleccionar"}</span>
+        <span className={`material-symbols-outlined text-[18px] text-slate-400 shrink-0 transition-transform ${open ? "rotate-180" : ""}`}>
+          expand_more
+        </span>
+      </button>
+      {open && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => onToggle(null)} />
+          <ul className="absolute left-0 right-0 top-full mt-1 z-50 max-h-60 overflow-y-auto rounded-xl bg-white border border-slate-200 shadow-lg py-1 animate-[scaleIn_0.15s_ease-out]">
+            {options.map((o) => (
+              <li key={o.value}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    onChange(o.value);
+                    onToggle(null);
+                  }}
+                  className={`w-full text-left px-3 py-2 text-xs font-semibold transition-colors cursor-pointer flex items-center justify-between gap-2 ${
+                    o.value === value ? "bg-[#386458]/10 text-[#386458]" : "text-slate-700 hover:bg-slate-50"
+                  }`}
+                >
+                  <span className="truncate">{o.label}</span>
+                  {o.value === value && (
+                    <span className="material-symbols-outlined text-[16px] shrink-0">check</span>
+                  )}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </div>
+  );
+}
+
 // ==========================================================================
 // PANTALLA: BIBLIA RV1909 (Midvash, dominio público)
 // Lector por libro/capítulo + versículo del día. Requiere internet para el
@@ -26,6 +94,7 @@ export default function BibliaScreen({ onBack }: { onBack?: () => void }) {
   const [capitulo, setCapitulo] = useState<number>(() => leerUltimaLectura()?.capitulo ?? 3);
   const [versiculos, setVersiculos] = useState<string[]>([]);
   const [versiculoSel, setVersiculoSel] = useState<number | null>(null);
+  const [comboAbierto, setComboAbierto] = useState<string | null>(null);
   const [cargando, setCargando] = useState(false);
   const [votd, setVotd] = useState<VersiculoDia | null>(null);
 
@@ -156,56 +225,49 @@ export default function BibliaScreen({ onBack }: { onBack?: () => void }) {
         <div className="rounded-xl bg-white border border-slate-100 shadow-sm p-4 space-y-3">
           <div className="space-y-1">
             <label className="text-[11px] text-slate-500 font-bold uppercase">Libro</label>
-            <select
+            <ComboBox
+              id="libro"
+              abierto={comboAbierto}
+              onToggle={setComboAbierto}
               value={libro.slug}
-              onChange={(e) => {
-                const next = buscarLibro(e.target.value);
+              placeholder="Libro"
+              options={LIBROS_BIBLIA.map((l) => ({ value: l.slug, label: l.nombre }))}
+              onChange={(v) => {
+                const next = buscarLibro(v);
                 if (!next) return;
                 setLibroSlug(next.slug);
                 setCapitulo(1);
               }}
-              className="w-full px-3 py-2.5 text-xs border border-slate-200 rounded-xl focus:border-[#386458] focus:ring-1 focus:ring-[#386458] bg-white outline-none font-semibold text-slate-800 dark:[color-scheme:dark]"
-            >
-              {LIBROS_BIBLIA.map((l) => (
-                <option key={l.slug} value={l.slug}>
-                  {l.nombre}
-                </option>
-              ))}
-            </select>
+            />
           </div>
           <div className="grid grid-cols-2 gap-2.5">
             <div className="space-y-1">
               <label className="text-[11px] text-slate-500 font-bold uppercase">Capítulo</label>
-              <select
-                value={capitulo}
-                onChange={(e) => setCapitulo(parseInt(e.target.value, 10) || 1)}
-                className="w-full px-3 py-2.5 text-xs border border-slate-200 rounded-xl focus:border-[#386458] focus:ring-1 focus:ring-[#386458] bg-white outline-none font-semibold text-slate-800 dark:[color-scheme:dark]"
-              >
-                {Array.from({ length: libro.capitulos }, (_, i) => (
-                  <option key={i + 1} value={i + 1}>
-                    {i + 1}
-                  </option>
-                ))}
-              </select>
+            <ComboBox
+              id="capitulo"
+              abierto={comboAbierto}
+              onToggle={setComboAbierto}
+              value={String(capitulo)}
+              placeholder="Capítulo"
+              options={Array.from({ length: libro.capitulos }, (_, i) => ({ value: String(i + 1), label: String(i + 1) }))}
+              onChange={(v) => setCapitulo(parseInt(v, 10) || 1)}
+            />
             </div>
             <div className="space-y-1">
               <label className="text-[11px] text-slate-500 font-bold uppercase">Versículo</label>
-              <select
-                value={versiculoSel ?? ""}
-                onChange={(e) => {
-                  const v = parseInt(e.target.value, 10);
-                  if (!isNaN(v)) irAVersiculo(v);
-                }}
-                disabled={versiculos.length === 0}
-                className="w-full px-3 py-2.5 text-xs border border-slate-200 rounded-xl focus:border-[#386458] focus:ring-1 focus:ring-[#386458] bg-white outline-none font-semibold text-slate-800 disabled:opacity-40 dark:[color-scheme:dark]"
-              >
-                <option value="">Ir a…</option>
-                {versiculos.map((_, i) => (
-                  <option key={i + 1} value={i + 1}>
-                    {i + 1}
-                  </option>
-                ))}
-              </select>
+            <ComboBox
+              id="versiculo"
+              abierto={comboAbierto}
+              onToggle={setComboAbierto}
+              value={versiculoSel ? String(versiculoSel) : ""}
+              placeholder="Ir a…"
+              options={versiculos.map((_, i) => ({ value: String(i + 1), label: String(i + 1) }))}
+              onChange={(v) => {
+                const n = parseInt(v, 10);
+                if (!isNaN(n)) irAVersiculo(n);
+              }}
+              disabled={versiculos.length === 0}
+            />
             </div>
           </div>
           <div className="flex items-center justify-between gap-2">
