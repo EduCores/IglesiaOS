@@ -152,12 +152,12 @@ export default function EventosScreen({ onNavigateToLive, onNavigateToCheckin }:
       <div className="flex flex-col w-full px-5 space-y-5">
         
         {/* Top Announcement Banner: Próximo Culto */}
-        <section className="relative overflow-hidden rounded-xl bg-gradient-to-br from-[#507d70] via-[#386458] to-[#214e43] text-white p-5 shadow-md">
-          <div className="absolute -right-8 -bottom-10 w-36 h-36 rounded-full bg-white/10 blur-xl pointer-events-none"></div>
+        <section className="relative overflow-hidden rounded-xl bg-gradient-to-br from-[#507d70]/20 via-[#386458]/20 to-[#214e43]/20 text-slate-900 dark:text-white p-5 shadow-md">
+          <div className="absolute -right-8 -bottom-10 w-36 h-36 rounded-full bg-[#386458]/10 dark:bg-white/10 blur-xl pointer-events-none"></div>
           
           <div className="relative z-10 flex flex-col gap-2.5">
             <div className="flex items-center justify-between">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-[10px] font-bold uppercase tracking-wider">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#386458]/10 dark:bg-white/15 backdrop-blur-md text-[10px] font-bold uppercase tracking-wider">
                 <span className="material-symbols-outlined text-[14px]">calendar_today</span>
                 Domingo • 10:30 AM
               </span>
@@ -167,26 +167,26 @@ export default function EventosScreen({ onNavigateToLive, onNavigateToCheckin }:
             </div>
 
             <div className="mt-1">
-              <span className="text-[9px] text-white/80 font-bold uppercase tracking-widest leading-none">Próximo Culto de Alabanza</span>
-              <h2 className="text-base font-bold text-white tracking-tight mt-0.5">Paz & Esperanza</h2>
+              <span className="text-[9px] text-[#386458] dark:text-white/80 font-bold uppercase tracking-widest leading-none">Próximo Culto de Alabanza</span>
+              <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-tight mt-0.5">Paz & Esperanza</h2>
             </div>
 
-            <p className="text-[11px] text-white/90 leading-relaxed line-clamp-2">
+            <p className="text-[11px] text-slate-600 dark:text-white/90 leading-relaxed line-clamp-2">
               Una atmósfera serena para renovar el espíritu a través de acordes contemplativos y gratitud comunitaria.
             </p>
 
-            <div className="flex items-center justify-between pt-1 border-t border-white/10 mt-1">
+            <div className="flex items-center justify-between pt-1 border-t border-slate-900/10 dark:border-white/10 mt-1">
               <div className="flex items-center gap-2">
                 <div className="flex -space-x-1.5 overflow-hidden">
                   <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-slate-100 text-[#386458] text-[9px] font-bold shadow-sm">LR</span>
                   <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#cde5ff] text-[#294964] text-[9px] font-bold shadow-sm">MA</span>
                   <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#ffd9de] text-[#663a42] text-[9px] font-bold shadow-sm">SD</span>
                 </div>
-                <span className="text-[10px] text-white/80 font-semibold">8 músicos listos</span>
+                <span className="text-[10px] text-slate-500 dark:text-white/80 font-semibold">8 músicos listos</span>
               </div>
               <button 
                 onClick={() => onNavigateToLive ? onNavigateToLive() : alert("Mostrando la pauta del servicio...")}
-                className="inline-flex items-center gap-1 text-[10px] font-bold text-[#bdeddd] hover:text-white transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1 text-[10px] font-bold text-[#386458] dark:text-[#bdeddd] hover:text-[#214e43] dark:hover:text-white transition-colors cursor-pointer"
               >
                 <span>Ver orden</span>
                 <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
