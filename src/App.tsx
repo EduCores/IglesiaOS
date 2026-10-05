@@ -208,7 +208,7 @@ function RolesScreen() {
           ))}
         </div>
 
-        {/* Mindora Peaceful Insight & Action Panel */}
+        {/* IOS Peaceful Insight & Action Panel */}
         <div className="relative overflow-hidden rounded-lg bg-[#ffd9de]/30 p-4 flex items-center justify-between backdrop-blur-sm border border-[#ffd9de]/50 shadow-sm">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 rounded-full bg-[#ffd9de] flex items-center justify-center text-[#7f4e57] shrink-0">

@@ -374,22 +374,20 @@ Invoke-WebRequest -Method Head -Uri "https://fonts.gstatic.com/s/i/short-term/re
 # 200 = existe · 404 = no existe
 ```
 
-### ⏳ PENDIENTE — Vocabulario heredado del tema "Mindora" (bienestar) → lenguaje de iglesia
+### ✅ APLICADO — Marca heredada "Mindora" → "IOS"
 
-**Auditoría hecha el 01-oct-2026:** ya **no queda** vocabulario de meditación/consciencia
+**Estado:** ✅ Aplicado el 05-oct-2026, a pedido del usuario (nombre real: **IOS**).
+
+**Auditoría hecha el 01-oct-2026:** ya **no quedaba** vocabulario de meditación/consciencia
 en el código (búsqueda de `meditac`, `mindful`, `conscien`, `concienc`, `self_improvement`,
 `respirac`, `bienestar`, `wellness`, `mindset` → **0 resultados**). Lo único que
-sobrevive es el **nombre de marca del tema original ("Mindora")**, que aún es visible
-para el usuario en la pantalla de Sacramentos:
+sobrevivía era el **nombre de marca del tema original ("Mindora")**:
 
-- `src/Sacramentos.tsx:490` → alerta de descarga `Guía_Preparación_Bautismal_Mindora.pdf`.
-- `src/Sacramentos.tsx:508` → correo `secretaria@comunidadmindora.org`.
-- Solo internos (comentarios): `src/App.tsx:174` y `:204`, `src/Directorio.tsx:203`,
-  `src/index.css:89`.
-
-**Falta únicamente que el usuario decida el nombre real** (¿"Comunidad de Fe"? ¿nombre de
-la iglesia?) para reemplazar esas dos cadenas visibles. No se aplicó aún para no inventar
-la identidad de la iglesia.
+- `src/Sacramentos.tsx:510` → correo `secretaria@comunidadmindora.org` → `secretaria@comunidadios.org`.
+- Solo internos (comentarios): `src/App.tsx:211`, `src/Directorio.tsx:209`,
+  `src/index.css:94` → `IOS`.
+- La guía `Guía_Preparación_Bautismal_Mindora.pdf` ya no se nombra: la descarga es
+  toast interim ("Guía de preparación disponible próximamente").
 
 ---
 ## 💡 Propuestas menores (identificadas, no acordadas aún)

@@ -91,7 +91,7 @@ p, span:not(.material-symbols-outlined), label, input, textarea, select, button,
 .text-\[14px\] { font-size: 1.0rem !important; }   /* ~18.0px */
 .text-\[15px\] { font-size: 1.05rem !important; }  /* ~18.9px */
 
-/* Clases específicas del sistema de temas de Stitch / Mindora */
+/* Clases específicas del sistema de temas de Stitch / IOS */
 .text-body-sm, .font-body-sm { font-size: 0.85rem !important; }
 .text-body-md, .font-body-md { font-size: 1.0rem !important; }
 .text-body-lg, .font-body-lg { font-size: 1.15rem !important; }

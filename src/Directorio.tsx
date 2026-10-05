@@ -206,7 +206,7 @@ export default function DirectorioScreen({
             </button>
           </div>
 
-          {/* Chips Filter Bar (Mindora Pills) */}
+          {/* Chips Filter Bar (IOS Pills) */}
           <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-hide py-1 -mx-5 px-5">
             <button 
               onClick={() => setSelectedFilter("todos")}

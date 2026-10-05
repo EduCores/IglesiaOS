@@ -507,7 +507,7 @@ export default function SacramentosScreen({ onBack }: { onBack?: () => void }) {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-xs font-bold text-slate-800 leading-none truncate">¿Preguntas sobre este paso sagrado?</p>
-            <p className="text-[10px] text-slate-400 font-semibold truncate leading-none mt-1">Escríbenos a secretaria@comunidadmindora.org</p>
+            <p className="text-[10px] text-slate-400 font-semibold truncate leading-none mt-1">Escríbenos a secretaria@comunidadios.org</p>
           </div>
         </div>
 
