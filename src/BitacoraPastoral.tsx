@@ -106,7 +106,7 @@ export default function BitacoraPastoralScreen({ onBack }: { onBack?: () => void
             <div className="flex-1 min-w-0">
               <h3 className="text-xs font-bold text-slate-900 truncate">Familia Morales Benítez</h3>
               <p className="text-[11px] text-slate-400 font-semibold leading-none mt-1">Hermano David & Hna. Esther</p>
-              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1.5">
+              <div className="flex flex-col flex-wrap items-start gap-1 mt-1.5 min-w-0 max-w-full">
                 <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-slate-200/60 text-slate-700 border border-slate-300/30 max-w-full">
                   Célula Betania #4
                 </span>
