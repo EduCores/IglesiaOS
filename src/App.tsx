@@ -2616,7 +2616,7 @@ export default function App() {
                 setEditandoPerfil(false);
               }}
             />
-            <div className="relative w-full max-w-sm bg-white rounded-2xl p-6 shadow-xl animate-[scaleIn_0.15s_ease-out]">
+            <div className="relative w-full max-w-sm menu-vidrio rounded-2xl p-6 shadow-xl border border-slate-100 animate-[scaleIn_0.15s_ease-out]">
               <div className="flex items-center justify-between mb-1">
                 <h3 className="text-sm font-bold text-slate-900">{sesion ? "Mi perfil" : "Acceso"}</h3>
                 <button
