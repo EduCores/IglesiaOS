@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import {
   LIBROS_BIBLIA,
+  VERSIONES_BIBLIA,
+  atribucionDe,
   buscarLibro,
   fetchCapitulo,
   fetchVersiculoDia,
   guardarUltimaLectura,
+  guardarVersion,
   leerUltimaLectura,
+  leerVersion,
   resolverLibroPorReferencia,
   type VersiculoDia,
 } from "./lib/biblia";
@@ -90,8 +94,9 @@ export default function BibliaScreen({ onBack }: { onBack?: () => void }) {
     setTimeout(() => setSuccessToast(null), 3000);
   };
 
-  const [libroSlug, setLibroSlug] = useState<string>(() => leerUltimaLectura()?.slug ?? "john");
-  const [capitulo, setCapitulo] = useState<number>(() => leerUltimaLectura()?.capitulo ?? 3);
+  const [version, setVersion] = useState<string>(() => leerVersion());
+  const [libroSlug, setLibroSlug] = useState<string>(() => leerUltimaLectura(leerVersion())?.slug ?? "john");
+  const [capitulo, setCapitulo] = useState<number>(() => leerUltimaLectura(leerVersion())?.capitulo ?? 3);
   const [versiculos, setVersiculos] = useState<string[]>([]);
   const [versiculoSel, setVersiculoSel] = useState<number | null>(null);
   const [comboAbierto, setComboAbierto] = useState<string | null>(null);
@@ -101,13 +106,13 @@ export default function BibliaScreen({ onBack }: { onBack?: () => void }) {
   const libro = buscarLibro(libroSlug) ?? LIBROS_BIBLIA[43];
   const indiceLibro = LIBROS_BIBLIA.findIndex((l) => l.slug === libro.slug);
 
-  const cargarCapitulo = async (slug: string, cap: number) => {
+  const cargarCapitulo = async (slug: string, cap: number, ver: string) => {
     setCargando(true);
     try {
-      const data = await fetchCapitulo(slug, cap);
+      const data = await fetchCapitulo(slug, cap, ver);
       setVersiculos(data.versiculos);
       setVersiculoSel(null);
-      guardarUltimaLectura(slug, cap);
+      guardarUltimaLectura(slug, cap, ver);
     } catch {
       notify("La lectura requiere internet. Revisa tu conexión.");
     } finally {
@@ -116,17 +121,23 @@ export default function BibliaScreen({ onBack }: { onBack?: () => void }) {
   };
 
   useEffect(() => {
-    cargarCapitulo(libroSlug, capitulo);
+    cargarCapitulo(libroSlug, capitulo, version);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [libroSlug, capitulo]);
+  }, [libroSlug, capitulo, version]);
 
   useEffect(() => {
-    fetchVersiculoDia()
+    fetchVersiculoDia(version)
       .then(setVotd)
       .catch(() => {
         /* sin red: la tarjeta del día queda oculta */
       });
-  }, []);
+  }, [version]);
+
+  const cambiarVersion = (id: string) => {
+    if (id === version) return;
+    setVersion(id);
+    guardarVersion(id);
+  };
 
   const irAtras = () => {
     if (capitulo > 1) {
@@ -193,7 +204,7 @@ export default function BibliaScreen({ onBack }: { onBack?: () => void }) {
         )}
         <span className="text-xs text-slate-500 truncate min-w-0">Lectura bíblica</span>
         <span className="ml-auto px-2.5 py-0.5 rounded-full bg-[#386458]/10 text-[#386458] text-[9px] font-bold uppercase tracking-wider shrink-0">
-          RV1909
+          {version === "rvg" ? "RVG" : "RV1909"}
         </span>
       </div>
 
@@ -220,6 +231,23 @@ export default function BibliaScreen({ onBack }: { onBack?: () => void }) {
             </div>
           </div>
         )}
+
+        {/* Versión: Gómez 2010 (moderna) o Reina-Valera 1909 (original) */}
+        <div className="grid grid-cols-2 gap-2.5">
+          {VERSIONES_BIBLIA.map((v) => (
+            <button
+              key={v.id}
+              type="button"
+              onClick={() => cambiarVersion(v.id)}
+              className={`px-2 py-2.5 text-[10px] font-bold transition-all cursor-pointer active:scale-95 whitespace-nowrap ${
+                version === v.id ? "bg-[#386458] text-white shadow-sm" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              }`}
+              style={{ borderRadius: "4px" }}
+            >
+              {v.nombre}
+            </button>
+          ))}
+        </div>
 
         {/* Selectores de libro, capítulo y versículo */}
         <div className="rounded-xl bg-white border border-slate-100 shadow-sm p-4 space-y-3">
@@ -326,7 +354,7 @@ export default function BibliaScreen({ onBack }: { onBack?: () => void }) {
             </p>
           )}
           <p className="text-[10px] text-slate-400 font-medium mt-4 pt-3 border-t border-slate-100">
-            Reina-Valera 1909
+            {atribucionDe(version)}
           </p>
         </div>
       </div>

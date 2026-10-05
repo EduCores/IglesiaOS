@@ -79,15 +79,52 @@ export const LIBROS_BIBLIA: LibroBiblia[] = [
   { nombre: "Apocalipsis", slug: "revelation", capitulos: 22 },
 ];
 
-const API_BASE = "https://api.midvash.com/v1/rvr1909";
+const API_BASE = "https://api.midvash.com/v1";
+
+// Versiones disponibles. RV1909: dominio público. RVG2010: uso libre sin
+// fines de lucro, sin alterar palabras y con atribución (ver copyright).
+export interface VersionBiblia {
+  id: string;
+  nombre: string;
+  atribucion: string;
+}
+
+export const VERSIONES_BIBLIA: VersionBiblia[] = [
+  { id: "rvg", nombre: "Gómez 2010", atribucion: "Reina-Valera Gómez 2010 · Uso libre sin fines de lucro" },
+  { id: "rvr1909", nombre: "Reina-Valera 1909", atribucion: "Reina-Valera 1909 · Dominio público" },
+];
+
+const VERSION_KEY = "iglesiaos-biblia-version";
+
+export function leerVersion(): string {
+  try {
+    const v = localStorage.getItem(VERSION_KEY);
+    if (v && VERSIONES_BIBLIA.some((x) => x.id === v)) return v;
+  } catch {
+    /* almacenamiento no disponible */
+  }
+  return "rvg";
+}
+
+export function guardarVersion(id: string): void {
+  try {
+    localStorage.setItem(VERSION_KEY, id);
+  } catch {
+    /* almacenamiento no disponible: se sigue sin persistir */
+  }
+}
+
+export function atribucionDe(version: string): string {
+  return VERSIONES_BIBLIA.find((v) => v.id === version)?.atribucion ?? version;
+}
 
 export interface CapituloBiblia {
   versiculos: string[];
   referencia: string;
 }
 
-export async function fetchCapitulo(slug: string, capitulo: number): Promise<CapituloBiblia> {
-  const res = await fetch(`${API_BASE}/${slug}/${capitulo}`);
+export async function fetchCapitulo(slug: string, capitulo: number, version = "rvg"): Promise<CapituloBiblia> {
+  const res = await fetch(`${API_BASE}/${version}/${slug}/${capitulo}`);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const json = await res.json();
   const versiculos: string[] = json?.data?.verses ?? [];
@@ -109,9 +146,17 @@ function hoyISO(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-export function leerVotdCache(): VersiculoDia | null {
+function claveVotd(version: string): string {
+  return `${VOTD_KEY}-${version}`;
+}
+
+function claveUltimo(version: string): string {
+  return `${ULTIMO_KEY}-${version}`;
+}
+
+export function leerVotdCache(version = "rvg"): VersiculoDia | null {
   try {
-    const raw = localStorage.getItem(VOTD_KEY);
+    const raw = localStorage.getItem(claveVotd(version));
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     if (parsed?.fecha !== hoyISO() || !parsed?.texto) return null;
@@ -121,16 +166,16 @@ export function leerVotdCache(): VersiculoDia | null {
   }
 }
 
-export async function fetchVersiculoDia(): Promise<VersiculoDia> {
-  const cached = leerVotdCache();
+export async function fetchVersiculoDia(version = "rvg"): Promise<VersiculoDia> {
+  const cached = leerVotdCache(version);
   if (cached) return cached;
-  const res = await fetch("https://api.midvash.com/v1/votd?language=es&version=rvr1909");
+  const res = await fetch(`https://api.midvash.com/v1/votd?language=es&version=${version}`);
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const json = await res.json();
   if (!json?.text) throw new Error("empty");
   const votd = { referencia: json.reference ?? "Versículo del día", texto: json.text };
   try {
-    localStorage.setItem(VOTD_KEY, JSON.stringify({ fecha: hoyISO(), ...votd }));
+    localStorage.setItem(claveVotd(version), JSON.stringify({ fecha: hoyISO(), ...votd }));
   } catch {
     /* almacenamiento no disponible: se sigue sin caché */
   }
@@ -142,9 +187,9 @@ export interface UltimaLectura {
   capitulo: number;
 }
 
-export function leerUltimaLectura(): UltimaLectura | null {
+export function leerUltimaLectura(version = "rvg"): UltimaLectura | null {
   try {
-    const raw = localStorage.getItem(ULTIMO_KEY);
+    const raw = localStorage.getItem(claveUltimo(version));
     if (!raw) return null;
     const parsed = JSON.parse(raw);
     if (!parsed?.slug || !parsed?.capitulo) return null;
@@ -154,9 +199,9 @@ export function leerUltimaLectura(): UltimaLectura | null {
   }
 }
 
-export function guardarUltimaLectura(slug: string, capitulo: number): void {
+export function guardarUltimaLectura(slug: string, capitulo: number, version = "rvg"): void {
   try {
-    localStorage.setItem(ULTIMO_KEY, JSON.stringify({ slug, capitulo }));
+    localStorage.setItem(claveUltimo(version), JSON.stringify({ slug, capitulo }));
   } catch {
     /* almacenamiento no disponible: se sigue sin caché */
   }

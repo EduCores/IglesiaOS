@@ -26,6 +26,13 @@ ramas de render en ambas vistas (`onBack` → Pastoral); **botonera inferior:
 (Comunicaciones sigue en el menú hamburguesa); franja devocional en Inicio con
 el versículo del día → Biblia; botón "Cambiar" de Bitácora → Biblia.
 
+**Versiones (05-oct-2026, pedido por ortografía 1909):** selector Gómez 2010
+(moderna, por defecto) ↔ Reina-Valera 1909 (original) con caché y atribución por
+versión; la franja de Inicio respeta la versión elegida. RVG: uso libre sin
+fines de lucro, sin alterar palabras, con atribución. Combos propios (no
+`<select>` nativo) para que el desplegable se vea igual en todos los
+navegadores y temas.
+
 **Verificado:** `lint` + `build` en verde; capturas Edge headless (móvil 390 y
 escritorio 1280, en claro) con texto real (votd 2 Timoteo 3:16-17, Juan 3).
 

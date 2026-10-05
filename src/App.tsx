@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useTheme } from "./useTheme";
-import { fetchVersiculoDia, type VersiculoDia } from "./lib/biblia";
+import { fetchVersiculoDia, leerVersion, type VersiculoDia } from "./lib/biblia";
 import DirectorioScreen from "./Directorio";
 import CelulasScreen from "./Celulas";
 import MultimediaScreen from "./Multimedia";
@@ -920,7 +920,7 @@ function InicioScreen({
   const [votd, setVotd] = useState<VersiculoDia | null>(null);
 
   useEffect(() => {
-    fetchVersiculoDia()
+    fetchVersiculoDia(leerVersion())
       .then(setVotd)
       .catch(() => {
         /* sin red: la franja devocional queda oculta */
