@@ -136,6 +136,12 @@ export default function DirectorioScreen({
     setTimeout(() => setSuccessToast(null), 3000);
   };
 
+  // Aviso no bloqueante (reemplaza los alert de acciones aún sin integrar: wa.me, etc.)
+  const notify = (message: string) => {
+    setSuccessToast(message);
+    setTimeout(() => setSuccessToast(null), 3000);
+  };
+
   const filteredMembers = members.filter(m => {
     const matchesSearch = 
       m.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -379,7 +385,7 @@ export default function DirectorioScreen({
 
                 <div className="flex items-center gap-2">
                   <button 
-                    onClick={() => alert(`Enviando mensaje rápido de WhatsApp a "${m.name}"...`)}
+                    onClick={() => notify(`Abriendo chat de WhatsApp con "${m.name}"...`)}
                     className="h-9 px-3.5 rounded-full bg-[#bdeddd] hover:bg-[#a1d0c1] text-[#214e43] text-[11px] font-bold flex items-center gap-1.5 active:scale-95 transition-all cursor-pointer shadow-sm"
                     style={{ borderRadius: "4px" }}
                   >
@@ -389,14 +395,14 @@ export default function DirectorioScreen({
                   
                   {m.secondaryBtnIcon === "more_vert" ? (
                     <button 
-                      onClick={() => alert("Mostrando más opciones...")}
+                      onClick={() => notify("Opciones de la ficha disponibles próximamente.")}
                       className="w-9 h-9 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-center text-slate-400 active:scale-95 transition-all shadow-sm border border-slate-100"
                     >
                       <span className="material-symbols-outlined text-[18px]">more_vert</span>
                     </button>
                   ) : (
                     <button 
-                      onClick={() => alert(`Llamando o escribiendo a través de la vía secundaria...`)}
+                      onClick={() => notify(`Contactando a "${m.name}" por vía secundaria...`)}
                       className="w-9 h-9 rounded-full bg-slate-50 hover:bg-slate-100 flex items-center justify-center text-[#42617d] active:scale-95 transition-all shadow-sm border border-slate-100"
                     >
                       <span className="material-symbols-outlined text-[18px]">{m.secondaryBtnIcon}</span>

@@ -771,6 +771,47 @@ function ComunicacionesScreen({
           </div>
         </div>
 
+        {/* Modal borrador / nuevo mensaje (antes estado fantasma: se activaba sin render) */}
+        {isModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4">
+            <div
+              className="absolute inset-0 bg-slate-900/40 animate-[fadeIn_0.2s_ease-out]"
+              onClick={() => setIsDraftModalOpen(false)}
+            />
+            <div className="relative w-full max-w-sm bg-white rounded-2xl p-5 shadow-xl animate-[scaleIn_0.15s_ease-out]">
+              <div className="flex items-center justify-between mb-1">
+                <h3 className="text-sm font-bold text-slate-900">Nuevo mensaje</h3>
+                <button
+                  type="button"
+                  onClick={() => setIsDraftModalOpen(false)}
+                  aria-label="Cerrar"
+                  className="w-8 h-8 flex items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 active:scale-90 transition-all cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-[20px]">close</span>
+                </button>
+              </div>
+              <p className="text-[11px] text-slate-400 font-medium mb-3">Borrador del canal pastoral.</p>
+              <form onSubmit={handleSendBroadcast} className="space-y-3">
+                <textarea
+                  value={broadcastMessage}
+                  onChange={(e) => setBroadcastMessage(e.target.value)}
+                  placeholder="Escribe el mensaje a la comunidad..."
+                  rows={4}
+                  className="w-full px-4 py-3 rounded-xl text-xs border border-slate-200 focus:border-[#386458] focus:outline-none resize-none"
+                />
+                <button
+                  type="submit"
+                  className="w-full bg-[#386458] hover:bg-[#2c4e45] active:scale-[0.98] text-white py-3 px-6 text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                  style={{ borderRadius: "4px" }}
+                >
+                  <span className="material-symbols-outlined text-[18px]">send</span>
+                  Enviar mensaje
+                </button>
+              </form>
+            </div>
+          </div>
+        )}
+
       </div>
     </div>
   );
@@ -1595,7 +1636,7 @@ export default function App() {
                     Registrar Otra Contribución
                   </button>
                 </div>
-              ) : (
+              ) : activeScreen === "formulario" ? (
                 /* MAIN FORM FLOW SCREEN (FORMULARIO DIEZMO) */
                 <div className="flex-1 px-5 space-y-5">
                   
@@ -1863,6 +1904,12 @@ export default function App() {
                   </div>
 
                 </div>
+              ) : (
+                <InicioScreen
+                  onNavigateToForm={() => setActiveScreen("formulario")}
+                  onNavigateToHistory={() => setActiveScreen("comunicaciones")}
+                  onNavigateToModule={(screen) => setActiveScreen(screen)}
+                />
               )}
 
               {/* Bottom App-styled Navigation Bar */}
@@ -1986,6 +2033,7 @@ export default function App() {
                   <ComunicacionesScreen 
                     onNavigateToForm={() => setActiveScreen("formulario")}
                     onNavigateToInicio={() => setActiveScreen("inicio")}
+                    onNavigateToWA={() => setActiveScreen("difusion_whatsapp")}
                   />
                 </div>
               ) : activeScreen === "finanzas" ? (
@@ -2141,7 +2189,7 @@ export default function App() {
                     </button>
                   </div>
                 </div>
-              ) : (
+              ) : activeScreen === "formulario" ? (
                 /* TWO-COLUMN ADAPTIVE GRID FOR DESKTOP */
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                   
@@ -2312,6 +2360,14 @@ export default function App() {
 
                   </div>
 
+                </div>
+              ) : (
+                <div className="w-full">
+                  <InicioScreen
+                    onNavigateToForm={() => setActiveScreen("formulario")}
+                    onNavigateToHistory={() => setActiveScreen("comunicaciones")}
+                    onNavigateToModule={(screen) => setActiveScreen(screen)}
+                  />
                 </div>
               )}
 
