@@ -118,6 +118,31 @@ export function atribucionDe(version: string): string {
   return VERSIONES_BIBLIA.find((v) => v.id === version)?.atribucion ?? version;
 }
 
+// Corchetes: los [ ] marcan palabras agregadas por los traductores (no están
+// en los manuscritos). Solo se ocultan los signos al mostrar; las palabras
+// quedan intactas (la licencia RVG exige no cambiar palabras).
+const CORCH_KEY = "iglesiaos-biblia-corchetes";
+
+export function leerCorchetes(): boolean {
+  try {
+    return localStorage.getItem(CORCH_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+export function guardarCorchetes(mostrar: boolean): void {
+  try {
+    localStorage.setItem(CORCH_KEY, mostrar ? "1" : "0");
+  } catch {
+    /* almacenamiento no disponible: se sigue sin persistir */
+  }
+}
+
+export function sinCorchetes(texto: string): string {
+  return texto.replace(/[\[\]]/g, "");
+}
+
 export interface CapituloBiblia {
   versiculos: string[];
   referencia: string;

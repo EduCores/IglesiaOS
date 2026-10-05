@@ -6,11 +6,14 @@ import {
   buscarLibro,
   fetchCapitulo,
   fetchVersiculoDia,
+  guardarCorchetes,
   guardarUltimaLectura,
   guardarVersion,
+  leerCorchetes,
   leerUltimaLectura,
   leerVersion,
   resolverLibroPorReferencia,
+  sinCorchetes,
   type VersiculoDia,
 } from "./lib/biblia";
 
@@ -99,6 +102,7 @@ export default function BibliaScreen({ onBack }: { onBack?: () => void }) {
   const [capitulo, setCapitulo] = useState<number>(() => leerUltimaLectura(leerVersion())?.capitulo ?? 3);
   const [versiculos, setVersiculos] = useState<string[]>([]);
   const [versiculoSel, setVersiculoSel] = useState<number | null>(null);
+  const [mostrarCorchetes, setMostrarCorchetes] = useState<boolean>(() => leerCorchetes());
   const [comboAbierto, setComboAbierto] = useState<string | null>(null);
   const [cargando, setCargando] = useState(false);
   const [votd, setVotd] = useState<VersiculoDia | null>(null);
@@ -170,6 +174,13 @@ export default function BibliaScreen({ onBack }: { onBack?: () => void }) {
     setCapitulo(destino.capitulo);
   };
 
+  const alternarCorchetes = () => {
+    setMostrarCorchetes((prev) => {
+      guardarCorchetes(!prev);
+      return !prev;
+    });
+  };
+
   const irAVersiculo = (v: number) => {
     setVersiculoSel(v);
     requestAnimationFrame(() => {
@@ -217,7 +228,7 @@ export default function BibliaScreen({ onBack }: { onBack?: () => void }) {
               <span className="material-symbols-outlined text-[#386458] text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>auto_stories</span>
               <span className="text-[10px] font-bold text-[#386458] uppercase tracking-widest">Versículo del día</span>
             </div>
-            <p className="text-sm text-slate-800 leading-relaxed font-medium">“{votd.texto}”</p>
+            <p className="text-sm text-slate-800 leading-relaxed font-medium">“{mostrarCorchetes ? votd.texto : sinCorchetes(votd.texto)}”</p>
             <div className="flex items-center justify-between gap-2 mt-3">
               <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider truncate min-w-0">{votd.referencia}</span>
               <button
@@ -247,6 +258,26 @@ export default function BibliaScreen({ onBack }: { onBack?: () => void }) {
               {v.nombre}
             </button>
           ))}
+        </div>
+
+        <div className="flex items-center justify-between">
+          <span className="text-[11px] text-slate-500 font-bold uppercase">Corchetes [ ]</span>
+          <button
+            type="button"
+            role="switch"
+            aria-checked={mostrarCorchetes}
+            aria-label="Mostrar corchetes"
+            onClick={alternarCorchetes}
+            className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full p-0.5 transition-colors duration-300 ${
+              mostrarCorchetes ? "bg-[#386458]" : "bg-slate-200"
+            }`}
+          >
+            <span
+              className={`inline-block h-5 w-5 rounded-full bg-white shadow-sm transition-transform duration-300 ${
+                mostrarCorchetes ? "translate-x-5" : "translate-x-0"
+              }`}
+            ></span>
+          </button>
         </div>
 
         {/* Selectores de libro, capítulo y versículo */}
@@ -344,7 +375,7 @@ export default function BibliaScreen({ onBack }: { onBack?: () => void }) {
                   }`}
                 >
                   <sup className="text-[10px] font-bold text-[#386458] mr-1.5">{i + 1}</sup>
-                  {texto}
+                  {mostrarCorchetes ? texto : sinCorchetes(texto)}
                 </p>
               ))}
             </div>
