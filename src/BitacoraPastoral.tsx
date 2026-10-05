@@ -95,25 +95,27 @@ export default function BitacoraPastoralScreen({ onBack }: { onBack?: () => void
             </button>
           </div>
           
-          <div className="flex items-center gap-3.5 bg-slate-50 p-3 rounded-lg border border-slate-100 min-w-0">
-            <div className="relative w-14 h-14 rounded-full overflow-hidden shrink-0 shadow-sm border border-white bg-slate-200">
-              <img 
-                className="w-full h-full object-cover" 
-                alt="Familia Morales" 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFQXkvtw-DTfQ7Csb2fgRzB05Q2xUxbYbt7NgI10Iax21A03k8wQ0dsjWNX7uwTuMpxeihWsY5ogvYeAj-uF9WVv2oDT-whfzrNJai-4DTuGVZERjU9cw1kIjCThiCTrkU0xSIcbFba6jT-nUAOb07OWosgxcFYEfc6m6cvASlZ8c2tS1YkXIr1OgY4S9qk_w4RLUPB5-qxFv5bNgU50gqFwYETYxk9vhe9qlpuMHZ4rwHx6yFOBMi"
-              />
-            </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="text-xs font-bold text-slate-900 truncate">Familia Morales Benítez</h3>
-              <p className="text-[11px] text-slate-400 font-semibold leading-none mt-1">Hermano David & Hna. Esther</p>
-              <div className="flex flex-col flex-wrap items-start gap-1 mt-1.5 min-w-0 max-w-full">
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-slate-200/60 text-slate-700 border border-slate-300/30 max-w-full">
-                  Célula Betania #4
-                </span>
-                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider break-words">
-                  5 años en congregación
-                </span>
+          <div className="flex flex-col gap-2 bg-slate-50 p-3 rounded-lg border border-slate-100 min-w-0">
+            <div className="flex items-center gap-3.5 min-w-0">
+              <div className="relative w-14 h-14 rounded-full overflow-hidden shrink-0 shadow-sm border border-white bg-slate-200">
+                <img
+                  className="w-full h-full object-cover"
+                  alt="Familia Morales"
+                  src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFQXkvtw-DTfQ7Csb2fgRzB05Q2xUxbYbt7NgI10Iax21A03k8wQ0dsjWNX7uwTuMpxeihWsY5ogvYeAj-uF9WVv2oDT-whfzrNJai-4DTuGVZERjU9cw1kIjCThiCTrkU0xSIcbFba6jT-nUAOb07OWosgxcFYEfc6m6cvASlZ8c2tS1YkXIr1OgY4S9qk_w4RLUPB5-qxFv5bNgU50gqFwYETYxk9vhe9qlpuMHZ4rwHx6yFOBMi"
+                />
               </div>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-xs font-bold text-slate-900 truncate">Familia Morales Benítez</h3>
+                <p className="text-[11px] text-slate-400 font-semibold leading-none mt-1">Hermano David & Hna. Esther</p>
+              </div>
+            </div>
+            <div className="flex flex-col flex-wrap items-start gap-1 min-w-0 max-w-full">
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-slate-200/60 text-slate-700 border border-slate-300/30 max-w-full">
+                Célula Betania #4
+              </span>
+              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider break-words">
+                5 años en congregación
+              </span>
             </div>
           </div>
         </div>
