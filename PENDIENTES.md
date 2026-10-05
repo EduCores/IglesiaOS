@@ -4,6 +4,33 @@
 
 ---
 
+## ✅ APLICADO — Módulo Biblia RV1909 + botonera con Biblia
+
+**Estado:** ✅ Aplicado el 05-oct-2026, a pedido del usuario.
+
+**Fuente del texto:** API Midvash (`api.midvash.com`, sin key ni registro, CORS
+abierto), versión **Reina-Valera 1909 (dominio público)**. RVR1960 queda fuera a
+propósito: tiene copyright de Sociedades Bíblicas Unidas.
+
+**Archivos nuevos:** `src/lib/biblia.ts` (66 libros ES con slugs/capítulos, fetch
+de capítulo y versículo del día, caché localStorage de lo último leído y del
+votd del día) y `src/Biblia.tsx` (lector libro→capítulo con Anterior/Siguiente
+entre libros, tarjeta de versículo del día con "Leer capítulo", atribución
+"Reina-Valera 1909 · Dominio público"). Sin internet: muestra lo último leído o
+toast honesto (nunca `alert`).
+
+**Navegación** (`src/App.tsx`): `ScreenId` += `"biblia"`; grupo Pastoral del
+`menu-vidrio` += Biblia (`auto_stories`); títulos en headers móvil/escritorio;
+ramas de render en ambas vistas (`onBack` → Pastoral); **botonera inferior:
+`Más` reemplazado por `Biblia` (`auto_stories`) a la izquierda de Finanzas**
+(Comunicaciones sigue en el menú hamburguesa); franja devocional en Inicio con
+el versículo del día → Biblia; botón "Cambiar" de Bitácora → Biblia.
+
+**Verificado:** `lint` + `build` en verde; capturas Edge headless (móvil 390 y
+escritorio 1280, en claro) con texto real (votd 2 Timoteo 3:16-17, Juan 3).
+
+---
+
 ## ✅ APLICADO — Tema "Dark" por defecto en la primera visita
 
 **Estado:** ✅ Aplicado el 04-oct-2026, a pedido del usuario.

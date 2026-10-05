@@ -1,5 +1,6 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useTheme } from "./useTheme";
+import { fetchVersiculoDia, type VersiculoDia } from "./lib/biblia";
 import DirectorioScreen from "./Directorio";
 import CelulasScreen from "./Celulas";
 import MultimediaScreen from "./Multimedia";
@@ -14,6 +15,7 @@ import OnboardingSetupScreen from "./OnboardingSetup";
 import CheckinNinosScreen from "./CheckinNinos";
 import OfflineSyncScreen from "./OfflineSync";
 import ConfirmacionRegistroScreen from "./ConfirmacionRegistro";
+import BibliaScreen from "./Biblia";
 
 // ==========================================================================
 // COMPONENTE: PANTALLA 5 - ROLES DEFINIDOS (Nueva pantalla de Stitch)
@@ -901,18 +903,29 @@ function InicioScreen({
   onNavigateToForm, 
   onNavigateToHistory,
   onNavigateToModule,
-  onOpenMenu
+  onOpenMenu,
+  onNavigateToBiblia
 }: { 
   onNavigateToForm: () => void; 
   onNavigateToHistory: () => void; 
   onNavigateToModule?: (screen: "celulas" | "personas" | "roles" | "multimedia") => void;
   onOpenMenu?: () => void;
+  onNavigateToBiblia?: () => void;
 }) {
   const [isCultoActive, setIsCultoActive] = useState(false);
   const [activeDayInfo, setActiveDayInfo] = useState<string | null>(null);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [audioProgress, setAudioProgress] = useState(0);
   const progressIntervalRef = useRef<any>(null);
+  const [votd, setVotd] = useState<VersiculoDia | null>(null);
+
+  useEffect(() => {
+    fetchVersiculoDia()
+      .then(setVotd)
+      .catch(() => {
+        /* sin red: la franja devocional queda oculta */
+      });
+  }, []);
 
   const capitalizeEs = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
   const todayLabel = (() => {
@@ -1016,6 +1029,24 @@ function InicioScreen({
             </div>
           </div>
         </div>
+
+        {/* Versículo del día → Biblia */}
+        {votd && (
+          <button
+            type="button"
+            onClick={() => onNavigateToBiblia?.()}
+            className="w-full text-left rounded-[10px] bg-white/85 p-4 shadow-sm border border-slate-100 flex items-center gap-3 active:scale-[0.99] transition-all cursor-pointer"
+          >
+            <span className="w-9 h-9 rounded-full bg-[#386458]/10 text-[#386458] flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>auto_stories</span>
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-[11px] text-slate-700 font-medium leading-snug line-clamp-2">“{votd.texto}”</span>
+              <span className="block text-[10px] text-[#386458] font-bold uppercase tracking-wider mt-1">{votd.referencia} · Abrir Biblia</span>
+            </span>
+            <span className="material-symbols-outlined text-slate-300 text-[20px] shrink-0">arrow_forward</span>
+          </button>
+        )}
 
         {/* Ritmo Comunitario */}
         <div className="w-full rounded-[10px] bg-white/85 p-4 shadow-sm border border-slate-100">
@@ -1166,7 +1197,8 @@ type ScreenId =
   | "onboarding_setup"
   | "checkin_ninos"
   | "offline_sync"
-  | "confirmacion_registro";
+  | "confirmacion_registro"
+  | "biblia";
 
 // Fondo de video superior (nubes) — archivo local en public/videos para que funcione en dev y en GitHub Pages
 const SKY_VIDEO_SRC = `${import.meta.env.BASE_URL}videos/nubes1.mp4`;
@@ -1244,6 +1276,7 @@ const NAV_GROUPS: { title: string; links: { screen: ScreenId; label: string; ico
     title: "Pastoral",
     links: [
       { screen: "pastoral", label: "Pastoral", icon: "volunteer_activism" },
+      { screen: "biblia", label: "Biblia", icon: "auto_stories" },
       { screen: "bitacora_pastoral", label: "Bitácora", icon: "menu_book" },
       { screen: "sacramentos", label: "Sacramentos", icon: "water_drop" },
     ],
@@ -1606,7 +1639,7 @@ export default function App() {
                   <span className="material-symbols-outlined text-[22px]">{isMenuOpen ? "close" : "menu"}</span>
                 </button>
                 <h1 className="font-display font-bold text-base text-slate-900 tracking-tight capitalize">
-                  {activeScreen === "inicio" ? "Inicio" : activeScreen === "formulario" ? "Consagración" : activeScreen === "finanzas" ? "Finanzas" : activeScreen === "roles" ? "Roles" : activeScreen === "personas" ? "Hermanos" : activeScreen === "celulas" ? "Células" : activeScreen === "multimedia" ? "Multimedia" : activeScreen === "pastoral" ? "Pastoral" : activeScreen === "eventos" ? "Eventos" : activeScreen === "culto_vivo" ? "Culto en Vivo" : activeScreen === "censo_miembro" ? "Ficha Censo" : activeScreen === "sacramentos" ? "Sacramentos" : activeScreen === "bitacora_pastoral" ? "Bitácora" : activeScreen === "difusion_whatsapp" ? "Whatsapp" : activeScreen === "onboarding_setup" ? "Configuración" : activeScreen === "checkin_ninos" ? "Check-In Niños" : activeScreen === "offline_sync" ? "Sin Conexión" : activeScreen === "confirmacion_registro" ? "Confirmación" : "Más"}
+                  {activeScreen === "inicio" ? "Inicio" : activeScreen === "formulario" ? "Consagración" : activeScreen === "finanzas" ? "Finanzas" : activeScreen === "roles" ? "Roles" : activeScreen === "personas" ? "Hermanos" : activeScreen === "biblia" ? "Biblia" : activeScreen === "celulas" ? "Células" : activeScreen === "multimedia" ? "Multimedia" : activeScreen === "pastoral" ? "Pastoral" : activeScreen === "eventos" ? "Eventos" : activeScreen === "culto_vivo" ? "Culto en Vivo" : activeScreen === "censo_miembro" ? "Ficha Censo" : activeScreen === "sacramentos" ? "Sacramentos" : activeScreen === "bitacora_pastoral" ? "Bitácora" : activeScreen === "difusion_whatsapp" ? "Whatsapp" : activeScreen === "onboarding_setup" ? "Configuración" : activeScreen === "checkin_ninos" ? "Check-In Niños" : activeScreen === "offline_sync" ? "Sin Conexión" : activeScreen === "confirmacion_registro" ? "Confirmación" : "Más"}
                 </h1>
                 <div className="flex items-center gap-1.5">
                   <ThemeToggle theme={theme} onToggle={toggleTheme} />
@@ -1638,6 +1671,7 @@ export default function App() {
                   onNavigateToHistory={() => setActiveScreen("comunicaciones")}
                   onNavigateToModule={(screen) => setActiveScreen(screen)}
                   onOpenMenu={() => setIsMenuOpen(true)}
+                  onNavigateToBiblia={() => setActiveScreen("biblia")}
                 />
               ) : activeScreen === "comunicaciones" ? (
                 <ComunicacionesScreen 
@@ -1684,6 +1718,7 @@ export default function App() {
               ) : activeScreen === "bitacora_pastoral" ? (
                 <BitacoraPastoralScreen 
                   onBack={() => setActiveScreen("pastoral")}
+                  onNavigateToBiblia={() => setActiveScreen("biblia")}
                 />
               ) : activeScreen === "difusion_whatsapp" ? (
                 <DifusionWhatsappScreen 
@@ -1748,6 +1783,8 @@ export default function App() {
                     Registrar Otra Contribución
                   </button>
                 </div>
+              ) : activeScreen === "biblia" ? (
+                <BibliaScreen onBack={() => setActiveScreen("pastoral")} />
               ) : activeScreen === "formulario" ? (
                 /* MAIN FORM FLOW SCREEN (FORMULARIO DIEZMO) */
                 <div className="flex-1 px-5 space-y-5">
@@ -2025,6 +2062,7 @@ export default function App() {
                   onNavigateToHistory={() => setActiveScreen("comunicaciones")}
                   onNavigateToModule={(screen) => setActiveScreen(screen)}
                   onOpenMenu={() => setIsMenuOpen(true)}
+                  onNavigateToBiblia={() => setActiveScreen("biblia")}
                 />
               )}
 
@@ -2049,6 +2087,15 @@ export default function App() {
                   <span>Hermanos</span>
                 </button>
                 <button 
+                  onClick={() => setActiveScreen("biblia")}
+                  className={`flex flex-col items-center gap-1 cursor-pointer transition-colors ${
+                    activeScreen === "biblia" ? "text-[#386458] font-bold" : "hover:text-[#386458]"
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-[22px]" style={{ fontVariationSettings: activeScreen === "biblia" ? "'FILL' 1" : "" }}>auto_stories</span>
+                  <span>Biblia</span>
+                </button>
+                <button 
                   onClick={() => setActiveScreen("finanzas")}
                   className={`flex flex-col items-center gap-1 cursor-pointer transition-colors ${
                     activeScreen === "finanzas" ? "text-[#386458] font-bold" : "hover:text-[#386458]"
@@ -2065,15 +2112,6 @@ export default function App() {
                 >
                   <span className="material-symbols-outlined text-[22px]" style={{ fontVariationSettings: activeScreen === "eventos" ? "'FILL' 1" : "" }}>calendar_month</span>
                   <span>Eventos</span>
-                </button>
-                <button 
-                  onClick={() => setActiveScreen("comunicaciones")}
-                  className={`flex flex-col items-center gap-1 cursor-pointer transition-colors ${
-                    activeScreen === "comunicaciones" ? "text-[#386458] font-bold" : "hover:text-[#386458]"
-                  }`}
-                >
-                  <span className="material-symbols-outlined text-[22px]" style={{ fontVariationSettings: activeScreen === "comunicaciones" ? "'FILL' 1" : "" }}>grid_view</span>
-                  <span>Más</span>
                 </button>
               </nav>
 
@@ -2098,7 +2136,7 @@ export default function App() {
                   </button>
                   <div>
                     <h1 className="font-display font-bold text-2xl text-[#0e1d25] tracking-tight">
-                      {activeScreen === "inicio" ? "Inicio de Gestión Pastoral" : activeScreen === "formulario" ? "Consagración de Mayordomía" : activeScreen === "finanzas" ? "Consolidación Financiera" : activeScreen === "roles" ? "Definición de Roles" : activeScreen === "onboarding_setup" ? "Configuración Inicial" : activeScreen === "checkin_ninos" ? "Check-In Niños & Familias" : activeScreen === "offline_sync" ? "Sincronización Offline" : activeScreen === "confirmacion_registro" ? "Confirmación de Registro" : "Canales de Comunicaciones"}
+                      {activeScreen === "inicio" ? "Inicio de Gestión Pastoral" : activeScreen === "formulario" ? "Consagración de Mayordomía" : activeScreen === "finanzas" ? "Consolidación Financiera" : activeScreen === "roles" ? "Definición de Roles" : activeScreen === "onboarding_setup" ? "Configuración Inicial" : activeScreen === "checkin_ninos" ? "Check-In Niños & Familias" : activeScreen === "offline_sync" ? "Sincronización Offline" : activeScreen === "confirmacion_registro" ? "Confirmación de Registro" : activeScreen === "biblia" ? "Lectura Bíblica" : "Canales de Comunicaciones"}
                     </h1>
                     <p className="text-xs text-slate-400 font-medium">Plataforma Integrada para Iglesias y Congregaciones</p>
                   </div>
@@ -2143,6 +2181,7 @@ export default function App() {
                     onNavigateToHistory={() => setActiveScreen("comunicaciones")}
                     onNavigateToModule={(screen) => setActiveScreen(screen)}
                     onOpenMenu={() => setIsMenuOpen(true)}
+                    onNavigateToBiblia={() => setActiveScreen("biblia")}
                   />
                 </div>
               ) : activeScreen === "comunicaciones" ? (
@@ -2219,6 +2258,7 @@ export default function App() {
                 <div className="w-full">
                   <BitacoraPastoralScreen
                     onBack={() => setActiveScreen("pastoral")}
+                    onNavigateToBiblia={() => setActiveScreen("biblia")}
                   />
                 </div>
               ) : activeScreen === "onboarding_setup" ? (
@@ -2305,6 +2345,10 @@ export default function App() {
                       Nueva Transacción
                     </button>
                   </div>
+                </div>
+              ) : activeScreen === "biblia" ? (
+                <div className="w-full">
+                  <BibliaScreen onBack={() => setActiveScreen("pastoral")} />
                 </div>
               ) : activeScreen === "formulario" ? (
                 /* TWO-COLUMN ADAPTIVE GRID FOR DESKTOP */
@@ -2488,6 +2532,7 @@ export default function App() {
                     onNavigateToHistory={() => setActiveScreen("comunicaciones")}
                     onNavigateToModule={(screen) => setActiveScreen(screen)}
                     onOpenMenu={() => setIsMenuOpen(true)}
+                    onNavigateToBiblia={() => setActiveScreen("biblia")}
                   />
                 </div>
               )}

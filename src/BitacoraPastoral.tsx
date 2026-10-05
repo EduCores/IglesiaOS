@@ -5,7 +5,7 @@ interface PrayerPetition {
   text: string;
 }
 
-export default function BitacoraPastoralScreen({ onBack }: { onBack?: () => void }) {
+export default function BitacoraPastoralScreen({ onBack, onNavigateToBiblia }: { onBack?: () => void; onNavigateToBiblia?: () => void }) {
   const [encounterType, setEncounterType] = useState("Visita Domiciliaria");
   const [connectionPlace, setConnectionPlace] = useState("hogar");
   const [estimatedDuration, setEstimatedDuration] = useState("45 minutos");
@@ -408,7 +408,7 @@ export default function BitacoraPastoralScreen({ onBack }: { onBack?: () => void
             </div>
             <button 
               type="button"
-              onClick={() => notify("Listado de versículos disponible próximamente.")}
+              onClick={() => (onNavigateToBiblia ? onNavigateToBiblia() : notify("Listado de versículos disponible próximamente."))}
               className="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-[#386458] text-[9px] font-bold uppercase tracking-wider shrink-0 transition-colors cursor-pointer"
               style={{ borderRadius: "4px" }}
             >
