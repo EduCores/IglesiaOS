@@ -141,25 +141,28 @@ export default function CheckinNinosScreen({ onBack }: { onBack?: () => void }) 
         <div className="relative overflow-hidden rounded-xl bg-white border border-slate-100 p-5 shadow-md">
           <div className="absolute top-0 right-0 w-24 h-24 bg-[#bdeddd]/20 rounded-bl-full pointer-events-none"></div>
 
-          <div className="flex items-start gap-4 relative z-10 pb-4 border-b border-slate-100">
-            <div className="relative shrink-0">
-              <img
-                className="w-16 h-16 rounded-full object-cover border-2 border-white shadow-sm"
-                alt="Mateo Silva Contreras"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCefGinTjnqtNyK7lO18mixKN7HGimIpDS7NaTwivAbJK1FAZ2LB7YgCHzjX3rZnL28_hjbFSRZ4dTZoZ_An7QP8cz6lv295UBETdnWYC5C4-6H2S-sWvPyOSxeUTqYA_W4fkOOubQDIhMs5GFA0ZBMywdKfILps4sTE5gf1NT8IQpT1CblV-8LcjonQVfL5btcH7kJXZozrLJI4xtZWJjSp1LWYnJ11kDvYQ35umdiMwhckmsLNTH_8"
-              />
-              <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#386458] text-white rounded-full flex items-center justify-center border-2 border-white">
-                <span className="material-symbols-outlined text-[12px] font-bold">check</span>
-              </span>
+          <div className="flex flex-col gap-2 relative z-10 pb-4 border-b border-slate-100">
+            <div className="flex items-start gap-4 min-w-0">
+              <div className="relative shrink-0">
+                <img
+                  className="w-16 h-16 rounded-full object-cover border-2 border-white shadow-sm"
+                  alt="Mateo Silva Contreras"
+                  src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&q=80&w=150"
+                />
+                <span className="absolute -bottom-1 -right-1 w-5 h-5 bg-[#386458] text-white rounded-full flex items-center justify-center border-2 border-white">
+                  <span className="material-symbols-outlined text-[12px] font-bold">check</span>
+                </span>
+              </div>
+
+              <div className="flex flex-col min-w-0 flex-1">
+                <h3 className="text-sm font-bold text-slate-900 leading-tight truncate">Mateo Silva Contreras</h3>
+                <span className="text-[10px] text-slate-400 font-semibold mt-0.5">4 años • Sala Párvulos</span>
+              </div>
             </div>
 
-            <div className="flex flex-col min-w-0">
-              <h3 className="text-sm font-bold text-slate-900 leading-tight truncate">Mateo Silva Contreras</h3>
-              <span className="text-[10px] text-slate-400 font-semibold mt-0.5">4 años • Sala Párvulos</span>
-              <div className="flex items-center gap-1.5 mt-2">
-                <span className="px-2.5 py-0.5 rounded-full bg-[#bdeddd]/50 text-[#214e43] text-[9px] font-bold uppercase tracking-wider">Ingresado 10:22</span>
-                <span className="px-2.5 py-0.5 rounded-full bg-[#e7f6ff] text-[#294964] text-[9px] font-bold uppercase tracking-wider">RUT 24.118.903-6</span>
-              </div>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="px-2.5 py-0.5 rounded-full bg-[#bdeddd]/50 text-[#214e43] text-[9px] font-bold uppercase tracking-wider">Ingresado 10:22</span>
+              <span className="px-2.5 py-0.5 rounded-full bg-[#e7f6ff] text-[#294964] text-[9px] font-bold uppercase tracking-wider">RUT 24.118.903-6</span>
             </div>
           </div>
 

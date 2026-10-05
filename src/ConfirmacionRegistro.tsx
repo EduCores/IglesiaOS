@@ -59,10 +59,10 @@ export default function ConfirmacionRegistroScreen({
 
           <div className="inline-flex items-center gap-1.5 px-4 py-1 rounded-full bg-[#bdeddd] text-[#214e43] mb-3 shadow-sm">
             <span className="material-symbols-outlined text-[15px] font-bold" style={{ fontVariationSettings: "'FILL' 1" }}>verified</span>
-            <span className="text-[10px] uppercase tracking-wider font-bold">Proceso Culminado con Bendición</span>
+            <span className="text-[10px] uppercase tracking-wider font-bold">Proceso Culminado</span>
           </div>
 
-          <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2 leading-snug">¡Registro completado en paz y gracia!</h2>
+          <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-2 leading-snug">¡Registro completado!</h2>
           <p className="text-[11px] text-slate-400 font-semibold max-w-xs leading-relaxed">
             La información se ha integrado de forma segura y confidencial en el Directorio General de IglesiaOS.
           </p>

@@ -33,7 +33,7 @@ export default function OfflineSyncScreen({ onBack }: { onBack?: () => void }) {
 
       <div className="flex flex-col w-full px-5 space-y-5">
 
-        <div className="relative overflow-hidden rounded-xl bg-white border border-slate-100 p-6 shadow-md">
+        <div className="relative overflow-hidden rounded-xl bg-white border border-slate-100 p-2 shadow-md">
           <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full bg-[#bdeddd]/40 blur-2xl pointer-events-none"></div>
           <div className="absolute -bottom-10 -left-10 w-36 h-36 rounded-full bg-[#f4b6bf]/30 blur-2xl pointer-events-none"></div>
 
@@ -60,7 +60,7 @@ export default function OfflineSyncScreen({ onBack }: { onBack?: () => void }) {
               No pudimos sincronizar los datos del ministerio en este momento. Tus apuntes litúrgicos locales están totalmente a salvo.
             </p>
 
-            <div className="w-full bg-slate-50 border border-slate-100 rounded-lg p-4 flex flex-col gap-2.5 mb-6 text-left">
+            <div className="w-full bg-slate-50 border border-slate-100 rounded-lg p-2 flex flex-col gap-2.5 mb-6 text-left">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-[18px] text-slate-400 font-bold">dns</span>
@@ -114,7 +114,7 @@ export default function OfflineSyncScreen({ onBack }: { onBack?: () => void }) {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="rounded-xl bg-white border border-slate-100 p-4 shadow-sm flex flex-col">
+          <div className="rounded-xl bg-white border border-slate-100 p-2 shadow-sm flex flex-col">
             <div className="flex items-center gap-2 mb-2">
               <span className="material-symbols-outlined text-[18px] text-[#386458] font-bold">library_books</span>
               <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Borradores Locales</span>
@@ -123,7 +123,7 @@ export default function OfflineSyncScreen({ onBack }: { onBack?: () => void }) {
             <p className="text-[10px] text-slate-400 font-semibold mt-1 leading-relaxed">Se enviarán automáticamente al recuperar la señal.</p>
           </div>
 
-          <div className="rounded-xl bg-white border border-slate-100 p-4 shadow-sm flex flex-col">
+          <div className="rounded-xl bg-white border border-slate-100 p-2 shadow-sm flex flex-col">
             <div className="flex items-center gap-2 mb-2">
               <span className="material-symbols-outlined text-[18px] text-[#42617d] font-bold">sync_saved_locally</span>
               <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Última Sincronización</span>
@@ -133,7 +133,7 @@ export default function OfflineSyncScreen({ onBack }: { onBack?: () => void }) {
           </div>
         </div>
 
-        <div className="rounded-xl bg-white border border-slate-100 p-4 shadow-sm flex items-center gap-3">
+        <div className="rounded-xl bg-white border border-slate-100 p-2 shadow-sm flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-[#bdeddd]/40 text-[#386458] flex items-center justify-center shrink-0">
             <span className="material-symbols-outlined text-[18px] font-bold">support_agent</span>
           </div>
@@ -149,7 +149,7 @@ export default function OfflineSyncScreen({ onBack }: { onBack?: () => void }) {
           </button>
         </div>
 
-        <div className="rounded-xl bg-slate-50 border border-slate-100 p-4 text-center">
+        <div className="rounded-xl bg-slate-50 border border-slate-100 p-2 text-center">
           <span className="material-symbols-outlined text-[#386458] text-[20px] mb-1" style={{ fontVariationSettings: "'FILL' 1" }}>menu_book</span>
           <p className="text-[10px] text-slate-500 font-semibold italic leading-relaxed mt-1">
             «En paz me acostaré y asimismo dormiré, porque solo tú, Jehová, me haces vivir confiado.» — Salmo 4:8

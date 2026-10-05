@@ -146,9 +146,9 @@ function RolesScreen() {
           {filteredRoles.map((role) => (
             <div 
               key={role.id}
-              className="group relative rounded-[10px] bg-white border border-slate-100 p-4 shadow-sm transition-all hover:shadow-md"
+              className="group relative rounded-[10px] bg-white border border-slate-100 p-2 shadow-sm transition-all hover:shadow-md"
             >
-              <div className="flex items-start justify-between gap-3">
+              <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="flex items-start space-x-3.5">
                   <div className={`w-11 h-11 rounded-full ${role.bgIconColor} flex items-center justify-center ${role.iconColor} shadow-inner shrink-0 mt-0.5`}>
                     <span className="material-symbols-outlined text-[22px]">{role.icon}</span>
@@ -161,34 +161,35 @@ function RolesScreen() {
                       </span>
                     </div>
                     <p className="text-[10px] text-slate-400 mt-1 leading-normal font-medium">{role.desc}</p>
-                    
-                    {role.checked ? (
-                      <div className="flex items-center space-x-1 mt-2 text-[#386458]">
-                        <span className="material-symbols-outlined text-[15px] font-bold">check_circle</span>
-                        <span className="text-[10px] font-bold uppercase tracking-wider">{role.detailText}</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center space-x-1 mt-2 text-slate-400">
-                        <span className="material-symbols-outlined text-[15px] font-bold">pause_circle</span>
-                        <span className="text-[10px] font-bold uppercase tracking-wider">Rol Suspendido</span>
-                      </div>
-                    )}
                   </div>
                 </div>
 
-                {/* Organic Mindora Switch Toggle */}
-                <button 
-                  onClick={() => handleToggleSwitch(role.id)}
-                  aria-checked={role.checked} 
-                  className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full p-0.5 transition-colors duration-300 ${
-                    role.checked ? "bg-[#386458]" : "bg-slate-200"
-                  }`} 
-                  role="switch"
-                >
-                  <span className={`inline-block h-5 w-5 rounded-full bg-white shadow-sm transition-transform duration-300 ${
-                    role.checked ? "translate-x-5" : "translate-x-0"
-                  }`}></span>
-                </button>
+                {/* Fila estado + switch: check_circle + texto a la izquierda, switch a la derecha */}
+                <div className="flex w-full flex-wrap items-center justify-between gap-2">
+                  {role.checked ? (
+                    <div className="flex min-w-0 flex-1 items-center space-x-1 text-[#386458]">
+                      <span className="material-symbols-outlined text-[15px] font-bold shrink-0">check_circle</span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider truncate">{role.detailText}</span>
+                    </div>
+                  ) : (
+                    <div className="flex min-w-0 flex-1 items-center space-x-1 text-slate-400">
+                      <span className="material-symbols-outlined text-[15px] font-bold shrink-0">pause_circle</span>
+                      <span className="text-[10px] font-bold uppercase tracking-wider truncate">Rol Suspendido</span>
+                    </div>
+                  )}
+                  <button
+                    onClick={() => handleToggleSwitch(role.id)}
+                    aria-checked={role.checked}
+                    className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer items-center rounded-full p-0.5 transition-colors duration-300 ${
+                      role.checked ? "bg-[#386458]" : "bg-slate-200"
+                    }`}
+                    role="switch"
+                  >
+                    <span className={`inline-block h-5 w-5 rounded-full bg-white shadow-sm transition-transform duration-300 ${
+                      role.checked ? "translate-x-5" : "translate-x-0"
+                    }`}></span>
+                  </button>
+                </div>
               </div>
 
               <div className="flex items-center justify-between pt-3 mt-3.5 border-t border-slate-100">
@@ -1104,26 +1105,61 @@ function FooterVideo() {
   );
 }
 
-const NAV_LINKS: { screen: ScreenId; label: string; icon: string }[] = [
-  { screen: "inicio", label: "Inicio", icon: "church" },
-  { screen: "personas", label: "Personas", icon: "diversity_1" },
-  { screen: "censo_miembro", label: "Ficha Censo", icon: "how_to_reg" },
-  { screen: "roles", label: "Roles", icon: "admin_panel_settings" },
-  { screen: "celulas", label: "Células", icon: "groups_3" },
-  { screen: "pastoral", label: "Pastoral", icon: "volunteer_activism" },
-  { screen: "bitacora_pastoral", label: "Bitácora", icon: "menu_book" },
-  { screen: "sacramentos", label: "Sacramentos", icon: "water_drop" },
-  { screen: "eventos", label: "Eventos", icon: "calendar_month" },
-  { screen: "culto_vivo", label: "Culto en Vivo", icon: "live_tv" },
-  { screen: "multimedia", label: "Multimedia", icon: "podcasts" },
-  { screen: "finanzas", label: "Finanzas", icon: "account_balance_wallet" },
-  { screen: "formulario", label: "Form. Diezmo", icon: "payments" },
-  { screen: "comunicaciones", label: "Comunicaciones", icon: "grid_view" },
-  { screen: "difusion_whatsapp", label: "Difusión WA", icon: "send" },
-  { screen: "onboarding_setup", label: "Configuración", icon: "rocket_launch" },
-  { screen: "checkin_ninos", label: "Check-In Niños", icon: "child_care" },
-  { screen: "confirmacion_registro", label: "Confirmación", icon: "task_alt" },
-  { screen: "offline_sync", label: "Sin Conexión", icon: "cloud_off" },
+const NAV_GROUPS: { title: string; links: { screen: ScreenId; label: string; icon: string }[] }[] = [
+  {
+    title: "Principal",
+    links: [{ screen: "inicio", label: "Inicio", icon: "church" }],
+  },
+  {
+    title: "Comunidad",
+    links: [
+      { screen: "personas", label: "Hermanos", icon: "diversity_1" },
+      { screen: "censo_miembro", label: "Ficha Censo", icon: "how_to_reg" },
+      { screen: "celulas", label: "Células", icon: "groups_3" },
+      { screen: "checkin_ninos", label: "Check-In Niños", icon: "child_care" },
+    ],
+  },
+  {
+    title: "Pastoral",
+    links: [
+      { screen: "pastoral", label: "Pastoral", icon: "volunteer_activism" },
+      { screen: "bitacora_pastoral", label: "Bitácora", icon: "menu_book" },
+      { screen: "sacramentos", label: "Sacramentos", icon: "water_drop" },
+    ],
+  },
+  {
+    title: "Culto y Eventos",
+    links: [
+      { screen: "culto_vivo", label: "Culto en Vivo", icon: "live_tv" },
+      { screen: "eventos", label: "Eventos", icon: "calendar_month" },
+      { screen: "multimedia", label: "Multimedia", icon: "podcasts" },
+    ],
+  },
+  {
+    title: "Comunicación",
+    links: [
+      { screen: "comunicaciones", label: "Comunicaciones", icon: "grid_view" },
+      { screen: "difusion_whatsapp", label: "Difusión WA", icon: "send" },
+    ],
+  },
+  {
+    title: "Administración",
+    links: [
+      { screen: "finanzas", label: "Finanzas", icon: "account_balance_wallet" },
+      { screen: "formulario", label: "Form. Diezmo", icon: "payments" },
+      { screen: "roles", label: "Roles", icon: "admin_panel_settings" },
+      { screen: "onboarding_setup", label: "Configuración", icon: "rocket_launch" },
+    ],
+  },
+  {
+    // Abajo del panel a propósito: pendientes de borrar (Confirmación es
+    // pantalla de éxito y Sin Conexión es estado, no módulos).
+    title: "Sistema",
+    links: [
+      { screen: "confirmacion_registro", label: "Confirmación", icon: "task_alt" },
+      { screen: "offline_sync", label: "Sin Conexión", icon: "cloud_off" },
+    ],
+  },
 ];
 
 // ==========================================================================
@@ -1151,32 +1187,42 @@ function NavMenuPanel({
       {/* Menú flotante en vidrio neutro: 30% de transparencia (blanco al 70%)
           + blur(5px) en claro; el mismo 30% sobre #152834 en oscuro — clase
           .menu-vidrio documentada en src/index.css. Sin cabecera verde (se
-          cierra tocando fuera o al elegir una sección) y con largo
-          automático: el panel crece según el nº de secciones, sin tope de
-          alto ni scroll interno. */}
+          cierra tocando fuera o al elegir una sección). Agrupado por
+          secciones en el mismo panel, con scroll interno solo si el alto
+          supera la ventana (móviles pequeños); "Sistema" queda abajo para
+          borrar después. */}
       <nav className={`menu-vidrio absolute z-50 rounded-[8px] shadow-[0_25px_60px_-15px_rgba(15,23,42,0.35)] border border-slate-100 overflow-hidden animate-[scaleIn_0.15s_ease-out] ${positionClass}`}>
-        <div className="grid grid-cols-2 gap-1 p-2">
-          {NAV_LINKS.map((link) => (
-            <button
-              key={link.screen}
-              onClick={() => {
-                onSelect(link.screen);
-                onClose();
-              }}
-              className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left transition-all cursor-pointer ${
-                activeScreen === link.screen
-                  ? "bg-[#386458] text-white shadow-sm"
-                  : "text-slate-700 hover:bg-[#386458]/5 hover:text-[#386458]"
-              }`}
-            >
-              <span
-                className="material-symbols-outlined text-[20px] shrink-0"
-                style={{ fontVariationSettings: activeScreen === link.screen ? "'FILL' 1" : "" }}
-              >
-                {link.icon}
-              </span>
-              <span className="text-xs font-bold truncate">{link.label}</span>
-            </button>
+        <div className="max-h-[calc(100dvh-140px)] overflow-y-auto p-2 space-y-3">
+          {NAV_GROUPS.map((group) => (
+            <div key={group.title}>
+              <p className="px-3 pb-1 text-[10px] uppercase tracking-wider font-bold text-slate-400">
+                {group.title}
+              </p>
+              <div className="grid grid-cols-2 gap-1">
+                {group.links.map((link) => (
+                  <button
+                    key={link.screen}
+                    onClick={() => {
+                      onSelect(link.screen);
+                      onClose();
+                    }}
+                    className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-left transition-all cursor-pointer ${
+                      activeScreen === link.screen
+                        ? "bg-[#386458] text-white shadow-sm"
+                        : "text-slate-700 hover:bg-[#386458]/5 hover:text-[#386458]"
+                    }`}
+                  >
+                    <span
+                      className="material-symbols-outlined text-[20px] shrink-0"
+                      style={{ fontVariationSettings: activeScreen === link.screen ? "'FILL' 1" : "" }}
+                    >
+                      {link.icon}
+                    </span>
+                    <span className="text-xs font-bold truncate">{link.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
       </nav>
@@ -1409,7 +1455,7 @@ export default function App() {
                   <span className="material-symbols-outlined text-[22px]">{isMenuOpen ? "close" : "menu"}</span>
                 </button>
                 <h1 className="font-display font-bold text-base text-slate-900 tracking-tight capitalize">
-                  {activeScreen === "inicio" ? "Inicio" : activeScreen === "formulario" ? "Consagración" : activeScreen === "finanzas" ? "Finanzas" : activeScreen === "roles" ? "Roles" : activeScreen === "personas" ? "Personas" : activeScreen === "celulas" ? "Células" : activeScreen === "multimedia" ? "Multimedia" : activeScreen === "pastoral" ? "Pastoral" : activeScreen === "eventos" ? "Eventos" : activeScreen === "culto_vivo" ? "Culto en Vivo" : activeScreen === "censo_miembro" ? "Ficha Censo" : activeScreen === "sacramentos" ? "Sacramentos" : activeScreen === "bitacora_pastoral" ? "Bitácora" : activeScreen === "difusion_whatsapp" ? "Whatsapp" : activeScreen === "onboarding_setup" ? "Configuración" : activeScreen === "checkin_ninos" ? "Check-In Niños" : activeScreen === "offline_sync" ? "Sin Conexión" : activeScreen === "confirmacion_registro" ? "Confirmación" : "Más"}
+                  {activeScreen === "inicio" ? "Inicio" : activeScreen === "formulario" ? "Consagración" : activeScreen === "finanzas" ? "Finanzas" : activeScreen === "roles" ? "Roles" : activeScreen === "personas" ? "Hermanos" : activeScreen === "celulas" ? "Células" : activeScreen === "multimedia" ? "Multimedia" : activeScreen === "pastoral" ? "Pastoral" : activeScreen === "eventos" ? "Eventos" : activeScreen === "culto_vivo" ? "Culto en Vivo" : activeScreen === "censo_miembro" ? "Ficha Censo" : activeScreen === "sacramentos" ? "Sacramentos" : activeScreen === "bitacora_pastoral" ? "Bitácora" : activeScreen === "difusion_whatsapp" ? "Whatsapp" : activeScreen === "onboarding_setup" ? "Configuración" : activeScreen === "checkin_ninos" ? "Check-In Niños" : activeScreen === "offline_sync" ? "Sin Conexión" : activeScreen === "confirmacion_registro" ? "Confirmación" : "Más"}
                 </h1>
                 <div className="flex items-center gap-1.5">
                   <ThemeToggle theme={theme} onToggle={toggleTheme} />

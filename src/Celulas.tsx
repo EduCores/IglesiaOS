@@ -285,7 +285,7 @@ export default function CelulasScreen() {
           {filteredCells.map((cell) => (
             <div 
               key={cell.id}
-              className="bg-white rounded-lg p-4 shadow-sm space-y-3.5 border border-slate-100"
+              className="bg-white rounded-lg p-2 shadow-sm space-y-3.5 border border-slate-100"
             >
               <div className="flex items-start justify-between">
                 <div className="space-y-1">
