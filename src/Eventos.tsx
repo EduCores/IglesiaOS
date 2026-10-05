@@ -195,23 +195,26 @@ export default function EventosScreen({ onNavigateToLive, onNavigateToCheckin }:
           </div>
         </section>
 
-        {/* Acción Rápida: Check-In Ministerio Infantil */}
-        <section className="flex items-center gap-3 rounded-xl bg-white border border-slate-100 p-4 shadow-sm">
-          <div className="w-10 h-10 rounded-full bg-[#bdeddd]/40 text-[#386458] flex items-center justify-center shrink-0">
-            <span className="material-symbols-outlined text-[20px] font-bold">child_care</span>
+        {/* Acción Rápida: Check-In Ministerio Infantil — patrón Bitácora:
+            fila 1 avatar + título (+ Abrir), fila 2 detalle debajo fuera de la fila */}
+        <section className="flex flex-col gap-2 rounded-xl bg-white border border-slate-100 p-4 shadow-sm">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-10 h-10 rounded-full bg-[#bdeddd]/40 text-[#386458] flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined text-[20px] font-bold">child_care</span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-xs font-bold text-slate-900 leading-none truncate">Check-In Niños & Familias</p>
+            </div>
+            <button
+              onClick={() => onNavigateToCheckin ? onNavigateToCheckin() : alert("Abriendo Check-In del Ministerio Infantil...")}
+              className="ml-auto shrink-0 px-3.5 py-2 rounded-full bg-[#386458] text-white text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 cursor-pointer hover:bg-[#2c4e45] transition-colors"
+              style={{ borderRadius: "4px" }}
+            >
+              <span className="material-symbols-outlined text-[15px] font-bold">how_to_reg</span>
+              <span>Abrir</span>
+            </button>
           </div>
-          <div className="min-w-0">
-            <p className="text-xs font-bold text-slate-900 leading-none">Check-In Niños & Familias</p>
-            <p className="text-[10px] text-slate-400 font-semibold mt-1.5">Registra el ingreso seguro del ministerio infantil.</p>
-          </div>
-          <button
-            onClick={() => onNavigateToCheckin ? onNavigateToCheckin() : alert("Abriendo Check-In del Ministerio Infantil...")}
-            className="ml-auto shrink-0 px-3.5 py-2 rounded-full bg-[#386458] text-white text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5 cursor-pointer hover:bg-[#2c4e45] transition-colors"
-            style={{ borderRadius: "4px" }}
-          >
-            <span className="material-symbols-outlined text-[15px] font-bold">how_to_reg</span>
-            <span>Abrir</span>
-          </button>
+          <p className="text-[10px] text-slate-400 font-semibold leading-relaxed">Registra el ingreso seguro del ministerio infantil.</p>
         </section>
 
         {/* Segmented Controls / Pill Tabs */}
@@ -315,7 +318,11 @@ export default function EventosScreen({ onNavigateToLive, onNavigateToCheckin }:
                 key={song.id}
                 className="rounded-xl bg-white p-4 flex flex-col gap-3.5 shadow-sm border border-slate-100 hover:shadow-md transition-all"
               >
-                <div className="flex items-start gap-3.5">
+                {/* Criterio del bloque canción — patrón Bitácora adaptado:
+                    fila 1 avatar(play) + nombres (título + artista),
+                    fila 2 metadata (tono/BPM/compás) debajo fuera de la fila
+                    para no apretar en 360px */}
+                <div className="flex items-center gap-3.5 min-w-0">
                   <button 
                     onClick={() => handleTogglePlay(song.id)}
                     className={`shrink-0 w-11 h-11 rounded-full flex items-center justify-center transition-all shadow-sm active:scale-95 cursor-pointer ${
@@ -330,26 +337,26 @@ export default function EventosScreen({ onNavigateToLive, onNavigateToCheckin }:
                   </button>
 
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-2">
-                      <h4 className="text-xs font-bold text-slate-900 truncate leading-none">{song.title}</h4>
-                      <span className="text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-full">
+                    <div className="flex items-center justify-between gap-2 min-w-0">
+                      <h4 className="text-xs font-bold text-slate-900 truncate leading-none min-w-0">{song.title}</h4>
+                      <span className="text-[10px] font-bold text-slate-400 bg-slate-50 px-2 py-0.5 rounded-full shrink-0">
                         {song.numberTag}
                       </span>
                     </div>
                     <p className="text-[10px] text-slate-400 mt-1 font-semibold truncate leading-none">{song.artist}</p>
-                    
-                    <div className="flex items-center gap-2 mt-2 flex-wrap">
-                      <span className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider text-[#386458] bg-[#bdeddd]/60 px-2 py-0.5 rounded-full">
-                        <span className="material-symbols-outlined text-[13px] font-bold">music_note</span>
-                        Tono: {song.key}
-                      </span>
-                      <span className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider text-[#42617d] bg-[#cde5ff]/60 px-2 py-0.5 rounded-full">
-                        <span className="material-symbols-outlined text-[13px] font-bold">file_map_stack</span>
-                        {song.bpm} BPM
-                      </span>
-                      <span className="text-[10px] font-bold text-slate-400">{song.timeSignature}</span>
-                    </div>
                   </div>
+                </div>
+
+                <div className="flex items-center gap-2 flex-wrap min-w-0">
+                  <span className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider text-[#386458] bg-[#bdeddd]/60 px-2 py-0.5 rounded-full">
+                    <span className="material-symbols-outlined text-[13px] font-bold">music_note</span>
+                    Tono: {song.key}
+                  </span>
+                  <span className="inline-flex items-center gap-1 text-[9px] font-bold uppercase tracking-wider text-[#42617d] bg-[#cde5ff]/60 px-2 py-0.5 rounded-full">
+                    <span className="material-symbols-outlined text-[13px] font-bold">file_map_stack</span>
+                    {song.bpm} BPM
+                  </span>
+                  <span className="text-[10px] font-bold text-slate-400">{song.timeSignature}</span>
                 </div>
 
                 <div className="flex items-center justify-between pt-1 border-t border-slate-50 px-2 py-1.5 bg-slate-50/50 rounded-lg">
@@ -389,9 +396,9 @@ export default function EventosScreen({ onNavigateToLive, onNavigateToCheckin }:
 
           <div className="grid grid-cols-1 gap-3">
             {rehearsals.map((reh) => (
-              <div 
+              <div
                 key={reh.id}
-                className="flex items-center justify-between p-4 rounded-xl bg-white shadow-sm border border-slate-100"
+                className="flex flex-col gap-2 p-4 rounded-xl bg-white shadow-sm border border-slate-100"
               >
                 <div className="flex items-center gap-3.5 min-w-0">
                   <div className={`w-12 h-12 rounded-lg flex flex-col items-center justify-center shrink-0 border shadow-inner ${
@@ -401,32 +408,33 @@ export default function EventosScreen({ onNavigateToLive, onNavigateToCheckin }:
                     <span className="text-base font-bold leading-none mt-1">{reh.dayNumber}</span>
                   </div>
 
-                  <div className="min-w-0">
+                  <div className="flex-1 min-w-0">
                     <h4 className="text-xs font-bold text-slate-900 truncate leading-none">{reh.title}</h4>
-                    <div className="flex items-center gap-2 mt-1.5 text-slate-400 text-[10px] font-bold uppercase tracking-wider">
-                      <span className="flex items-center gap-1 leading-none">
-                        <span className="material-symbols-outlined text-[14px] text-[#386458] font-bold">schedule</span>
-                        {reh.time}
-                      </span>
-                      <span>•</span>
-                      <span className="flex items-center gap-1 leading-none truncate max-w-[150px]">
-                        <span className="material-symbols-outlined text-[14px] text-[#386458] font-bold">{reh.locationIcon}</span>
-                        {reh.location}
-                      </span>
-                    </div>
                   </div>
+
+                  <button
+                    onClick={() => handleConfirmRehearsal(reh.id)}
+                    className={`shrink-0 ml-2 px-3 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                      reh.confirmed
+                        ? "bg-[#bdeddd] text-[#214e43] border border-transparent shadow-inner"
+                        : "bg-slate-100 text-slate-500 hover:bg-[#386458] hover:text-white border border-slate-200 shadow-sm"
+                    }`}
+                  >
+                    {reh.confirmed ? "Confirmado!" : "Confirmar"}
+                  </button>
                 </div>
 
-                <button 
-                  onClick={() => handleConfirmRehearsal(reh.id)}
-                  className={`shrink-0 ml-2 px-3 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-wider transition-all cursor-pointer ${
-                    reh.confirmed 
-                      ? "bg-[#bdeddd] text-[#214e43] border border-transparent shadow-inner" 
-                      : "bg-slate-100 text-slate-500 hover:bg-[#386458] hover:text-white border border-slate-200 shadow-sm"
-                  }`}
-                >
-                  {reh.confirmed ? "Confirmado!" : "Confirmar"}
-                </button>
+                <div className="flex items-center gap-2 text-slate-400 text-[10px] font-bold uppercase tracking-wider flex-wrap min-w-0">
+                  <span className="flex items-center gap-1 leading-none">
+                    <span className="material-symbols-outlined text-[14px] text-[#386458] font-bold">schedule</span>
+                    {reh.time}
+                  </span>
+                  <span>•</span>
+                  <span className="flex items-center gap-1 leading-none min-w-0">
+                    <span className="material-symbols-outlined text-[14px] text-[#386458] font-bold shrink-0">{reh.locationIcon}</span>
+                    <span className="truncate">{reh.location}</span>
+                  </span>
+                </div>
               </div>
             ))}
           </div>

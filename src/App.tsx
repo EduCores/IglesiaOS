@@ -722,7 +722,7 @@ function ComunicacionesScreen({
             <div className="my-3.5 p-3 rounded-xl bg-slate-50/80 flex items-center justify-between border border-slate-100">
               <div className="flex flex-col">
                 <span className="text-[9px] text-slate-400 font-bold uppercase">Suscriptores activos</span>
-                <span className="text-sm font-bold text-slate-800">3,890 mentes</span>
+                <span className="text-sm font-bold text-slate-800">3.890 Hermanos</span>
               </div>
             </div>
 
@@ -750,22 +750,21 @@ function ComunicacionesScreen({
           </div>
           <div className="rounded-2xl bg-white border border-slate-100 p-4 shadow-sm space-y-3">
             {historyItems.map((item, idx) => (
-              <div key={idx} className="p-3 rounded-xl bg-slate-50/50 hover:bg-slate-50 flex items-center justify-between gap-3 border border-slate-100/50">
+              <div key={idx} className="p-2 rounded-xl bg-slate-50/50 hover:bg-slate-50 flex flex-col gap-1.5 border border-slate-100/50">
+                {/* Criterio del bloque: fila 1 avatar + título + badge, fila 2 canal fuera de la fila */}
                 <div className="flex items-center gap-3 min-w-0">
                   <div className={`w-10 h-10 rounded-full ${item.bgIconColor} flex items-center justify-center shrink-0`}>
                     <span className={`material-symbols-outlined text-[20px] ${item.textColor}`}>{item.icon}</span>
                   </div>
-                  <div className="flex flex-col min-w-0">
-                    <span className="text-xs font-bold text-slate-800 truncate leading-tight">{item.title}</span>
-                    <span className="text-[10px] text-slate-400 mt-1 font-medium">{item.channel}</span>
+                  <div className="flex-1 min-w-0">
+                    <span className="block text-xs font-bold text-slate-800 truncate leading-tight">{item.title}</span>
                   </div>
-                </div>
-                <div className="flex flex-col items-end gap-1 shrink-0">
-                  <span className={`px-2.5 py-1 rounded-full ${item.badgeColor} text-[9px] font-bold uppercase inline-flex items-center gap-1 shadow-sm`}>
+                  <span className={`ml-auto shrink-0 px-2.5 py-1 rounded-full ${item.badgeColor} text-[9px] font-bold uppercase inline-flex items-center gap-1 shadow-sm`}>
                     <span className={`w-1.5 h-1.5 rounded-full ${item.dotColor}`}></span>
                     {item.status}
                   </span>
                 </div>
+                <span className="block text-[10px] text-slate-400 font-medium truncate leading-relaxed">{item.channel}</span>
               </div>
             ))}
           </div>
@@ -979,40 +978,43 @@ function InicioScreen({
               <p className="text-[10px] text-slate-400 mt-0.5">Audio & Streaming</p>
             </div>
 
-            <div onClick={onNavigateToHistory} className="col-span-2 flex items-center justify-between p-4 rounded-[10px] bg-white border border-slate-100 shadow-sm hover:bg-slate-50 transition-all cursor-pointer" role="button">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-full bg-[#bdeddd]/45 text-[#386458] flex items-center justify-center">
+            <div onClick={onNavigateToHistory} className="col-span-2 flex flex-col gap-1.5 p-4 rounded-[10px] bg-white border border-slate-100 shadow-sm hover:bg-slate-50 transition-all cursor-pointer" role="button">
+              {/* Criterio del bloque: fila 1 avatar + título + badge, fila 2 detalle fuera de la fila */}
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-10 h-10 rounded-full bg-[#bdeddd]/45 text-[#386458] flex items-center justify-center shrink-0">
                   <span className="material-symbols-outlined text-[20px]">chat_bubble</span>
                 </div>
-                <div>
-                  <h4 className="text-xs font-bold text-slate-800">Comunicaciones</h4>
-                  <p className="text-[10px] text-slate-400">Boletín dominical & SMS</p>
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-xs font-bold text-slate-800 truncate leading-none">Comunicaciones</h4>
                 </div>
+                <span className="ml-auto shrink-0 px-2.5 py-1 rounded-full bg-[#386458] text-white text-[9px] font-bold uppercase">98% enviado</span>
               </div>
-              <span className="px-2.5 py-1 rounded-full bg-[#386458] text-white text-[9px] font-bold uppercase">98% enviado</span>
+              <p className="text-[10px] text-slate-400 truncate leading-relaxed">Boletín dominical & SMS</p>
             </div>
           </div>
         </div>
 
-        {/* Devocional */}
-        <div className="relative w-full rounded-[10px] bg-white/95 backdrop-blur-md p-4 shadow-sm overflow-hidden flex items-center space-x-4 border border-slate-100">
-          <img src="https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?auto=format&fit=crop&q=80&w=150" alt="Devocional" className="w-14 h-14 rounded-full object-cover shrink-0" />
-          <div className="flex flex-col min-w-0 flex-1">
-            <div className="flex items-center space-x-1 text-[#386458]">
-              <span className="material-symbols-outlined text-[15px]">volunteer_activism</span>
-              <span className="text-[10px] font-bold uppercase tracking-wider">Pausa Espiritual</span>
-            </div>
-            <h4 className="text-xs font-bold text-slate-900 truncate">Momento de Oración y Alabanza</h4>
-            <p className="text-[10px] text-slate-400 mt-0.5 truncate">{isPlayingAudio ? `Reproduciendo... ${audioProgress}%` : "Guía de 5 minutos antes del servicio"}</p>
-            {isPlayingAudio && (
-              <div className="w-full bg-slate-100 h-1 rounded-full mt-2 overflow-hidden">
-                <div className="bg-[#386458] h-full transition-all duration-300" style={{ width: `${audioProgress}%` }} />
+        {/* Devocional — criterio del bloque: fila 1 avatar + nombres (eyebrow + título) + play, fila 2 detalle fuera de la fila */}
+        <div className="relative w-full rounded-[10px] bg-white/95 backdrop-blur-md p-4 shadow-sm overflow-hidden flex flex-col gap-2 border border-slate-100">
+          <div className="flex items-center gap-4 min-w-0">
+            <img src="https://images.unsplash.com/photo-1518241353330-0f7941c2d9b5?auto=format&fit=crop&q=80&w=150" alt="Devocional" className="w-14 h-14 rounded-full object-cover shrink-0" />
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center space-x-1 text-[#386458]">
+                <span className="material-symbols-outlined text-[15px]">volunteer_activism</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider truncate">Pausa Espiritual</span>
               </div>
-            )}
+              <h4 className="text-xs font-bold text-slate-900 truncate mt-0.5">Momento de Oración y Alabanza</h4>
+            </div>
+            <button onClick={handlePlayAudio} className="ml-auto w-9 h-9 rounded-full bg-[#386458] text-white flex items-center justify-center shrink-0 shadow-md cursor-pointer">
+              <span className="material-symbols-outlined text-[18px]">{isPlayingAudio ? "pause" : "play_arrow"}</span>
+            </button>
           </div>
-          <button onClick={handlePlayAudio} className="w-9 h-9 rounded-full bg-[#386458] text-white flex items-center justify-center shrink-0 shadow-md cursor-pointer">
-            <span className="material-symbols-outlined text-[18px]">{isPlayingAudio ? "pause" : "play_arrow"}</span>
-          </button>
+          <p className="text-[10px] text-slate-400 font-medium truncate leading-relaxed">{isPlayingAudio ? `Reproduciendo... ${audioProgress}%` : "Guía de 5 minutos antes del servicio"}</p>
+          {isPlayingAudio && (
+            <div className="w-full bg-slate-100 h-1 rounded-full overflow-hidden">
+              <div className="bg-[#386458] h-full transition-all duration-300" style={{ width: `${audioProgress}%` }} />
+            </div>
+          )}
         </div>
 
       </div>
@@ -1834,7 +1836,7 @@ export default function App() {
                   }`}
                 >
                   <span className="material-symbols-outlined text-[22px]" style={{ fontVariationSettings: activeScreen === "personas" || activeScreen === "roles" ? "'FILL' 1" : "" }}>diversity_1</span>
-                  <span>Personas</span>
+                  <span>Hermanos</span>
                 </button>
                 <button 
                   onClick={() => setActiveScreen("finanzas")}
