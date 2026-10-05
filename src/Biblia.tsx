@@ -55,7 +55,7 @@ function ComboBox({
       {open && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => onToggle(null)} />
-          <ul className="absolute left-0 right-0 top-full mt-1 z-50 max-h-60 overflow-y-auto rounded-xl bg-white border border-slate-200 shadow-lg py-1 animate-[scaleIn_0.15s_ease-out]">
+          <ul className="menu-vidrio absolute left-0 right-0 top-full mt-1 z-50 max-h-60 overflow-y-auto rounded-xl border border-slate-200 shadow-lg py-1 animate-[scaleIn_0.15s_ease-out]">
             {options.map((o) => (
               <li key={o.value}>
                 <button

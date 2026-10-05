@@ -1,6 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { useTheme } from "./useTheme";
-import { fetchVersiculoDia, leerVersion, type VersiculoDia } from "./lib/biblia";
 import DirectorioScreen from "./Directorio";
 import CelulasScreen from "./Celulas";
 import MultimediaScreen from "./Multimedia";
@@ -903,29 +902,18 @@ function InicioScreen({
   onNavigateToForm, 
   onNavigateToHistory,
   onNavigateToModule,
-  onOpenMenu,
-  onNavigateToBiblia
+  onOpenMenu
 }: { 
   onNavigateToForm: () => void; 
   onNavigateToHistory: () => void; 
   onNavigateToModule?: (screen: "celulas" | "personas" | "roles" | "multimedia") => void;
   onOpenMenu?: () => void;
-  onNavigateToBiblia?: () => void;
 }) {
   const [isCultoActive, setIsCultoActive] = useState(false);
   const [activeDayInfo, setActiveDayInfo] = useState<string | null>(null);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [audioProgress, setAudioProgress] = useState(0);
   const progressIntervalRef = useRef<any>(null);
-  const [votd, setVotd] = useState<VersiculoDia | null>(null);
-
-  useEffect(() => {
-    fetchVersiculoDia(leerVersion())
-      .then(setVotd)
-      .catch(() => {
-        /* sin red: la franja devocional queda oculta */
-      });
-  }, []);
 
   const capitalizeEs = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
   const todayLabel = (() => {
@@ -1029,24 +1017,6 @@ function InicioScreen({
             </div>
           </div>
         </div>
-
-        {/* Versículo del día → Biblia */}
-        {votd && (
-          <button
-            type="button"
-            onClick={() => onNavigateToBiblia?.()}
-            className="w-full text-left rounded-[10px] bg-white/85 p-4 shadow-sm border border-slate-100 flex items-center gap-3 active:scale-[0.99] transition-all cursor-pointer"
-          >
-            <span className="w-9 h-9 rounded-full bg-[#386458]/10 text-[#386458] flex items-center justify-center shrink-0">
-              <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>auto_stories</span>
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block text-[11px] text-slate-700 font-medium leading-snug line-clamp-2">“{votd.texto}”</span>
-              <span className="block text-[10px] text-[#386458] font-bold uppercase tracking-wider mt-1">{votd.referencia} · Abrir Biblia</span>
-            </span>
-            <span className="material-symbols-outlined text-slate-300 text-[20px] shrink-0">arrow_forward</span>
-          </button>
-        )}
 
         {/* Ritmo Comunitario */}
         <div className="w-full rounded-[10px] bg-white/85 p-4 shadow-sm border border-slate-100">
@@ -1671,7 +1641,6 @@ export default function App() {
                   onNavigateToHistory={() => setActiveScreen("comunicaciones")}
                   onNavigateToModule={(screen) => setActiveScreen(screen)}
                   onOpenMenu={() => setIsMenuOpen(true)}
-                  onNavigateToBiblia={() => setActiveScreen("biblia")}
                 />
               ) : activeScreen === "comunicaciones" ? (
                 <ComunicacionesScreen 
@@ -2062,7 +2031,6 @@ export default function App() {
                   onNavigateToHistory={() => setActiveScreen("comunicaciones")}
                   onNavigateToModule={(screen) => setActiveScreen(screen)}
                   onOpenMenu={() => setIsMenuOpen(true)}
-                  onNavigateToBiblia={() => setActiveScreen("biblia")}
                 />
               )}
 
@@ -2181,7 +2149,6 @@ export default function App() {
                     onNavigateToHistory={() => setActiveScreen("comunicaciones")}
                     onNavigateToModule={(screen) => setActiveScreen(screen)}
                     onOpenMenu={() => setIsMenuOpen(true)}
-                    onNavigateToBiblia={() => setActiveScreen("biblia")}
                   />
                 </div>
               ) : activeScreen === "comunicaciones" ? (
@@ -2532,7 +2499,6 @@ export default function App() {
                     onNavigateToHistory={() => setActiveScreen("comunicaciones")}
                     onNavigateToModule={(screen) => setActiveScreen(screen)}
                     onOpenMenu={() => setIsMenuOpen(true)}
-                    onNavigateToBiblia={() => setActiveScreen("biblia")}
                   />
                 </div>
               )}
