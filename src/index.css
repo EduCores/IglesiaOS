@@ -117,25 +117,25 @@ button,
    AJUSTES PUNTUALES POR PEDIDO (05-oct-2026)
    --------------------------------------------------------------
    a) Botones "Volver" de sub-pantallas (Bitacora, Censo, Check-In,
-      Confirmacion, Difusion, Onboarding, Sacramentos): vidrio
-      azul-nocturno #1c314070 en AMBOS temas (valor literal pedido).
-      Selector con [title] para no tocar el "Volver" del formulario
-      de App.tsx (ese no lleva title). El :hover conserva el mismo
-      fondo (esta regla lleva !important y gana al hover de Tailwind).
+      Confirmacion, Difusion, Onboarding, Sacramentos, Biblia): en claro
+      fondo blanco translúcido #ffffff2b y sin borde (regla global con
+      !important). En oscuro manda el vidrio azul-nocturno #1c314070 de
+      la regla .dark del bloque MODO OSCURO (escrita después, gana la
+      cascada). Selector con [title] para no tocar el "Volver"
+      del formulario de App.tsx (ese no lleva title).
    b) Boton "Perfil" del header: verde marca translucido #386458ad.
       Alcance limitado a button[aria-label="Perfil"] para no alterar
       los demas usos de bg-[#386458] en la app.
    c) Utilidad p-5 global: padding calc(0.25rem * 2). Sin variante
       oscura porque no es color.
-   ============================================================== */
-button[aria-label="Volver"][title="Volver"] {
-  background-color: #1c314070 !important;
-}
-button[aria-label="Volver"][title="Volver"]:hover {
-  background-color: #1c314070 !important;
-}
+    ============================================================== */
 button[aria-label="Perfil"].bg-\[\#386458\] {
   background-color: #386458ad !important;
+}
+button[aria-label="Volver"][title="Volver"],
+button[aria-label="Volver"][title="Volver"]:hover {
+  background-color: #ffffff2b !important;
+  border: none !important;
 }
 
 /* Esquinas redondeadas uniformes (8px) para todos los elementos rounded-full

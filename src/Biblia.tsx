@@ -25,6 +25,7 @@ export default function BibliaScreen({ onBack }: { onBack?: () => void }) {
   const [libroSlug, setLibroSlug] = useState<string>(() => leerUltimaLectura()?.slug ?? "john");
   const [capitulo, setCapitulo] = useState<number>(() => leerUltimaLectura()?.capitulo ?? 3);
   const [versiculos, setVersiculos] = useState<string[]>([]);
+  const [versiculoSel, setVersiculoSel] = useState<number | null>(null);
   const [cargando, setCargando] = useState(false);
   const [votd, setVotd] = useState<VersiculoDia | null>(null);
 
@@ -36,6 +37,7 @@ export default function BibliaScreen({ onBack }: { onBack?: () => void }) {
     try {
       const data = await fetchCapitulo(slug, cap);
       setVersiculos(data.versiculos);
+      setVersiculoSel(null);
       guardarUltimaLectura(slug, cap);
     } catch {
       notify("La lectura requiere internet. Revisa tu conexión.");
@@ -86,6 +88,13 @@ export default function BibliaScreen({ onBack }: { onBack?: () => void }) {
     }
     setLibroSlug(destino.libro.slug);
     setCapitulo(destino.capitulo);
+  };
+
+  const irAVersiculo = (v: number) => {
+    setVersiculoSel(v);
+    requestAnimationFrame(() => {
+      document.getElementById(`versiculo-${v}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
   };
 
   const alInicio = capitulo <= 1 && indiceLibro <= 0;
@@ -143,36 +152,55 @@ export default function BibliaScreen({ onBack }: { onBack?: () => void }) {
           </div>
         )}
 
-        {/* Selectores de libro y capítulo */}
+        {/* Selectores de libro, capítulo y versículo */}
         <div className="rounded-xl bg-white border border-slate-100 shadow-sm p-4 space-y-3">
+          <div className="space-y-1">
+            <label className="text-[11px] text-slate-500 font-bold uppercase">Libro</label>
+            <select
+              value={libro.slug}
+              onChange={(e) => {
+                const next = buscarLibro(e.target.value);
+                if (!next) return;
+                setLibroSlug(next.slug);
+                setCapitulo(1);
+              }}
+              className="w-full px-3 py-2.5 text-xs border border-slate-200 rounded-xl focus:border-[#386458] focus:ring-1 focus:ring-[#386458] bg-white outline-none font-semibold text-slate-800 dark:[color-scheme:dark]"
+            >
+              {LIBROS_BIBLIA.map((l) => (
+                <option key={l.slug} value={l.slug}>
+                  {l.nombre}
+                </option>
+              ))}
+            </select>
+          </div>
           <div className="grid grid-cols-2 gap-2.5">
-            <div className="space-y-1">
-              <label className="text-[11px] text-slate-500 font-bold uppercase">Libro</label>
-              <select
-                value={libro.slug}
-                onChange={(e) => {
-                  const next = buscarLibro(e.target.value);
-                  if (!next) return;
-                  setLibroSlug(next.slug);
-                  setCapitulo(1);
-                }}
-                className="w-full px-3 py-2.5 text-xs border border-slate-200 rounded-xl focus:border-[#386458] focus:ring-1 focus:ring-[#386458] bg-white outline-none font-semibold text-slate-800"
-              >
-                {LIBROS_BIBLIA.map((l) => (
-                  <option key={l.slug} value={l.slug}>
-                    {l.nombre}
-                  </option>
-                ))}
-              </select>
-            </div>
             <div className="space-y-1">
               <label className="text-[11px] text-slate-500 font-bold uppercase">Capítulo</label>
               <select
                 value={capitulo}
                 onChange={(e) => setCapitulo(parseInt(e.target.value, 10) || 1)}
-                className="w-full px-3 py-2.5 text-xs border border-slate-200 rounded-xl focus:border-[#386458] focus:ring-1 focus:ring-[#386458] bg-white outline-none font-semibold text-slate-800"
+                className="w-full px-3 py-2.5 text-xs border border-slate-200 rounded-xl focus:border-[#386458] focus:ring-1 focus:ring-[#386458] bg-white outline-none font-semibold text-slate-800 dark:[color-scheme:dark]"
               >
                 {Array.from({ length: libro.capitulos }, (_, i) => (
+                  <option key={i + 1} value={i + 1}>
+                    {i + 1}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="space-y-1">
+              <label className="text-[11px] text-slate-500 font-bold uppercase">Versículo</label>
+              <select
+                value={versiculoSel ?? ""}
+                onChange={(e) => {
+                  const v = parseInt(e.target.value, 10);
+                  if (!isNaN(v)) irAVersiculo(v);
+                }}
+                disabled={versiculos.length === 0}
+                className="w-full px-3 py-2.5 text-xs border border-slate-200 rounded-xl focus:border-[#386458] focus:ring-1 focus:ring-[#386458] bg-white outline-none font-semibold text-slate-800 disabled:opacity-40 dark:[color-scheme:dark]"
+              >
+                <option value="">Ir a…</option>
+                {versiculos.map((_, i) => (
                   <option key={i + 1} value={i + 1}>
                     {i + 1}
                   </option>
@@ -218,7 +246,13 @@ export default function BibliaScreen({ onBack }: { onBack?: () => void }) {
           ) : versiculos.length > 0 ? (
             <div className="space-y-2.5">
               {versiculos.map((texto, i) => (
-                <p key={i} className="text-[13px] text-slate-700 leading-relaxed">
+                <p
+                  key={i}
+                  id={`versiculo-${i + 1}`}
+                  className={`text-[13px] text-slate-700 leading-relaxed rounded-lg px-2 py-1 -mx-2 transition-colors ${
+                    versiculoSel === i + 1 ? "bg-[#386458]/10" : ""
+                  }`}
+                >
                   <sup className="text-[10px] font-bold text-[#386458] mr-1.5">{i + 1}</sup>
                   {texto}
                 </p>
@@ -230,7 +264,7 @@ export default function BibliaScreen({ onBack }: { onBack?: () => void }) {
             </p>
           )}
           <p className="text-[10px] text-slate-400 font-medium mt-4 pt-3 border-t border-slate-100">
-            Reina-Valera 1909 · Dominio público
+            Reina-Valera 1909
           </p>
         </div>
       </div>
