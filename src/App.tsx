@@ -748,7 +748,7 @@ function ComunicacionesScreen({
           <div className="flex items-center justify-between px-1">
             <h3 className="text-sm font-bold text-slate-900">Historial de Envíos</h3>
           </div>
-          <div className="rounded-2xl bg-white border border-slate-100 p-4 shadow-sm space-y-3">
+          <div className="rounded-2xl bg-white border border-slate-100 p-2 shadow-sm space-y-3">
             {historyItems.map((item, idx) => (
               <div key={idx} className="p-2 rounded-xl bg-slate-50/50 hover:bg-slate-50 flex flex-col gap-1.5 border border-slate-100/50">
                 {/* Criterio del bloque: fila 1 avatar + título + badge, fila 2 canal fuera de la fila */}
