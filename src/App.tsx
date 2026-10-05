@@ -902,12 +902,14 @@ function InicioScreen({
   onNavigateToForm, 
   onNavigateToHistory,
   onNavigateToModule,
-  onOpenMenu
+  onOpenMenu,
+  nombreUsuario
 }: { 
   onNavigateToForm: () => void; 
   onNavigateToHistory: () => void; 
   onNavigateToModule?: (screen: "celulas" | "personas" | "roles" | "multimedia") => void;
   onOpenMenu?: () => void;
+  nombreUsuario?: string;
 }) {
   const [isCultoActive, setIsCultoActive] = useState(false);
   const [activeDayInfo, setActiveDayInfo] = useState<string | null>(null);
@@ -977,7 +979,7 @@ function InicioScreen({
             </div>
 
             <div>
-              <h2 className="text-xl font-bold text-slate-900 tracking-tight">Buenos días, Pastor Samuel</h2>
+              <h2 className="text-xl font-bold text-slate-900 tracking-tight">{nombreUsuario ? `Buenos días, ${nombreUsuario}` : "Buenos días, Pastor Samuel"}</h2>
               <p className="text-[12px] text-slate-500 italic mt-1 leading-relaxed">"La paz os dejo, mi paz os doy; que sus corazones descansen hoy con alegría." <span className="not-italic font-bold text-[11px] text-[#386458]">— Juan 14:27</span></p>
             </div>
 
@@ -1386,6 +1388,61 @@ export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeScreen, setActiveScreen] = useState<ScreenId>("inicio");
   const { theme, toggleTheme } = useTheme();
+
+  // Sesión local (perfil / acceso sin backend: se guarda en este dispositivo)
+  const [sesion, setSesion] = useState<{ nombre: string; email: string } | null>(() => {
+    try {
+      const raw = localStorage.getItem("iglesiaos-sesion");
+      return raw ? (JSON.parse(raw) as { nombre: string; email: string }) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [showPerfilModal, setShowPerfilModal] = useState(false);
+  const [nombreInput, setNombreInput] = useState("");
+  const [emailInput, setEmailInput] = useState("");
+  const [loginError, setLoginError] = useState("");
+  const [sesionToast, setSesionToast] = useState<string | null>(null);
+
+  const avisarSesion = (msg: string) => {
+    setSesionToast(msg);
+    setTimeout(() => setSesionToast(null), 3000);
+  };
+
+  const ingresar = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!nombreInput.trim()) {
+      setLoginError("Ingresa tu nombre para identificarte.");
+      return;
+    }
+    if (!/\S+@\S+\.\S+/.test(emailInput.trim())) {
+      setLoginError("Ingresa un correo válido (ej: usuario@correo.com).");
+      return;
+    }
+    const s = { nombre: nombreInput.trim(), email: emailInput.trim() };
+    try {
+      localStorage.setItem("iglesiaos-sesion", JSON.stringify(s));
+    } catch {
+      /* sin almacenamiento: la sesión dura esta visita */
+    }
+    setSesion(s);
+    setLoginError("");
+    setShowPerfilModal(false);
+    avisarSesion(`¡Bienvenido/a, ${s.nombre}!`);
+  };
+
+  const cerrarSesion = () => {
+    try {
+      localStorage.removeItem("iglesiaos-sesion");
+    } catch {
+      /* nada que limpiar */
+    }
+    setSesion(null);
+    setNombreInput("");
+    setEmailInput("");
+    setShowPerfilModal(false);
+    avisarSesion("Sesión cerrada en paz.");
+  };
   
   // Form states (Formulario)
   const [amount, setAmount] = useState<number>(120000);
@@ -1614,7 +1671,7 @@ export default function App() {
                 <div className="flex items-center gap-1.5">
                   <ThemeToggle theme={theme} onToggle={toggleTheme} />
                   <button
-                    onClick={() => { setActiveScreen("onboarding_setup"); setIsMenuOpen(false); }}
+                    onClick={() => setShowPerfilModal(true)}
                     className="w-8 h-8 rounded-full bg-[#386458] flex items-center justify-center text-white hover:scale-105 active:scale-95 transition-all cursor-pointer shadow-sm hover:shadow"
                     aria-label="Perfil"
                     title="Mi perfil y configuración"
@@ -1641,6 +1698,7 @@ export default function App() {
                   onNavigateToHistory={() => setActiveScreen("comunicaciones")}
                   onNavigateToModule={(screen) => setActiveScreen(screen)}
                   onOpenMenu={() => setIsMenuOpen(true)}
+                  nombreUsuario={sesion?.nombre}
                 />
               ) : activeScreen === "comunicaciones" ? (
                 <ComunicacionesScreen 
@@ -2031,6 +2089,7 @@ export default function App() {
                   onNavigateToHistory={() => setActiveScreen("comunicaciones")}
                   onNavigateToModule={(screen) => setActiveScreen(screen)}
                   onOpenMenu={() => setIsMenuOpen(true)}
+                  nombreUsuario={sesion?.nombre}
                 />
               )}
 
@@ -2125,9 +2184,15 @@ export default function App() {
                     <span className="material-symbols-outlined text-[22px]">{isMenuOpen ? "close" : "apps"}</span>
                   </button>
                   <ThemeToggle theme={theme} onToggle={toggleTheme} />
-                  <div className="w-11 h-11 rounded-full bg-[#386458] flex items-center justify-center text-white shadow-md">
+                  <button
+                    type="button"
+                    onClick={() => setShowPerfilModal(true)}
+                    aria-label="Perfil"
+                    title="Mi perfil y configuración"
+                    className="w-11 h-11 rounded-full bg-[#386458] flex items-center justify-center text-white shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                  >
                     <span className="material-symbols-outlined text-[20px]">person</span>
-                  </div>
+                  </button>
                 </div>
               </header>
 
@@ -2149,6 +2214,7 @@ export default function App() {
                     onNavigateToHistory={() => setActiveScreen("comunicaciones")}
                     onNavigateToModule={(screen) => setActiveScreen(screen)}
                     onOpenMenu={() => setIsMenuOpen(true)}
+                    nombreUsuario={sesion?.nombre}
                   />
                 </div>
               ) : activeScreen === "comunicaciones" ? (
@@ -2499,10 +2565,123 @@ export default function App() {
                     onNavigateToHistory={() => setActiveScreen("comunicaciones")}
                     onNavigateToModule={(screen) => setActiveScreen(screen)}
                     onOpenMenu={() => setIsMenuOpen(true)}
+                    nombreUsuario={sesion?.nombre}
                   />
                 </div>
               )}
 
+            </div>
+          </div>
+        )}
+
+        {/* Toast de sesión */}
+        {sesionToast && (
+          <div className="fixed top-24 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white text-xs font-bold px-4 py-3 rounded shadow-lg z-[60] flex items-center gap-2">
+            <span className="material-symbols-outlined text-emerald-400 text-sm">check_circle</span>
+            <span>{sesionToast}</span>
+          </div>
+        )}
+
+        {/* Modal Perfil / Acceso */}
+        {showPerfilModal && (
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4">
+            <div
+              className="absolute inset-0 bg-slate-900/40 animate-[fadeIn_0.2s_ease-out]"
+              onClick={() => {
+                setShowPerfilModal(false);
+                setLoginError("");
+              }}
+            />
+            <div className="relative w-full max-w-sm bg-white rounded-2xl p-6 shadow-xl animate-[scaleIn_0.15s_ease-out]">
+              <div className="flex items-center justify-between mb-1">
+                <h3 className="text-sm font-bold text-slate-900">{sesion ? "Mi perfil" : "Acceso"}</h3>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowPerfilModal(false);
+                    setLoginError("");
+                  }}
+                  aria-label="Cerrar"
+                  className="w-8 h-8 flex items-center justify-center rounded-full text-slate-500 hover:bg-slate-100 active:scale-90 transition-all cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-[20px]">close</span>
+                </button>
+              </div>
+              {sesion ? (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-[#386458] text-white flex items-center justify-center text-lg font-bold shrink-0">
+                      {sesion.nombre.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-sm font-bold text-slate-900 truncate">{sesion.nombre}</p>
+                      <p className="text-[11px] text-slate-400 font-medium truncate">{sesion.email}</p>
+                    </div>
+                  </div>
+                  <p className="text-[11px] text-slate-400 font-medium">Sesión guardada en este dispositivo.</p>
+                  <div className="space-y-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowPerfilModal(false);
+                        setIsMenuOpen(false);
+                        setActiveScreen("onboarding_setup");
+                      }}
+                      className="w-full py-3 px-6 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer"
+                      style={{ borderRadius: "4px" }}
+                    >
+                      <span className="material-symbols-outlined text-[18px]">settings</span>
+                      Configuración
+                    </button>
+                    <button
+                      type="button"
+                      onClick={cerrarSesion}
+                      className="w-full py-3 px-6 bg-white hover:bg-slate-50 text-[#7f4e57] border border-[#f4b6bf] text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer"
+                      style={{ borderRadius: "4px" }}
+                    >
+                      <span className="material-symbols-outlined text-[18px]">logout</span>
+                      Cerrar sesión
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <form onSubmit={ingresar} className="space-y-3">
+                  <p className="text-[11px] text-slate-400 font-medium">
+                    Identifícate para guardar tu sesión en este dispositivo.
+                  </p>
+                  <div className="space-y-1">
+                    <label className="text-[11px] text-slate-500 font-bold uppercase">Nombre</label>
+                    <input
+                      type="text"
+                      value={nombreInput}
+                      onChange={(e) => setNombreInput(e.target.value)}
+                      placeholder="ej: Pastor Samuel"
+                      className="w-full px-4 py-3 text-xs border border-slate-200 rounded-xl focus:border-[#386458] focus:outline-none"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[11px] text-slate-500 font-bold uppercase">Correo</label>
+                    <input
+                      type="email"
+                      value={emailInput}
+                      onChange={(e) => setEmailInput(e.target.value)}
+                      placeholder="ejemplo@correo.com"
+                      className="w-full px-4 py-3 text-xs border border-slate-200 rounded-xl focus:border-[#386458] focus:outline-none"
+                    />
+                  </div>
+                  {loginError && (
+                    <p className="text-[10px] text-rose-500 font-medium animate-[fadeIn_0.2s_ease-out]">{loginError}</p>
+                  )}
+                  <button
+                    type="submit"
+                    className="w-full bg-[#386458] hover:bg-[#2c4e45] active:scale-[0.98] text-white py-3 px-6 text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                    style={{ borderRadius: "4px" }}
+                  >
+                    <span className="material-symbols-outlined text-[18px]">login</span>
+                    Ingresar
+                  </button>
+                </form>
+              )}
             </div>
           </div>
         )}

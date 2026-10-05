@@ -338,9 +338,14 @@ input[type="radio"] {
   background-color: #0b151c;
 }
 
-/* Superficies claras → oscuras */
+/* Superficies claras → oscuras (los modales max-w-sm quedan fuera: conservan
+   su blanco sólido como en claro; si no, el vidrio los vuelve transparentes
+   y se lee el contenido de atrás) */
 .dark [class*="bg-[#f4faff]"] { background-color: #0f1e28 !important; }
-.dark [class*="bg-white"] { background-color: #15283430 !important; }
+.dark [class*="bg-white"]:not([class*="max-w-sm"]) { background-color: #15283430 !important; }
+/* Tarjetas modales (max-w-sm): superficie sólida oscura en nocturno para que
+   los textos remapeados a claro se lean (blanco sólido + texto claro = ilegible) */
+.dark [class*="max-w-sm"][class*="bg-white"] { background-color: #101f29 !important; }
 /* Menú flotante de navegación: el mismo 30% de transparencia que en claro,
    aplicado al vidrio nocturno #152834 (70% de opacidad = #152834b3) —
    definición y razonamiento en .menu-vidrio. */

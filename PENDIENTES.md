@@ -4,6 +4,24 @@
 
 ---
 
+## ✅ APLICADO — Acceso local y perfil + modales legibles en oscuro
+
+**Estado:** ✅ Aplicado el 05-oct-2026, a pedido del usuario.
+
+**Acceso** (`src/App.tsx`): el icono Perfil abre modal compartido (móvil y
+escritorio). Sin sesión: formulario Nombre + Correo con validación inline;
+con sesión: ficha con inicial, nombre, correo, acceso a Configuración y
+"Cerrar sesión". Sesión persistida en `iglesiaos-sesion` (este dispositivo),
+toast de bienvenida/despedida y saludo de Inicio con el nombre guardado.
+
+**Modales en oscuro** (`src/index.css`): la regla `.dark [class*="bg-white"]`
+no excluía `max-w-sm` y volvía translúcidas las 10 tarjetas modales (se leía
+el contenido de atrás); ahora las excluye y una regla posterior les da
+superficie sólida `#101f29` para que los textos claros se lean. En claro no
+cambia nada.
+
+---
+
 ## ✅ APLICADO — Módulo Biblia RV1909 + botonera con Biblia
 
 **Estado:** ✅ Aplicado el 05-oct-2026, a pedido del usuario.
