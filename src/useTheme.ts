@@ -5,21 +5,21 @@ export type Theme = "light" | "dark";
 const STORAGE_KEY = "iglesiaos-theme";
 
 function getInitialTheme(): Theme {
-  if (typeof window === "undefined") return "light";
+  if (typeof window === "undefined") return "dark";
   try {
     const saved = window.localStorage.getItem(STORAGE_KEY);
     if (saved === "light" || saved === "dark") return saved;
   } catch {
-    /* localStorage no disponible: se usa el sistema */
+    /* localStorage no disponible: se usa el valor por defecto */
   }
-  return window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  return "dark";
 }
 
 /**
  * Tema claro/oscuro global.
  * - Aplica la clase `dark` en <html> (estrategia por clase, ver `@custom-variant dark` en index.css).
  * - Persiste en localStorage ("iglesiaos-theme").
- * - Por defecto respeta `prefers-color-scheme` del sistema.
+ * - Por defecto es "dark"; el "light" del usuario se respeta al recargar.
  */
 export function useTheme() {
   const [theme, setTheme] = useState<Theme>(getInitialTheme);

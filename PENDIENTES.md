@@ -4,6 +4,24 @@
 
 ---
 
+## ✅ APLICADO — Tema "Dark" por defecto en la primera visita
+
+**Estado:** ✅ Aplicado el 04-oct-2026, a pedido del usuario.
+
+**Pedido:** dejar por defecto primero el tema "Dark".
+
+**Solución aplicada** (los dos puntos donde se resuelve el tema inicial):
+- `index.html` (script anti-flash pre-React): añade la clase `dark` salvo que
+  localStorage guarde `"light"` explícito; además fija
+  `documentElement.style.colorScheme = "dark"` para scrollbars/nativos en
+  oscuro.
+- `src/useTheme.ts` (`getInitialTheme`): devuelve `"dark"` cuando no hay
+  preferencia guardada; se dejó de consultar `prefers-color-scheme`.
+
+**Comportamiento:** primera visita (sin `iglesiaos-theme` en localStorage) →
+oscuro. Si el usuario cambia a claro con el toggle, `"light"` queda guardado y
+se respeta en recargas (ambos puntos lo verifican).
+
 ## ✅ CORREGIDO — Paneles en claro con la transparencia del modo oscuro
 
 **Estado:** ✅ Aplicado el 03-oct-2026, con los valores aportados por el usuario.

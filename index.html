@@ -17,12 +17,14 @@
     
     <!-- Material Symbols Outlined -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <!-- Aplica el tema guardado antes del primer pintado (evita flash claro/oscuro) -->
+    <!-- Aplica el tema guardado antes del primer pintado (evita flash claro/oscuro).
+         Por defecto es "dark": solo se respeta "light" si el usuario lo eligió. -->
     <script>
       try {
         var t = localStorage.getItem("iglesiaos-theme");
-        if (t === "dark" || (!t && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+        if (t !== "light") {
           document.documentElement.classList.add("dark");
+          document.documentElement.style.colorScheme = "dark";
         }
       } catch (e) {}
     </script>

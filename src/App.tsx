@@ -1397,7 +1397,7 @@ export default function App() {
             <div className="bg-transparent min-h-[820px] pt-8 pb-20 flex flex-col relative">
               
               {/* Header inside phone screen */}
-              <header className="relative z-10 flex items-center justify-between px-6 py-4 bg-transparent">
+              <header className="relative z-10 flex items-center justify-between py-4 bg-transparent [padding-inline:calc(var(--spacing)*2)]">
                 <button 
                   onClick={() => setIsMenuOpen((open) => !open)}
                   className="w-11 h-11 flex items-center justify-center -ml-2 text-slate-900 hover:bg-slate-200/50 rounded-full transition-all duration-150 active:scale-90"

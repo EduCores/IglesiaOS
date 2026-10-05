@@ -64,38 +64,38 @@ export default function BitacoraPastoralScreen({ onBack }: { onBack?: () => void
       <div className="flex flex-col w-full px-5 space-y-5">
         
         {/* Privacy Assurance Banner */}
-        <div className="w-full bg-transparent rounded-xl p-4 shadow-sm flex items-center justify-between border border-slate-100">
-          <div className="flex items-center space-x-3">
+        <div className="w-full bg-transparent rounded-xl p-4 shadow-sm flex flex-wrap items-center justify-between gap-3 border border-slate-100 min-w-0">
+          <div className="flex items-center space-x-3 min-w-0">
             <div className="w-10 h-10 rounded-full bg-[#bdeddd] flex items-center justify-center shrink-0 border border-white">
               <span className="material-symbols-outlined text-[#386458] text-[20px] font-bold" style={{ fontVariationSettings: "'FILL' 1" }}>lock</span>
             </div>
-            <div>
-              <h2 className="text-xs font-bold text-slate-900 uppercase">Bitácora Pastoral Confidencial</h2>
-              <div className="flex items-center space-x-1.5 mt-0.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#386458] animate-pulse"></span>
-                <p className="text-[10px] text-[#386458] font-bold tracking-wide uppercase leading-none">Cifrado de Extremo a Extremo</p>
+            <div className="min-w-0">
+              <h2 className="text-xs font-bold text-slate-900 uppercase truncate">Bitácora Pastoral Confidencial</h2>
+              <div className="flex items-center space-x-1.5 mt-0.5 min-w-0">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#386458] animate-pulse shrink-0"></span>
+                <p className="text-[10px] text-[#386458] font-bold tracking-wide uppercase leading-none truncate">Cifrado de Extremo a Extremo</p>
               </div>
             </div>
           </div>
-          <div className="px-2.5 py-1 rounded-full bg-white text-slate-500 text-[10px] font-bold uppercase shadow-sm">
+          <div className="px-2.5 py-1 rounded-full bg-white text-slate-500 text-[10px] font-bold uppercase shadow-sm shrink-0">
             Privado
           </div>
         </div>
 
         {/* Member / Family Selection Card */}
-        <div className="w-full bg-white rounded-xl p-5 shadow-sm border border-slate-100 space-y-3">
-          <div className="flex items-center justify-between">
+        <div className="w-full bg-white rounded-xl p-5 shadow-sm border border-slate-100 space-y-3 flex flex-col flex-wrap min-w-0">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <span className="text-[11px] text-slate-500 font-bold uppercase">Hermano o Familia Visitada</span>
             <button 
               onClick={() => alert("Cargando directorio de familias para enlazar bitácora...")}
-              className="text-[11px] text-[#386458] font-bold flex items-center space-x-1 hover:underline cursor-pointer"
+              className="text-[11px] text-[#386458] font-bold flex items-center space-x-1 hover:underline cursor-pointer shrink-0"
             >
               <span className="material-symbols-outlined text-[16px] font-bold">sync_alt</span>
               <span>Cambiar</span>
             </button>
           </div>
           
-          <div className="flex items-center space-x-3.5 bg-slate-50 p-3 rounded-lg border border-slate-100">
+          <div className="flex items-center gap-3.5 bg-slate-50 p-3 rounded-lg border border-slate-100 min-w-0">
             <div className="relative w-14 h-14 rounded-full overflow-hidden shrink-0 shadow-sm border border-white bg-slate-200">
               <img 
                 className="w-full h-full object-cover" 
@@ -106,11 +106,11 @@ export default function BitacoraPastoralScreen({ onBack }: { onBack?: () => void
             <div className="flex-1 min-w-0">
               <h3 className="text-xs font-bold text-slate-900 truncate">Familia Morales Benítez</h3>
               <p className="text-[11px] text-slate-400 font-semibold leading-none mt-1">Hermano David & Hna. Esther</p>
-              <div className="flex items-center gap-2 mt-1.5">
-                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-slate-200/60 text-slate-700 border border-slate-300/30">
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1.5">
+                <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-slate-200/60 text-slate-700 border border-slate-300/30 max-w-full">
                   Célula Betania #4
                 </span>
-                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider break-words">
                   5 años en congregación
                 </span>
               </div>
@@ -120,9 +120,9 @@ export default function BitacoraPastoralScreen({ onBack }: { onBack?: () => void
 
         {/* Type of Pastoral Encounter */}
         <div className="w-full bg-white rounded-xl p-5 shadow-sm border border-slate-100 space-y-3">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <label className="text-[11px] text-slate-500 font-bold uppercase">Tipo de Encuentro</label>
-            <span className="text-[10px] text-slate-400 font-bold uppercase">Selección obligatoria</span>
+            <span className="text-[10px] text-slate-400 font-bold uppercase shrink-0">Selección obligatoria</span>
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -139,7 +139,7 @@ export default function BitacoraPastoralScreen({ onBack }: { onBack?: () => void
                   key={type}
                   type="button"
                   onClick={() => setEncounterType(type)}
-                  className={`px-3.5 py-2 rounded-full text-[10px] font-bold transition-all duration-150 cursor-pointer ${
+                  className={`px-3.5 py-2 rounded-full text-[10px] font-bold transition-all duration-150 cursor-pointer max-w-full text-center break-words ${
                     isSelected 
                       ? "bg-[#386458] text-white shadow-sm" 
                       : "bg-slate-100 text-slate-500 hover:bg-slate-200"
@@ -154,32 +154,32 @@ export default function BitacoraPastoralScreen({ onBack }: { onBack?: () => void
         </div>
 
         {/* Date, Place and Duration */}
-        <div className="w-full bg-white rounded-xl p-5 shadow-sm border border-slate-100 space-y-4">
+        <div className="w-full bg-white rounded-xl p-5 shadow-sm border border-slate-100 space-y-4 flex flex-col flex-wrap min-w-0">
           <span className="text-[11px] text-slate-500 font-bold uppercase block mb-1">Momento y Entorno</span>
           
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1">
+          <div className="flex flex-wrap gap-3">
+            <div className="space-y-1 flex-1 min-w-[140px]">
               <label className="text-[10px] text-slate-400 font-bold uppercase">Fecha de Visita</label>
-              <div className="relative flex items-center bg-slate-50 border border-slate-100 rounded-lg px-3 py-2.5">
-                <span className="material-symbols-outlined text-[#386458] text-[18px] mr-2 font-bold">calendar_today</span>
+              <div className="relative flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-lg px-3 py-2.5">
+                <span className="material-symbols-outlined text-[#386458] text-[18px] font-bold shrink-0">calendar_today</span>
                 <input 
                   type="text" 
                   value={visitDate}
                   onChange={(e) => setVisitDate(e.target.value)}
-                  className="bg-transparent text-xs font-semibold text-slate-800 w-full focus:outline-none"
+                  className="bg-transparent text-xs font-semibold text-slate-800 w-full min-w-0 focus:outline-none"
                 />
               </div>
             </div>
 
-            <div className="space-y-1">
+            <div className="space-y-1 flex-1 min-w-[140px]">
               <label className="text-[10px] text-slate-400 font-bold uppercase">Duración estimada</label>
-              <div className="relative flex items-center bg-slate-50 border border-slate-100 rounded-lg px-3 py-2.5">
-                <span className="material-symbols-outlined text-[#386458] text-[18px] mr-2 font-bold">schedule</span>
+              <div className="relative flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-lg px-3 py-2.5">
+                <span className="material-symbols-outlined text-[#386458] text-[18px] font-bold shrink-0">schedule</span>
                 <input 
                   type="text" 
                   value={estimatedDuration}
                   onChange={(e) => setEstimatedDuration(e.target.value)}
-                  className="bg-transparent text-xs font-semibold text-slate-800 w-full focus:outline-none"
+                  className="bg-transparent text-xs font-semibold text-slate-800 w-full min-w-0 focus:outline-none"
                 />
               </div>
             </div>
@@ -187,7 +187,7 @@ export default function BitacoraPastoralScreen({ onBack }: { onBack?: () => void
 
           <div className="space-y-1">
             <label className="text-[10px] text-slate-400 font-bold uppercase">Lugar de Conexión</label>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="flex flex-wrap gap-2">
               {[
                 { key: "hogar", label: "Hogar", icon: "home" },
                 { key: "oficina", label: "Oficina", icon: "church" },
@@ -200,14 +200,14 @@ export default function BitacoraPastoralScreen({ onBack }: { onBack?: () => void
                     key={loc.key}
                     type="button"
                     onClick={() => setConnectionPlace(loc.key)}
-                    className={`py-2 px-1 rounded-lg flex flex-col items-center justify-center space-y-1 transition-all cursor-pointer border ${
+                    className={`flex-1 min-w-[64px] py-2 px-1 rounded-lg flex flex-col items-center justify-center space-y-1 transition-all cursor-pointer border ${
                       isActive 
                         ? "bg-[#386458] text-white border-[#386458] shadow-sm" 
                         : "bg-slate-50 border-slate-100 text-slate-500 hover:bg-slate-100"
                     }`}
                   >
-                    <span className="material-symbols-outlined text-[18px] font-bold">{loc.icon}</span>
-                    <span className="text-[9px] font-bold uppercase tracking-wider">{loc.label}</span>
+                    <span className="material-symbols-outlined text-[18px] font-bold shrink-0">{loc.icon}</span>
+                    <span className="text-[9px] font-bold uppercase tracking-wider text-center break-words leading-tight">{loc.label}</span>
                   </button>
                 );
               })}
@@ -217,14 +217,14 @@ export default function BitacoraPastoralScreen({ onBack }: { onBack?: () => void
 
         {/* Spiritual Health & Emotional State Assessment */}
         <div className="w-full bg-white rounded-xl p-5 shadow-sm border border-slate-100 space-y-3">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <label className="text-[11px] text-slate-500 font-bold uppercase">Estado de Ánimo & Salud Espiritual</label>
-            <span className="text-[10px] text-[#386458] font-bold uppercase bg-[#bdeddd] px-2.5 py-0.5 rounded-full">{moodAssessment}</span>
+            <span className="text-[10px] text-[#386458] font-bold uppercase bg-[#bdeddd] px-2.5 py-0.5 rounded-full shrink-0">{moodAssessment}</span>
           </div>
 
           <p className="text-[11px] text-slate-400 font-medium leading-normal">Selecciona el estado con que percibiste el espíritu del hermano/familia durante la sesión.</p>
           
-          <div className="grid grid-cols-5 gap-1.5 pt-1">
+          <div className="flex flex-wrap gap-1.5 pt-1">
             {[
               { text: "Quebranto", emoji: "🌧️" },
               { text: "Inquietud", emoji: "⛅" },
@@ -238,7 +238,7 @@ export default function BitacoraPastoralScreen({ onBack }: { onBack?: () => void
                   key={mood.text}
                   type="button"
                   onClick={() => setMoodAssessment(mood.text)}
-                  className={`flex flex-col items-center p-2 rounded-lg transition-all border cursor-pointer ${
+                  className={`flex flex-1 min-w-[52px] flex-col items-center p-2 rounded-lg transition-all border cursor-pointer ${
                     isActive 
                       ? "bg-[#bddefe] border-[#9bc8f0] text-[#294964] shadow-sm scale-105" 
                       : "bg-slate-50 border-slate-100 text-slate-600 hover:bg-slate-100"
@@ -254,7 +254,7 @@ export default function BitacoraPastoralScreen({ onBack }: { onBack?: () => void
 
         {/* Prayer Requests & Specific Petitions */}
         <div className="w-full bg-white rounded-xl p-5 shadow-sm border border-slate-100 space-y-3">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <label className="text-[11px] text-slate-500 font-bold uppercase">Motivos de Oración Familiares</label>
             <span className="text-[10px] text-[#386458] font-bold uppercase tracking-wider flex items-center space-x-1.5">
               <span className="material-symbols-outlined text-[16px] font-bold">volunteer_activism</span>
@@ -350,31 +350,31 @@ export default function BitacoraPastoralScreen({ onBack }: { onBack?: () => void
         </div>
 
         {/* Agreements & Next Follow-up */}
-        <div className="w-full bg-white rounded-xl p-5 shadow-sm border border-slate-100 space-y-4">
+        <div className="w-full bg-white rounded-xl p-5 shadow-sm border border-slate-100 space-y-4 flex flex-col flex-wrap min-w-0">
           <span className="text-[11px] text-slate-500 font-bold uppercase block mb-1">Acuerdos y Próximo Acompañamiento</span>
           
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1">
+          <div className="flex flex-wrap gap-3">
+            <div className="space-y-1 flex-1 min-w-[140px]">
               <label className="text-[10px] text-slate-400 font-bold uppercase">Próxima Fecha</label>
-              <div className="flex items-center bg-slate-50 border border-slate-100 rounded-lg px-3 py-2.5">
-                <span className="material-symbols-outlined text-[#386458] text-[18px] mr-2 font-bold">event_repeat</span>
-                <input 
-                  type="text" 
+              <div className="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-lg px-3 py-2.5">
+                <span className="material-symbols-outlined text-[#386458] text-[18px] font-bold shrink-0">event_repeat</span>
+                <input
+                  type="text"
                   value={nextFollowUpDate}
                   onChange={(e) => setNextFollowUpDate(e.target.value)}
-                  className="bg-transparent text-xs font-semibold text-slate-800 w-full focus:outline-none"
+                  className="bg-transparent text-xs font-semibold text-slate-800 w-full min-w-0 focus:outline-none"
                 />
               </div>
             </div>
 
-            <div className="space-y-1">
+            <div className="space-y-1 flex-1 min-w-[140px]">
               <label className="text-[10px] text-slate-400 font-bold uppercase">Responsable Asignado</label>
-              <div className="flex items-center bg-slate-50 border border-slate-100 rounded-lg px-3 py-2.5">
-                <span className="material-symbols-outlined text-[#386458] text-[18px] mr-2 font-bold">person_pin</span>
+              <div className="flex items-center gap-2 bg-slate-50 border border-slate-100 rounded-lg px-3 py-2.5">
+                <span className="material-symbols-outlined text-[#386458] text-[18px] font-bold shrink-0">person_pin</span>
                 <select 
                   value={assignedLeader}
                   onChange={(e) => setAssignedLeader(e.target.value)}
-                  className="bg-transparent text-xs font-semibold text-slate-800 w-full focus:outline-none bg-slate-50"
+                  className="bg-transparent text-xs font-semibold text-slate-800 w-full min-w-0 focus:outline-none bg-slate-50"
                 >
                   <option>Pastor Andrés V.</option>
                   <option>Pastora Elena</option>
@@ -386,8 +386,8 @@ export default function BitacoraPastoralScreen({ onBack }: { onBack?: () => void
           </div>
 
           {/* Suggested Verse for Quick Action */}
-          <div className="bg-slate-50 border border-slate-100 p-3 rounded-lg flex items-center justify-between">
-            <div className="flex items-center space-x-3 min-w-0">
+          <div className="bg-slate-50 border border-slate-100 p-3 rounded-lg flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center space-x-3 min-w-0 flex-1">
               <div className="w-8 h-8 rounded-full bg-[#bdeddd] flex items-center justify-center shrink-0 border border-white">
                 <span className="material-symbols-outlined text-[#214e43] text-[18px] font-bold">auto_stories</span>
               </div>
