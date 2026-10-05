@@ -2582,9 +2582,9 @@ export default function App() {
           </div>
         )}
 
-        {/* Modal Perfil / Acceso */}
+        {/* Modal Perfil / Acceso (centrado; el overlay conserva su transparencia) */}
         {showPerfilModal && (
-          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div
               className="absolute inset-0 bg-slate-900/40 animate-[fadeIn_0.2s_ease-out]"
               onClick={() => {
