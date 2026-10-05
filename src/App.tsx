@@ -838,7 +838,9 @@ function InicioScreen({
   return (
     <div className="flex-1 pb-5 relative overflow-hidden flex flex-col justify-between animate-[fadeIn_0.25s_ease-out] font-body-md text-body-md text-[#0e1d25]">
       <div className="flex flex-col w-full px-5 pb-10 space-y-5 relative">
-        <div className="absolute -top-16 -left-20 w-80 h-80 rounded-full bg-[#386458]/5 blur-3xl pointer-events-none"></div>
+        {/* Halo decorativo del hero: casi imperceptible (bg /5 + opacity-40 ≈
+            2% en claro, ~6% en oscuro) para no teñir la tarjeta. */}
+        <div className="absolute -top-16 -left-20 w-80 h-80 rounded-full bg-[#386458]/5 opacity-40 blur-3xl pointer-events-none"></div>
         
         {/* Warm Welcome Hero Card */}
         <div className="relative w-full rounded-[10px] overflow-hidden bg-white/40 p-5 shadow-sm border border-slate-100">
