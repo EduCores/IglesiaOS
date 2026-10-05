@@ -297,8 +297,8 @@ export default function DirectorioScreen({
               className="bg-white rounded-xl p-4 shadow-sm flex flex-wrap gap-3.5 border border-slate-100"
               style={{ display: "flex", flexWrap: "wrap" }}
             >
-              <div className="flex items-start justify-between">
-                <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-start justify-between" style={{ display: "flex", flexWrap: "wrap" }}>
+                <div className="flex flex-wrap items-center gap-3" style={{ display: "flex", flexWrap: "wrap" }}>
                   <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 shadow-sm border border-slate-100">
                     <img className="w-full h-full object-cover" alt={m.name} src={m.img} />
                   </div>
