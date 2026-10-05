@@ -844,7 +844,7 @@ function InicioScreen({
         {/* Warm Welcome Hero Card */}
         <div className="relative w-full rounded-[10px] overflow-hidden bg-white/40 p-5 shadow-sm border border-slate-100">
           
-          <div className="absolute inset-0 z-0 bg-gradient-to-t from-white/50 via-white/25 to-transparent"></div>
+          <div className="absolute inset-0 z-0 bg-gradient-to-t from-white/50 via-transparent to-transparent"></div>
           
           <div className="relative z-10 flex flex-col space-y-3.5">
             <div className="flex items-center justify-between">
