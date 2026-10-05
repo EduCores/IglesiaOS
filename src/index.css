@@ -113,6 +113,30 @@ button,
   border-radius: 4px !important;
   font-weight: 600 !important;
 }
+/* ==============================================================
+   AJUSTES PUNTUALES POR PEDIDO (05-oct-2026)
+   --------------------------------------------------------------
+   a) Botones "Volver" de sub-pantallas (Bitacora, Censo, Check-In,
+      Confirmacion, Difusion, Onboarding, Sacramentos): vidrio
+      azul-nocturno #1c314070 en AMBOS temas (valor literal pedido).
+      Selector con [title] para no tocar el "Volver" del formulario
+      de App.tsx (ese no lleva title). El :hover conserva el mismo
+      fondo (esta regla lleva !important y gana al hover de Tailwind).
+   b) Boton "Perfil" del header: verde marca translucido #386458ad.
+      Alcance limitado a button[aria-label="Perfil"] para no alterar
+      los demas usos de bg-[#386458] en la app.
+   c) Utilidad p-5 global: padding calc(0.25rem * 2). Sin variante
+      oscura porque no es color.
+   ============================================================== */
+button[aria-label="Volver"][title="Volver"] {
+  background-color: #1c314070 !important;
+}
+button[aria-label="Volver"][title="Volver"]:hover {
+  background-color: #1c314070 !important;
+}
+button[aria-label="Perfil"].bg-\[\#386458\] {
+  background-color: #386458ad !important;
+}
 
 /* Esquinas redondeadas uniformes (8px) para todos los elementos rounded-full
    (botones, chips, badges, avatares y toggles) en lugar de píldoras/círculos perfectos */
@@ -134,7 +158,7 @@ input[type="radio"] {
 }
 
 .p-5 {
-  padding: calc(0.25rem * 3) !important;
+  padding: calc(0.25rem * 2) !important;
   margin-top: .55rem !important;
 }
 
@@ -535,6 +559,17 @@ section[class*="bg-white"]:not([class*="rounded-full"]):not([class*="max-w-sm"])
 .dark [class*="text-emerald-600"] { color: #6ee7b7 !important; }
 .dark [class*="text-red-600"] { color: #fca5a5 !important; }
 .dark [class*="text-rose-500"] { color: #fda4af !important; }
+
+/* Ajustes por pedido (05-oct-2026): mismo vidrio/fondo en nocturno.
+   Van al FINAL del bloque MODO OSCURO a proposito: todas las reglas
+   son !important y gana la ultima escrita. */
+.dark button[aria-label="Volver"][title="Volver"],
+.dark button[aria-label="Volver"][title="Volver"]:hover {
+  background-color: #1c314070 !important;
+}
+.dark button[aria-label="Perfil"].bg-\[\#386458\] {
+  background-color: #386458ad !important;
+}
 
 /* Velo sobre el video de nubes → versión nocturna */
 .dark .sky-video-wrap > div:last-child {
