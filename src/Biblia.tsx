@@ -13,9 +13,33 @@ import {
   leerUltimaLectura,
   leerVersion,
   resolverLibroPorReferencia,
-  sinCorchetes,
   type VersiculoDia,
 } from "./lib/biblia";
+
+// Palabras agregadas por los traductores: en papel van en cursiva; aquí se
+// renderizan en <em> sin corchetes (toggle "Corchetes" muestra el crudo [..]).
+function renderVersiculo(texto: string, mostrarCorchetes: boolean): React.ReactNode {
+  if (mostrarCorchetes) return texto;
+  const partes: { texto: string; agregado: boolean }[] = [];
+  const re = /\[([^\]]*)\]/g;
+  let last = 0;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(texto)) !== null) {
+    if (m.index > last) partes.push({ texto: texto.slice(last, m.index), agregado: false });
+    partes.push({ texto: m[1], agregado: true });
+    last = m.index + m[0].length;
+  }
+  if (last < texto.length) partes.push({ texto: texto.slice(last), agregado: false });
+  return partes.map((p, i) =>
+    p.agregado ? (
+      <em key={i} className="italic">
+        {p.texto}
+      </em>
+    ) : (
+      <span key={i}>{p.texto}</span>
+    )
+  );
+}
 
 // Combo propio (no <select> nativo): el desplegable nativo lo pinta cada
 // navegador a su manera y no respeta el tema en todos; este sí, en claro y oscuro.
@@ -228,7 +252,7 @@ export default function BibliaScreen({ onBack }: { onBack?: () => void }) {
               <span className="material-symbols-outlined text-[#386458] text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>auto_stories</span>
               <span className="text-[10px] font-bold text-[#386458] uppercase tracking-widest">Versículo del día</span>
             </div>
-            <p className="text-sm text-slate-800 leading-relaxed font-medium">“{mostrarCorchetes ? votd.texto : sinCorchetes(votd.texto)}”</p>
+            <p className="text-sm text-slate-800 leading-relaxed font-medium">“{renderVersiculo(votd.texto, mostrarCorchetes)}”</p>
             <div className="flex items-center justify-between gap-2 mt-3">
               <span className="text-[11px] text-slate-400 font-bold uppercase tracking-wider truncate min-w-0">{votd.referencia}</span>
               <button
@@ -375,7 +399,7 @@ export default function BibliaScreen({ onBack }: { onBack?: () => void }) {
                   }`}
                 >
                   <sup className="text-[10px] font-bold text-[#386458] mr-1.5">{i + 1}</sup>
-                  {mostrarCorchetes ? texto : sinCorchetes(texto)}
+                  {renderVersiculo(texto, mostrarCorchetes)}
                 </p>
               ))}
             </div>
