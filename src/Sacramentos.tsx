@@ -23,6 +23,8 @@ export default function SacramentosScreen({ onBack }: { onBack?: () => void }) {
   const [mentorName, setMentorName] = useState("Pastor Asoc. Gabriel Santillán");
   const [pastoralNotes, setPastoralNotes] = useState("");
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [successToast, setSuccessToast] = useState<string | null>(null);
+  const notify = (message: string) => { setSuccessToast(message); setTimeout(() => setSuccessToast(null), 3000); };
 
   // Discipleship path checklist state
   const [checklist, setChecklist] = useState<ChecklistItem[]>([
@@ -77,6 +79,12 @@ export default function SacramentosScreen({ onBack }: { onBack?: () => void }) {
 
   return (
     <div className="flex-1 pb-24 relative overflow-hidden flex flex-col justify-between animate-[fadeIn_0.25s_ease-out] font-body-md text-body-md text-[#0e1d25]">
+      {successToast && (
+        <div className="fixed top-24 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white text-xs font-bold px-4 py-3 rounded shadow-lg z-50 flex items-center gap-2">
+          <span className="material-symbols-outlined text-emerald-400 text-sm">check_circle</span>
+          <span>{successToast}</span>
+        </div>
+      )}
       
       {/* Barra de herramientas: una sola fila (← + rótulo) con una única
           salida; sin borde ni botón de cierre duplicado a la derecha. */}
@@ -126,7 +134,7 @@ export default function SacramentosScreen({ onBack }: { onBack?: () => void }) {
           <button 
             onClick={() => {
               setActiveTab("presentacion");
-              alert("Cargando Formulario de Presentación de Niños / Infantes...");
+              notify("Formulario en preparación.");
             }}
             className={`flex-1 py-2 px-3 rounded-full text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
               activeTab === "presentacion" ? "bg-[#386458] text-white shadow-sm" : "text-slate-500 hover:text-slate-800"
@@ -140,7 +148,7 @@ export default function SacramentosScreen({ onBack }: { onBack?: () => void }) {
           <button 
             onClick={() => {
               setActiveTab("matrimonio");
-              alert("Cargando Formulario de Bendición Matrimonial / Bodas...");
+              notify("Formulario en preparación.");
             }}
             className={`flex-1 py-2 px-3 rounded-full text-xs font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
               activeTab === "matrimonio" ? "bg-[#386458] text-white shadow-sm" : "text-slate-500 hover:text-slate-800"
@@ -223,7 +231,7 @@ export default function SacramentosScreen({ onBack }: { onBack?: () => void }) {
               </div>
               <button 
                 type="button"
-                onClick={() => alert("Abriendo buscador para cambiar de candidato CRM...")}
+                onClick={() => notify("Buscador de candidatos disponible próximamente.")}
                 className="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-500 hover:text-[#386458] text-[9px] font-bold uppercase tracking-wider shrink-0 transition-colors cursor-pointer"
                 style={{ borderRadius: "4px" }}
               >
@@ -481,7 +489,7 @@ export default function SacramentosScreen({ onBack }: { onBack?: () => void }) {
             {/* Download Direct Guide Pill Link */}
             <div className="flex items-center justify-center pt-1">
               <button 
-                onClick={() => alert("Iniciando descarga de: Guía_Preparación_Bautismal_Mindora.pdf")}
+                onClick={() => notify("Guía de preparación disponible próximamente.")}
                 className="inline-flex items-center gap-2 py-2 px-4 rounded-full bg-slate-50 border border-slate-100 text-[#386458] hover:bg-slate-100 text-[10px] font-bold uppercase tracking-wider transition-colors cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[18px] font-bold">download_for_offline</span>

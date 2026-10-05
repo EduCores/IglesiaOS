@@ -3,6 +3,8 @@ import React, { useState } from "react";
 export default function OfflineSyncScreen({ onBack }: { onBack?: () => void }) {
   const [isVerifying, setIsVerifying] = useState(false);
   const [retryStatus, setRetryStatus] = useState<string | null>(null);
+  const [successToast, setSuccessToast] = useState<string | null>(null);
+  const notify = (message: string) => { setSuccessToast(message); setTimeout(() => setSuccessToast(null), 3000); };
 
   const handleRetryConnection = () => {
     setIsVerifying(true);
@@ -13,12 +15,14 @@ export default function OfflineSyncScreen({ onBack }: { onBack?: () => void }) {
     }, 2500);
   };
 
-  const handleOfflineAction = (actionName: string) => {
-    alert(`Acción Offline: ${actionName}\nTus datos locales están seguros.`);
-  };
-
   return (
     <div className="flex-1 pb-24 relative overflow-hidden flex flex-col justify-between animate-[fadeIn_0.25s_ease-out] font-body-md text-body-md text-[#0e1d25]">
+      {successToast && (
+        <div className="fixed top-24 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white text-xs font-bold px-4 py-3 rounded shadow-lg z-50 flex items-center gap-2">
+          <span className="material-symbols-outlined text-emerald-400 text-sm">check_circle</span>
+          <span>{successToast}</span>
+        </div>
+      )}
 
       <div className="flex items-center justify-between py-2 px-5 mb-3">
         <div className="flex items-center gap-2">
@@ -101,7 +105,7 @@ export default function OfflineSyncScreen({ onBack }: { onBack?: () => void }) {
               </button>
 
               <button
-                onClick={() => handleOfflineAction("Continuar en Modo Offline")}
+                onClick={() => onBack?.()}
                 className="w-full py-4 px-6 rounded-full bg-slate-100 text-slate-700 font-bold text-xs uppercase tracking-wide flex items-center justify-center gap-2 cursor-pointer"
                 style={{ borderRadius: "4px" }}
               >
@@ -142,7 +146,7 @@ export default function OfflineSyncScreen({ onBack }: { onBack?: () => void }) {
             <p className="text-[10px] text-slate-400 font-semibold mt-1 leading-relaxed">Si la conexión se extiende, escríbenos y te ayudamos a resguardar tus datos.</p>
           </div>
           <button
-            onClick={() => handleOfflineAction("Contactar Soporte")}
+            onClick={() => notify("Sin conexión: el soporte requiere internet.")}
             className="ml-auto shrink-0 w-9 h-9 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-600 cursor-pointer"
           >
             <span className="material-symbols-outlined text-[18px] font-bold">chat</span>

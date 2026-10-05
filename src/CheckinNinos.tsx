@@ -13,6 +13,9 @@ export default function CheckinNinosScreen({ onBack }: { onBack?: () => void }) 
   const [selectedRoom, setSelectedRoom] = useState("parvulos");
   const [searchQuery, setSearchQuery] = useState("");
   const [printSuccess, setPrintSuccess] = useState(false);
+  const [successToast, setSuccessToast] = useState<string | null>(null);
+  const [showCapacityModal, setShowCapacityModal] = useState(false);
+  const notify = (message: string) => { setSuccessToast(message); setTimeout(() => setSuccessToast(null), 3000); };
   const [kidsInRoom] = useState<KidInRoom[]>([
     {
       id: 1,
@@ -50,6 +53,12 @@ export default function CheckinNinosScreen({ onBack }: { onBack?: () => void }) 
 
   return (
     <div className="flex-1 pb-24 relative overflow-hidden flex flex-col justify-between animate-[fadeIn_0.25s_ease-out] font-body-md text-body-md text-[#0e1d25]">
+      {successToast && (
+        <div className="fixed top-24 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white text-xs font-bold px-4 py-3 rounded shadow-lg z-50 flex items-center gap-2">
+          <span className="material-symbols-outlined text-emerald-400 text-sm">check_circle</span>
+          <span>{successToast}</span>
+        </div>
+      )}
 
       {/* Barra de herramientas: una sola fila (← + rótulo) con una única
           salida; sin borde ni botón de cierre duplicado a la derecha. */}
@@ -97,7 +106,7 @@ export default function CheckinNinosScreen({ onBack }: { onBack?: () => void }) 
                   className="w-full bg-transparent text-xs font-semibold text-slate-800 placeholder:text-slate-400 focus:outline-none"
                 />
                 <button
-                  onClick={() => alert("Abriendo escáner de códigos QR...")}
+                  onClick={() => notify("Escáner QR disponible próximamente.")}
                   className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-[#386458] transition-all ml-1 cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-[18px] font-bold">qr_code_scanner</span>
@@ -111,7 +120,7 @@ export default function CheckinNinosScreen({ onBack }: { onBack?: () => void }) 
           <div className="flex items-center justify-between px-1">
             <span className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Seleccionar Aula & Edad</span>
             <button
-              onClick={() => alert("Aforos de Aula:\n- Cuna: 12/15\n- Párvulos: 15/20\n- Primarios: 11/25")}
+              onClick={() => setShowCapacityModal(true)}
               className="text-[10px] text-[#386458] font-bold uppercase tracking-wider cursor-pointer hover:underline"
             >
               Ver aforos
@@ -226,7 +235,7 @@ export default function CheckinNinosScreen({ onBack }: { onBack?: () => void }) 
           <div className="flex items-center justify-between px-1">
             <span className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Niños en Aula ({filteredKids.length})</span>
             <button
-              onClick={() => alert("Generando reporte de asistencia infantil...")}
+              onClick={() => notify("Reporte de asistencia infantil disponible próximamente.")}
               className="text-[10px] text-[#386458] font-bold uppercase tracking-wider cursor-pointer hover:underline"
             >
               Ver reporte
@@ -271,6 +280,35 @@ export default function CheckinNinosScreen({ onBack }: { onBack?: () => void }) 
         </div>
 
       </div>
+
+      {showCapacityModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+          <div className="w-full max-w-sm bg-white rounded-2xl p-5 shadow-2xl border border-slate-100">
+            <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Aforos de Aula</h3>
+            <ul className="mt-3 space-y-2 text-xs font-semibold text-slate-700">
+              <li className="flex items-center justify-between bg-slate-50 border border-slate-100 rounded-lg px-3 py-2">
+                <span>Cuna</span>
+                <span className="font-bold text-[#386458]">12/15</span>
+              </li>
+              <li className="flex items-center justify-between bg-slate-50 border border-slate-100 rounded-lg px-3 py-2">
+                <span>Párvulos</span>
+                <span className="font-bold text-[#386458]">15/20</span>
+              </li>
+              <li className="flex items-center justify-between bg-slate-50 border border-slate-100 rounded-lg px-3 py-2">
+                <span>Primarios</span>
+                <span className="font-bold text-[#386458]">11/25</span>
+              </li>
+            </ul>
+            <button
+              onClick={() => setShowCapacityModal(false)}
+              className="w-full mt-4 py-3 px-4 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold uppercase tracking-wide cursor-pointer"
+              style={{ borderRadius: "4px" }}
+            >
+              Cerrar
+            </button>
+          </div>
+        </div>
+      )}
 
     </div>
   );

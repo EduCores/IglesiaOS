@@ -28,6 +28,7 @@ export default function EventosScreen({ onNavigateToLive, onNavigateToCheckin }:
   const [selectedAtmosphere, setSelectedAtmosphere] = useState<"todos" | "calma" | "intima" | "contemporaneo" | "agradecimiento">("todos");
   const [playingSongId, setPlayingSongId] = useState<number | null>(null);
   const [successToast, setSuccessToast] = useState<string | null>(null);
+  const notify = (message: string) => { setSuccessToast(message); setTimeout(() => setSuccessToast(null), 3000); };
 
   // Rehearsals state to allow live confirmation!
   const [rehearsals, setRehearsals] = useState<Rehearsal[]>([
@@ -231,7 +232,6 @@ export default function EventosScreen({ onNavigateToLive, onNavigateToCheckin }:
           <button 
             onClick={() => {
               setSelectedTab("repertorio");
-              alert("Mostrando el catálogo completo con +150 canciones registradas...");
             }}
             className={`flex-1 py-2 rounded-full text-xs font-bold text-center transition-all cursor-pointer ${
               selectedTab === "repertorio" ? "bg-[#386458] text-white shadow-sm" : "text-slate-500 hover:text-slate-800"
@@ -363,7 +363,7 @@ export default function EventosScreen({ onNavigateToLive, onNavigateToCheckin }:
                   <span className="text-[10px] text-slate-500 font-medium leading-none">{song.comment}</span>
                   <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider">
                     <button 
-                      onClick={() => alert(`Descargando cifrado de acordes en PDF para "${song.title}"...`)}
+                      onClick={() => notify("Cifrado disponible próximamente.")}
                       className="inline-flex items-center gap-1 text-[#386458] hover:text-[#2c4e45] cursor-pointer"
                     >
                       <span className="material-symbols-outlined text-[15px] font-bold">picture_as_pdf</span>
@@ -371,7 +371,7 @@ export default function EventosScreen({ onNavigateToLive, onNavigateToCheckin }:
                     </button>
                     <span className="text-slate-300">•</span>
                     <button 
-                      onClick={() => alert(`Mostrando la letra completa de "${song.title}"...`)}
+                      onClick={() => notify("Letra completa disponible próximamente.")}
                       className="inline-flex items-center gap-1 text-slate-400 hover:text-slate-800 cursor-pointer"
                     >
                       <span className="material-symbols-outlined text-[15px] font-bold">lyrics</span>
@@ -470,7 +470,7 @@ export default function EventosScreen({ onNavigateToLive, onNavigateToCheckin }:
           </button>
           
           <button 
-            onClick={() => alert("Abriendo almacenamiento de Google Drive con todas las partituras y cifrados...")}
+            onClick={() => notify("Partituras disponibles próximamente.")}
             className="w-full py-3.5 px-6 bg-[#e7f6ff] hover:bg-[#e0f0fb] text-[#42617d] text-xs font-bold flex items-center justify-center gap-2 cursor-pointer active:scale-95 transition-all"
             style={{ borderRadius: "4px" }}
           >

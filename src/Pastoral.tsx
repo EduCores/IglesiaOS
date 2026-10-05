@@ -28,6 +28,7 @@ interface ConfidentialNote {
 export default function PastoralScreen({ onNavigateToSacramentos, onNavigateToBitacora }: { onNavigateToSacramentos?: () => void; onNavigateToBitacora?: () => void }) {
   const [showAddApptModal, setShowAddApptModal] = useState(false);
   const [successToast, setSuccessToast] = useState<string | null>(null);
+  const notify = (message: string) => { setSuccessToast(message); setTimeout(() => setSuccessToast(null), 3000); };
 
   // Form states for new appointment
   const [newApptName, setNewApptName] = useState("");
@@ -209,7 +210,7 @@ export default function PastoralScreen({ onNavigateToSacramentos, onNavigateToBi
               <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Próximas Visitas & Encuentros</h3>
             </div>
             <button 
-              onClick={() => alert("Mostrando agenda completa...")}
+              onClick={() => notify("Agenda completa disponible próximamente.")}
               className="text-[11px] text-[#386458] font-bold hover:underline cursor-pointer"
             >
               Ver agenda
@@ -298,7 +299,7 @@ export default function PastoralScreen({ onNavigateToSacramentos, onNavigateToBi
 
               <div className="pt-1.5 flex justify-end">
                 <button 
-                  onClick={() => alert(`Accediendo de forma segura y encriptada a la ficha confidencial...`)}
+                  onClick={() => notify("Ficha confidencial disponible próximamente.")}
                   className={`px-4 py-1.5 rounded-full text-[10px] font-bold transition-all cursor-pointer ${
                     note.id === 1 ? "bg-[#ffd9de] text-[#663a42] hover:bg-[#ffd9de]/80" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                   }`}

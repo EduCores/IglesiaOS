@@ -342,7 +342,7 @@ export default function DifusionWhatsappScreen({ onBack }: { onBack?: () => void
                   <span className="text-[10px] text-slate-400 font-semibold leading-none mt-1">1.4 MB · Formato horizontal (16:9)</span>
                   <div className="flex items-center gap-2 mt-2 font-bold text-[9px] uppercase tracking-wider">
                     <button 
-                      onClick={() => alert("Abriendo explorador de archivos...")}
+                      onClick={() => triggerToast("Explorador de archivos disponible próximamente.")}
                       className="text-[#386458] hover:underline inline-flex items-center gap-0.5 cursor-pointer"
                       type="button"
                     >
@@ -351,7 +351,7 @@ export default function DifusionWhatsappScreen({ onBack }: { onBack?: () => void
                     </button>
                     <span className="text-slate-300">·</span>
                     <button 
-                      onClick={() => alert("Grabando o cargando audio del pastor...")}
+                      onClick={() => triggerToast("Audio del pastor disponible próximamente.")}
                       className="text-slate-500 hover:underline inline-flex items-center gap-0.5 cursor-pointer"
                       type="button"
                     >
@@ -434,7 +434,7 @@ export default function DifusionWhatsappScreen({ onBack }: { onBack?: () => void
                 {/* Interactive Template Buttons */}
                 <div className="flex flex-col gap-1.5 pt-1.5 border-t border-slate-50">
                   <button 
-                    onClick={() => alert("Simulando acción: Asistencia confirmada.")}
+                    onClick={() => triggerToast("Asistencia confirmada.")}
                     className="w-full py-2 px-3 rounded-lg bg-slate-50 hover:bg-slate-100 text-[#386458] text-[10px] font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer border border-slate-200"
                     type="button"
                   >
@@ -442,7 +442,7 @@ export default function DifusionWhatsappScreen({ onBack }: { onBack?: () => void
                     <span>Confirmar Asistencia</span>
                   </button>
                   <button 
-                    onClick={() => alert("Simulando acción: Reenviando a contactos personales...")}
+                    onClick={() => triggerToast("Reenviado a contactos personales.")}
                     className="w-full py-1.5 px-3 rounded-lg bg-slate-50/50 hover:bg-slate-100 text-slate-500 text-[9px] font-bold flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                     type="button"
                   >

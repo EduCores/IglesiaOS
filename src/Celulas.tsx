@@ -21,6 +21,7 @@ export default function CelulasScreen() {
   const [selectedZone, setSelectedFilterZone] = useState<"todas" | "norte" | "centro" | "sur" | "jovenes" | "matrimonios">("todas");
   const [showAddCellModal, setShowAddCellModal] = useState(false);
   const [successToast, setSuccessToast] = useState<string | null>(null);
+  const notify = (message: string) => { setSuccessToast(message); setTimeout(() => setSuccessToast(null), 3000); };
 
   // Form states for new cell group
   const [newCellName, setNewCellName] = useState("");
@@ -192,7 +193,7 @@ export default function CelulasScreen() {
                 <span className="w-2 h-2 rounded-full bg-[#386458] animate-pulse"></span> 
                 6 Zonas Urbanas
               </span>
-              <button className="w-8 h-8 rounded-full bg-white/90 backdrop-blur-md text-[#386458] flex items-center justify-center shadow-sm cursor-pointer active:scale-90">
+              <button onClick={() => notify("Mapa de células disponible próximamente.")} className="w-8 h-8 rounded-full bg-white/90 backdrop-blur-md text-[#386458] flex items-center justify-center shadow-sm cursor-pointer active:scale-90">
                 <span className="material-symbols-outlined text-[18px]">my_location</span>
               </button>
             </div>
@@ -345,7 +346,7 @@ export default function CelulasScreen() {
               {/* Acciones de Célula */}
               <div className="grid grid-cols-2 gap-2 pt-1">
                 <button 
-                  onClick={() => alert(`Enviando reporte de asistencia para la célula "${cell.name}"...`)}
+                  onClick={() => notify(`Reporte de "${cell.name}" disponible próximamente.`)}
                   className="bg-[#386458] hover:bg-[#2c4e45] text-white py-2.5 px-3 rounded-full text-[11px] font-bold flex items-center justify-center gap-1.5 shadow-sm cursor-pointer"
                   style={{ borderRadius: "4px" }}
                 >
@@ -353,7 +354,7 @@ export default function CelulasScreen() {
                   <span>Reportar</span>
                 </button>
                 <button 
-                  onClick={() => alert(`Abriendo chat seguro con el líder "${cell.leaders}"...`)}
+                  onClick={() => notify(`Chat con "${cell.leaders}" disponible próximamente.`)}
                   className="bg-[#bddefe]/60 hover:bg-[#bddefe] text-[#43627e] py-2.5 px-3 rounded-full text-[11px] font-bold flex items-center justify-center gap-1.5 cursor-pointer"
                   style={{ borderRadius: "4px" }}
                 >
@@ -379,7 +380,7 @@ export default function CelulasScreen() {
             <p className="text-[10px] text-slate-400 mt-0.5 line-clamp-1">Serie actual: "Caminando en Amor Fraternal"</p>
           </div>
           <button 
-            onClick={() => alert("Descargando guía de estudio semanal en PDF...")}
+            onClick={() => notify("Guía de estudio disponible próximamente.")}
             className="w-8 h-8 rounded-full bg-white text-[#386458] flex items-center justify-center shrink-0 shadow-sm border border-slate-100 cursor-pointer"
           >
             <span className="material-symbols-outlined text-[18px]">download</span>

@@ -15,6 +15,8 @@ export default function BitacoraPastoralScreen({ onBack }: { onBack?: () => void
   const [noteContent, setConfidentialNote] = useState("");
   const [assignedLeader, setAssignedLeader] = useState("Pastor Andrés V.");
   const [nextFollowUpDate, setNextFollowUpDate] = useState("En 2 semanas (7 Nov)");
+  const [successToast, setSuccessToast] = useState<string | null>(null);
+  const notify = (message: string) => { setSuccessToast(message); setTimeout(() => setSuccessToast(null), 3000); };
 
   // Prayer Petitions Interactive state
   const [prayers, setPrayers] = useState<PrayerPetition[]>([
@@ -34,16 +36,22 @@ export default function BitacoraPastoralScreen({ onBack }: { onBack?: () => void
   };
 
   const handleSaveLog = () => {
-    alert("¡Bitácora pastoral guardada y cifrada con AES-256 en la ficha del miembro!");
+    notify("¡Bitácora pastoral guardada y cifrada con AES-256 en la ficha del miembro!");
     if (onBack) onBack();
   };
 
   const handleSendWhatsApp = () => {
-    alert("Redirigiendo a WhatsApp con el texto: 'Querida Familia Morales, les enviamos este versículo de ánimo para hoy. Filipenses 4:6-7: Por nada estéis afanosos...'");
+    window.open("https://wa.me/?text=" + encodeURIComponent("Querida Familia Morales, les enviamos este versículo de ánimo para hoy. Filipenses 4:6-7: Por nada estéis afanosos..."), "_blank");
   };
 
   return (
     <div className="flex-1 pb-24 relative overflow-hidden flex flex-col justify-between animate-[fadeIn_0.25s_ease-out] font-body-md text-body-md text-[#0e1d25]">
+      {successToast && (
+        <div className="fixed top-24 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white text-xs font-bold px-4 py-3 rounded shadow-lg z-50 flex items-center gap-2">
+          <span className="material-symbols-outlined text-emerald-400 text-sm">check_circle</span>
+          <span>{successToast}</span>
+        </div>
+      )}
       
       {/* Barra de herramientas: una sola fila (← + rótulo) con una única
           salida; sin borde ni botón de cierre duplicado a la derecha. */}
@@ -87,7 +95,7 @@ export default function BitacoraPastoralScreen({ onBack }: { onBack?: () => void
           <div className="flex flex-wrap items-center justify-between gap-2">
             <span className="text-[11px] text-slate-500 font-bold uppercase">Hermano o Familia Visitada</span>
             <button 
-              onClick={() => alert("Cargando directorio de familias para enlazar bitácora...")}
+              onClick={() => notify("Directorio de familias disponible próximamente.")}
               className="text-[11px] text-[#386458] font-bold flex items-center space-x-1 hover:underline cursor-pointer shrink-0"
             >
               <span className="material-symbols-outlined text-[16px] font-bold">sync_alt</span>
@@ -400,7 +408,7 @@ export default function BitacoraPastoralScreen({ onBack }: { onBack?: () => void
             </div>
             <button 
               type="button"
-              onClick={() => alert("Mostrando listado de versículos de consuelo y victoria...")}
+              onClick={() => notify("Listado de versículos disponible próximamente.")}
               className="px-2.5 py-1 rounded-full bg-white border border-slate-200 text-[#386458] text-[9px] font-bold uppercase tracking-wider shrink-0 transition-colors cursor-pointer"
               style={{ borderRadius: "4px" }}
             >

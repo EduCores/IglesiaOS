@@ -16,6 +16,25 @@ export default function ConfirmacionRegistroScreen({
     setTimeout(() => setSuccessToast(null), 3500);
   };
 
+  const handleDownloadComprobante = () => {
+    const content = `Comprobante IglesiaOS
+Folio Oficial: #IOS-2024-8942
+Hermano / Titular: Mateo Alejandro Morales Benítez
+Destino Litúrgico: Bautismos • Dom 24 Nov (11:30 AM)
+Tipo de Registro: Solicitud Sacramental y Ficha Fraternal
+Responsable Ministerial: Pastor Andrés Valdivia`;
+    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "comprobante-iglesiaos.txt";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    triggerSuccess("Comprobante descargado.");
+  };
+
   return (
     <div className="flex-1 pb-24 relative overflow-hidden flex flex-col justify-between animate-[fadeIn_0.25s_ease-out] font-body-md text-body-md text-[#0e1d25]">
 
@@ -141,12 +160,12 @@ export default function ConfirmacionRegistroScreen({
 
         <div className="flex flex-col gap-3">
           <button
-            onClick={() => triggerSuccess("Descargando comprobante digital en PDF...")}
+            onClick={handleDownloadComprobante}
             className="w-full py-4 px-6 rounded-full bg-[#386458] text-white font-bold text-xs uppercase tracking-wide flex items-center justify-center gap-2 cursor-pointer shadow-md active:scale-[0.98] transition-all"
             style={{ borderRadius: "4px" }}
           >
             <span className="material-symbols-outlined text-[20px] font-bold">download</span>
-            <span>Descargar Comprobante PDF</span>
+            <span>Descargar comprobante</span>
           </button>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

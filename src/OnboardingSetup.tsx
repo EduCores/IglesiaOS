@@ -70,6 +70,11 @@ export default function OnboardingSetupScreen({ onBack }: { onBack?: () => void 
     return nextPending ? nextPending.title : "¡Todos los pilares configurados!";
   };
 
+  const notify = (message: string) => {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(null), 3000);
+  };
+
   return (
     <div className="flex-1 pb-24 relative overflow-hidden flex flex-col justify-between animate-[fadeIn_0.25s_ease-out] font-body-md text-body-md text-[#0e1d25]">
 
@@ -174,7 +179,7 @@ export default function OnboardingSetupScreen({ onBack }: { onBack?: () => void 
 
         <div className="pt-2">
           <button
-            onClick={() => alert("Iniciando Asistente de Configuración Rápida (5 minutos)...")}
+            onClick={() => notify("Asistente de configuración disponible próximamente.")}
             className="w-full py-4 px-6 rounded-full bg-[#386458] hover:bg-[#2c4e45] text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md cursor-pointer active:scale-[0.98] transition-all"
             style={{ borderRadius: "4px" }}
           >
@@ -190,7 +195,7 @@ export default function OnboardingSetupScreen({ onBack }: { onBack?: () => void 
           <div className="min-w-0">
             <p className="text-xs font-bold text-slate-900 leading-none">¿Necesitas acompañamiento?</p>
             <button
-              onClick={() => alert("Conectando con un Asesor de IglesiaOS...")}
+              onClick={() => notify("Asesor de IglesiaOS disponible próximamente.")}
               className="text-[10px] text-[#42617d] hover:underline font-bold uppercase mt-1 leading-none cursor-pointer"
             >
               Chatear con un asesor

@@ -2,6 +2,8 @@ import React, { useState } from "react";
 
 export default function CultoVivoScreen() {
   const [activeTab, setActiveTab] = useState<"cronograma" | "voluntarios" | "checklist">("cronograma");
+  const [successToast, setSuccessToast] = useState<string | null>(null);
+  const notify = (message: string) => { setSuccessToast(message); setTimeout(() => setSuccessToast(null), 3000); };
   
   // Checklist State to make it interactively functional!
   const [checklist, setChecklist] = useState([
@@ -19,7 +21,7 @@ export default function CultoVivoScreen() {
 
   return (
     <div className="flex-1 pb-24 relative overflow-hidden flex flex-col justify-between animate-[fadeIn_0.25s_ease-out] font-body-md text-body-md text-[#0e1d25]">
-      
+      {successToast && (<div className="fixed top-24 left-1/2 transform -translate-x-1/2 bg-slate-900 text-white text-xs font-bold px-4 py-3 rounded shadow-lg z-50 flex items-center gap-2"><span className="material-symbols-outlined text-emerald-400 text-sm">check_circle</span><span>{successToast}</span></div>)}
       {/* Ambient Decorative Blurs */}
       <div className="fixed top-20 right-4 w-56 h-56 rounded-full bg-[#cde5ff]/40 blur-3xl pointer-events-none -z-10"></div>
       <div className="fixed top-96 -left-12 w-64 h-64 rounded-full bg-[#bdeddd]/30 blur-3xl pointer-events-none -z-10"></div>
@@ -57,7 +59,7 @@ export default function CultoVivoScreen() {
 
               <div className="flex items-center justify-between pt-1 border-t border-white/10">
                 <button 
-                  onClick={() => alert("Mostrando la pauta litúrgica y versos de hoy...")}
+                  onClick={() => notify("Pauta litúrgica disponible próximamente.")}
                   className="px-4 py-2.5 rounded-full bg-[#386458] hover:bg-[#2c4e45] text-white text-[10px] font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition-all cursor-pointer"
                   style={{ borderRadius: "4px" }}
                 >
@@ -312,7 +314,7 @@ export default function CultoVivoScreen() {
               <p className="text-[10px] text-slate-500 font-medium">Fechas destacadas en la agenda comunitaria</p>
             </div>
             <button 
-              onClick={() => alert("Mostrando calendario anual de eventos...")}
+              onClick={() => notify("Calendario anual disponible próximamente.")}
               className="text-[11px] text-[#386458] font-bold hover:underline cursor-pointer"
             >
               Ver Todo
@@ -337,7 +339,7 @@ export default function CultoVivoScreen() {
                 <p className="text-[10px] text-slate-400 line-clamp-1 mt-0.5 leading-none">Hotel Campestre Los Olivos • 32 parejas registradas</p>
               </div>
               <button 
-                onClick={() => alert("Mostrando ficha de registro del Retiro de Matrimonios...")}
+                onClick={() => notify("Ficha del Retiro de Matrimonios disponible próximamente.")}
                 className="w-8 h-8 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 hover:text-[#386458] transition-colors shrink-0 cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[18px]">chevron_right</span>
@@ -361,7 +363,7 @@ export default function CultoVivoScreen() {
                 <p className="text-[10px] text-slate-400 line-clamp-1 mt-0.5 leading-none">Auditorio Menor • Noche de clamor y comunión</p>
               </div>
               <button 
-                onClick={() => alert("Mostrando detalles de la Vigilia de Jóvenes...")}
+                onClick={() => notify("Detalles de la Vigilia de Jóvenes disponibles próximamente.")}
                 className="w-8 h-8 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-400 hover:text-[#386458] transition-colors shrink-0 cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[18px]">chevron_right</span>
@@ -373,7 +375,7 @@ export default function CultoVivoScreen() {
         {/* Botón Pill Principal de Acción Inferior */}
         <div className="pt-2">
           <button 
-            onClick={() => alert("Cargando formulario de creación de eventos, reserva de salas y recursos...")}
+            onClick={() => notify("Creación de eventos disponible próximamente.")}
             className="w-full py-3.5 rounded-full bg-[#386458] hover:bg-[#2c4e45] text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md hover:shadow-lg active:scale-[0.98] transition-all cursor-pointer"
             style={{ borderRadius: "4px" }}
           >

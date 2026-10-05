@@ -21,6 +21,7 @@ import ConfirmacionRegistroScreen from "./ConfirmacionRegistro";
 function RolesScreen() {
   const [selectedFilter, setSelectedFilter] = useState<"todos" | "liderazgo" | "ministerios" | "apoyo">("todos");
   const [showAddRoleModal, setShowAddRoleModal] = useState(false);
+  const [showAuditModal, setShowAuditModal] = useState(false);
   const [newRoleName, setNewRoleName] = useState("");
   const [newRoleCategory, setNewRoleCategory] = useState<"liderazgo" | "ministerios" | "apoyo">("liderazgo");
   const [newRoleDesc, setNewRoleNameDesc] = useState("");
@@ -195,7 +196,7 @@ function RolesScreen() {
               <div className="flex items-center justify-between pt-3 mt-3.5 border-t border-slate-100">
                 <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{role.members} Miembros asignados</span>
                 <button 
-                  onClick={() => alert(`Editando privilegios para el rol "${role.title}"...`)}
+                  onClick={() => { setSuccessToast(`Edición de "${role.title}" disponible próximamente.`); setTimeout(() => setSuccessToast(null), 3000); }}
                   className="px-4 py-1.5 rounded-full bg-[#f4faff] text-[#386458] hover:bg-[#bdeddd]/60 transition-colors flex items-center space-x-1 text-[11px] font-bold cursor-pointer"
                   style={{ borderRadius: "4px" }}
                 >
@@ -219,7 +220,7 @@ function RolesScreen() {
             </div>
           </div>
           <button 
-            onClick={() => alert("Iniciando auditoría de seguridad y privilegios...")}
+            onClick={() => setShowAuditModal(true)}
             className="px-4 py-2 bg-[#7f4e57] hover:bg-[#663a42] text-white text-[11px] font-bold shadow-sm active:scale-95 transition-all cursor-pointer"
             style={{ borderRadius: "4px" }}
           >
@@ -240,6 +241,47 @@ function RolesScreen() {
         </div>
 
       </div>
+
+      {/* Modal de auditoría: resumen real calculado del estado de roles */}
+      {showAuditModal && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl max-w-sm w-full p-6 space-y-4 shadow-xl animate-[scaleIn_0.2s_ease-out]">
+            <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+              <h3 className="text-sm font-bold text-slate-800">Auditoría de Permisos</h3>
+              <button onClick={() => setShowAuditModal(false)} aria-label="Cerrar" className="text-slate-400 hover:text-slate-600 cursor-pointer">
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            <div className="grid grid-cols-2 gap-2.5">
+              <div className="rounded-xl bg-slate-50 border border-slate-100 p-3 text-center">
+                <p className="font-display text-2xl font-bold text-slate-900">{roles.length}</p>
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Roles</p>
+              </div>
+              <div className="rounded-xl bg-slate-50 border border-slate-100 p-3 text-center">
+                <p className="font-display text-2xl font-bold text-[#386458]">{roles.reduce((s, r) => s + r.members, 0)}</p>
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Miembros</p>
+              </div>
+              <div className="rounded-xl bg-[#bdeddd]/40 border border-slate-100 p-3 text-center">
+                <p className="font-display text-2xl font-bold text-[#386458]">{roles.filter((r) => r.checked).length}</p>
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Activos</p>
+              </div>
+              <div className="rounded-xl bg-[#ffd9de]/40 border border-slate-100 p-3 text-center">
+                <p className="font-display text-2xl font-bold text-[#7f4e57]">{roles.filter((r) => !r.checked).length}</p>
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Suspendidos</p>
+              </div>
+            </div>
+            <div className="rounded-xl bg-slate-50 border border-slate-100 p-3 flex items-center justify-between text-[11px] font-bold text-slate-600">
+              <span>Liderazgo {roles.filter((r) => r.type === "liderazgo").length}</span>
+              <span>Ministerios {roles.filter((r) => r.type === "ministerios").length}</span>
+              <span>Apoyo {roles.filter((r) => r.type === "apoyo").length}</span>
+            </div>
+            <p className="text-[10px] text-slate-400 font-medium flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-[14px] text-[#386458]">check_circle</span>
+              Última revisión: Hoy, 09:30 · Sin hallazgos críticos.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Modal interactivo de creación de rol */}
       {showAddRoleModal && (
@@ -325,6 +367,7 @@ function FinanzasDashboardScreen({
   onNavigateToForm: () => void 
 }) {
   const [selectedCategory, setSelectedCategory] = useState<"todos" | "ministerios" | "misiones" | "operaciones">("todos");
+  const [showReportsModal, setShowReportsModal] = useState(false);
 
   const transactions = [
     { id: 1, title: "Diezmo Mensual Familia Silva", category: "ministerios", amount: 120000, type: "plus", date: "Ayer, 18:30", badgeText: "Diezmo", badgeColor: "bg-[#bdeddd] text-[#214e43]", textColor: "text-[#386458]", bgIconColor: "bg-[#bdeddd]/60", icon: "volunteer_activism" },
@@ -382,7 +425,7 @@ function FinanzasDashboardScreen({
                 <span className="truncate">Registrar Diezmo</span>
               </button>
               <button 
-                onClick={() => alert("Mostrando reportes financieros...")}
+                onClick={() => setShowReportsModal(true)}
                 className="group flex items-center justify-center space-x-2 py-3 px-3.5 bg-[#cde5ff] hover:bg-[#aecdf5] text-[#294964] text-[11px] font-bold shadow-sm hover:shadow active:scale-[0.98] transition-all cursor-pointer"
                 style={{ borderRadius: "4px" }}
               >
@@ -522,7 +565,7 @@ function FinanzasDashboardScreen({
         <div className="flex flex-col space-y-3 pb-6">
           <div className="flex items-center justify-between px-1">
             <h2 className="text-sm font-bold text-slate-900">Transacciones Recientes</h2>
-            <button className="text-[11px] text-[#386458] font-bold flex items-center space-x-0.5 hover:underline">
+            <button onClick={() => setShowReportsModal(true)} className="text-[11px] text-[#386458] font-bold flex items-center space-x-0.5 hover:underline cursor-pointer">
               <span>Historial</span>
               <span className="material-symbols-outlined text-[16px]">chevron_right</span>
             </button>
@@ -561,6 +604,40 @@ function FinanzasDashboardScreen({
         </div>
 
       </div>
+
+      {/* Modal de reportes: resumen real calculado de las transacciones */}
+      {showReportsModal && (() => {
+        const income = transactions.filter((t) => t.type === "plus").reduce((s, t) => s + t.amount, 0);
+        const expenses = transactions.filter((t) => t.type === "minus").reduce((s, t) => s + t.amount, 0);
+        const fmt = (n: number) => new Intl.NumberFormat("es-CL").format(n);
+        return (
+          <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+            <div className="bg-white rounded-2xl max-w-sm w-full p-6 space-y-4 shadow-xl animate-[scaleIn_0.2s_ease-out]">
+              <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+                <h3 className="text-sm font-bold text-slate-800">Reporte Financiero</h3>
+                <button onClick={() => setShowReportsModal(false)} aria-label="Cerrar" className="text-slate-400 hover:text-slate-600 cursor-pointer">
+                  <span className="material-symbols-outlined">close</span>
+                </button>
+              </div>
+              <div className="grid grid-cols-2 gap-2.5">
+                <div className="rounded-xl bg-[#bdeddd]/40 border border-slate-100 p-3 text-center">
+                  <p className="font-display text-lg font-bold text-[#386458]">+${fmt(income)}</p>
+                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Ingresos</p>
+                </div>
+                <div className="rounded-xl bg-[#ffd9de]/40 border border-slate-100 p-3 text-center">
+                  <p className="font-display text-lg font-bold text-[#7f4e57]">-${fmt(expenses)}</p>
+                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-0.5">Egresos</p>
+                </div>
+              </div>
+              <div className="rounded-xl bg-slate-50 border border-slate-100 p-3 flex items-center justify-between">
+                <span className="text-[11px] text-slate-500 font-bold uppercase tracking-wider">Balance del período</span>
+                <span className="font-display text-lg font-bold text-slate-900">${fmt(income - expenses)}</span>
+              </div>
+              <p className="text-[10px] text-slate-400 font-medium text-center">{transactions.length} movimientos registrados · {filteredTransactions.length} visibles con el filtro actual</p>
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }
@@ -823,11 +900,13 @@ function ComunicacionesScreen({
 function InicioScreen({ 
   onNavigateToForm, 
   onNavigateToHistory,
-  onNavigateToModule
+  onNavigateToModule,
+  onOpenMenu
 }: { 
   onNavigateToForm: () => void; 
   onNavigateToHistory: () => void; 
   onNavigateToModule?: (screen: "celulas" | "personas" | "roles" | "multimedia") => void;
+  onOpenMenu?: () => void;
 }) {
   const [isCultoActive, setIsCultoActive] = useState(false);
   const [activeDayInfo, setActiveDayInfo] = useState<string | null>(null);
@@ -969,7 +1048,7 @@ function InicioScreen({
         <div className="flex flex-col space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-bold text-slate-900">Módulos de Gestión</h3>
-            <button className="text-[11px] text-[#386458] font-bold hover:underline">Ver Todos</button>
+            <button onClick={() => onOpenMenu?.()} className="text-[11px] text-[#386458] font-bold hover:underline cursor-pointer">Ver Todos</button>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
@@ -1322,6 +1401,7 @@ export default function App() {
   const [emailError, setEmailError] = useState<string>("");
   const [prayerRequest, setPrayerRequest] = useState<string>("");
   const [prayerError, setPrayerError] = useState<string>("");
+  const [amountError, setAmountError] = useState<string>("");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -1346,6 +1426,7 @@ export default function App() {
   const handleAddAmount = (val: number) => {
     setAmount((prev) => prev + val);
     setCustomAmountText((amount + val).toString());
+    setAmountError("");
   };
 
   const handleCustomAmountSubmit = (e: React.FormEvent) => {
@@ -1353,8 +1434,9 @@ export default function App() {
     const parsed = parseInt(customAmountText.replace(/\D/g, ""), 10);
     if (!isNaN(parsed) && parsed >= 500) {
       setAmount(parsed);
+      setAmountError("");
     } else {
-      alert("El monto mínimo para consagrar es de $500 CLP.");
+      setAmountError("El monto mínimo para consagrar es de $500 CLP.");
       setCustomAmountText(amount.toString());
     }
     setIsEditingAmount(false);
@@ -1420,8 +1502,10 @@ export default function App() {
     }
 
     if (amount < 500) {
-      alert("Por favor ingresa un monto válido igual o superior a $500 CLP.");
+      setAmountError("Por favor ingresa un monto válido igual o superior a $500 CLP.");
       hasError = true;
+    } else {
+      setAmountError("");
     }
 
     if (hasError) return;
@@ -1445,7 +1529,32 @@ export default function App() {
     setEmailError("");
     setPrayerRequest("");
     setPrayerError("");
+    setAmountError("");
     setActiveScreen("inicio");
+  };
+
+  const handleDownloadReceipt = () => {
+    const purpose = purposes.find((p) => p.id === selectedPurpose)?.label ?? selectedPurpose;
+    const method = paymentMethods.find((m) => m.id === selectedMethod)?.title ?? selectedMethod;
+    const lines = [
+      "IGLESIAOS · COMPROBANTE DE CONTRIBUCIÓN",
+      `Fecha: ${new Date().toLocaleString("es-CL")}`,
+      `Monto: CLP $${formatCLP(amount)}`,
+      `Propósito: ${purpose}`,
+      `Método: ${method}`,
+      `Donante: ${isAnonymous ? "Anónimo" : "Juan Pérez Morales"}`,
+      email ? `Correo: ${email}` : null,
+      prayerRequest ? `Petición de oración: ${prayerRequest}` : null,
+    ].filter(Boolean).join("\n");
+    const blob = new Blob([lines], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "comprobante-iglesiaos.txt";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
   };
 
   return (
@@ -1502,8 +1611,10 @@ export default function App() {
                 <div className="flex items-center gap-1.5">
                   <ThemeToggle theme={theme} onToggle={toggleTheme} />
                   <button
+                    onClick={() => { setActiveScreen("onboarding_setup"); setIsMenuOpen(false); }}
                     className="w-8 h-8 rounded-full bg-[#386458] flex items-center justify-center text-white hover:scale-105 active:scale-95 transition-all cursor-pointer shadow-sm hover:shadow"
                     aria-label="Perfil"
+                    title="Mi perfil y configuración"
                   >
                     <span className="material-symbols-outlined text-[18px]">person</span>
                   </button>
@@ -1526,6 +1637,7 @@ export default function App() {
                   onNavigateToForm={() => setActiveScreen("formulario")} 
                   onNavigateToHistory={() => setActiveScreen("comunicaciones")}
                   onNavigateToModule={(screen) => setActiveScreen(screen)}
+                  onOpenMenu={() => setIsMenuOpen(true)}
                 />
               ) : activeScreen === "comunicaciones" ? (
                 <ComunicacionesScreen 
@@ -1715,6 +1827,9 @@ export default function App() {
                       )}
                     </div>
 
+                    {amountError && (
+                      <p className="text-center text-[10px] text-rose-500 font-medium animate-[fadeIn_0.2s_ease-out]">{amountError}</p>
+                    )}
                     <div className="grid grid-cols-3 gap-2">
                       {[10000, 50000, 100000].map((val) => (
                         <button
@@ -1909,6 +2024,7 @@ export default function App() {
                   onNavigateToForm={() => setActiveScreen("formulario")}
                   onNavigateToHistory={() => setActiveScreen("comunicaciones")}
                   onNavigateToModule={(screen) => setActiveScreen(screen)}
+                  onOpenMenu={() => setIsMenuOpen(true)}
                 />
               )}
 
@@ -2026,6 +2142,7 @@ export default function App() {
                     onNavigateToForm={() => setActiveScreen("formulario")}
                     onNavigateToHistory={() => setActiveScreen("comunicaciones")}
                     onNavigateToModule={(screen) => setActiveScreen(screen)}
+                    onOpenMenu={() => setIsMenuOpen(true)}
                   />
                 </div>
               ) : activeScreen === "comunicaciones" ? (
@@ -2172,12 +2289,12 @@ export default function App() {
 
                   <div className="flex gap-4 w-full">
                     <button
-                      onClick={() => alert("Descargando recibo digital...")}
+                      onClick={handleDownloadReceipt}
                       className="flex-1 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-semibold py-3.5 px-6 rounded-full transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer hover:shadow-sm"
                       style={{ borderRadius: "4px" }}
                     >
                       <span className="material-symbols-outlined text-[18px]">download</span>
-                      Descargar PDF
+                      Descargar comprobante
                     </button>
                     <button
                       onClick={resetForm}
@@ -2268,6 +2385,9 @@ export default function App() {
                         )}
                       </div>
 
+                      {amountError && (
+                        <p className="text-center text-[10px] text-rose-500 font-medium animate-[fadeIn_0.2s_ease-out]">{amountError}</p>
+                      )}
                       <div className="grid grid-cols-3 gap-3">
                         {[10000, 50000, 100000].map((val) => (
                           <button
@@ -2367,6 +2487,7 @@ export default function App() {
                     onNavigateToForm={() => setActiveScreen("formulario")}
                     onNavigateToHistory={() => setActiveScreen("comunicaciones")}
                     onNavigateToModule={(screen) => setActiveScreen(screen)}
+                    onOpenMenu={() => setIsMenuOpen(true)}
                   />
                 </div>
               )}
