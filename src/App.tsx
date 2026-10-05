@@ -1402,6 +1402,7 @@ export default function App() {
   const [nombreInput, setNombreInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
   const [loginError, setLoginError] = useState("");
+  const [editandoPerfil, setEditandoPerfil] = useState(false);
   const [sesionToast, setSesionToast] = useState<string | null>(null);
 
   const avisarSesion = (msg: string) => {
@@ -1429,6 +1430,28 @@ export default function App() {
     setLoginError("");
     setShowPerfilModal(false);
     avisarSesion(`¡Bienvenido/a, ${s.nombre}!`);
+  };
+
+  const actualizarPerfil = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!nombreInput.trim()) {
+      setLoginError("Ingresa tu nombre para identificarte.");
+      return;
+    }
+    if (!/\S+@\S+\.\S+/.test(emailInput.trim())) {
+      setLoginError("Ingresa un correo válido (ej: usuario@correo.com).");
+      return;
+    }
+    const s = { nombre: nombreInput.trim(), email: emailInput.trim() };
+    try {
+      localStorage.setItem("iglesiaos-sesion", JSON.stringify(s));
+    } catch {
+      /* sin almacenamiento: la sesión dura esta visita */
+    }
+    setSesion(s);
+    setLoginError("");
+    setEditandoPerfil(false);
+    avisarSesion("Perfil actualizado.");
   };
 
   const cerrarSesion = () => {
@@ -2590,6 +2613,7 @@ export default function App() {
               onClick={() => {
                 setShowPerfilModal(false);
                 setLoginError("");
+                setEditandoPerfil(false);
               }}
             />
             <div className="relative w-full max-w-sm bg-white rounded-2xl p-6 shadow-xl animate-[scaleIn_0.15s_ease-out]">
@@ -2608,6 +2632,53 @@ export default function App() {
                 </button>
               </div>
               {sesion ? (
+                editandoPerfil ? (
+                  <form onSubmit={actualizarPerfil} className="space-y-3">
+                    <div className="space-y-1">
+                      <label className="text-[11px] text-slate-500 font-bold uppercase">Nombre</label>
+                      <input
+                        type="text"
+                        value={nombreInput}
+                        onChange={(e) => setNombreInput(e.target.value)}
+                        placeholder="ej: Pastor Samuel"
+                        className="w-full px-4 py-3 text-xs border border-slate-200 rounded-xl focus:border-[#386458] focus:outline-none"
+                      />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[11px] text-slate-500 font-bold uppercase">Correo</label>
+                      <input
+                        type="email"
+                        value={emailInput}
+                        onChange={(e) => setEmailInput(e.target.value)}
+                        placeholder="ejemplo@correo.com"
+                        className="w-full px-4 py-3 text-xs border border-slate-200 rounded-xl focus:border-[#386458] focus:outline-none"
+                      />
+                    </div>
+                    {loginError && (
+                      <p className="text-[10px] text-rose-500 font-medium animate-[fadeIn_0.2s_ease-out]">{loginError}</p>
+                    )}
+                    <div className="flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditandoPerfil(false);
+                          setLoginError("");
+                        }}
+                        className="flex-1 py-3 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all cursor-pointer"
+                        style={{ borderRadius: "4px" }}
+                      >
+                        Cancelar
+                      </button>
+                      <button
+                        type="submit"
+                        className="flex-1 py-3 px-4 bg-[#386458] hover:bg-[#2c4e45] text-white text-xs font-bold transition-all shadow-md cursor-pointer"
+                        style={{ borderRadius: "4px" }}
+                      >
+                        Guardar
+                      </button>
+                    </div>
+                  </form>
+                ) : (
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-full bg-[#386458] text-white flex items-center justify-center text-lg font-bold shrink-0">
@@ -2642,8 +2713,23 @@ export default function App() {
                       <span className="material-symbols-outlined text-[18px]">logout</span>
                       Cerrar sesión
                     </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setNombreInput(sesion.nombre);
+                        setEmailInput(sesion.email);
+                        setLoginError("");
+                        setEditandoPerfil(true);
+                      }}
+                      className="w-full py-3 px-6 bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer"
+                      style={{ borderRadius: "4px" }}
+                    >
+                      <span className="material-symbols-outlined text-[18px]">edit</span>
+                      Editar perfil
+                    </button>
                   </div>
                 </div>
+                )
               ) : (
                 <form onSubmit={ingresar} className="space-y-3">
                   <p className="text-[11px] text-slate-400 font-medium">
