@@ -36,6 +36,10 @@ function RolesScreen() {
     { id: 3, title: "Tesorero", tag: "Finanzas", type: "liderazgo", desc: "Editor en Finanzas, Solo Lectura", badgeColor: "bg-[#ffd9de] text-[#663a42]", checked: true, icon: "payments", bgIconColor: "bg-[#ffd9de]", iconColor: "text-[#7f4e57]", detailText: "Ofrendas • Balances", members: 1 },
     { id: 4, title: "Líder de Célula", tag: "Grupos", type: "apoyo", desc: "Solo Lectura", badgeColor: "bg-slate-200 text-slate-700", checked: true, icon: "groups_3", bgIconColor: "bg-[#a1d0c1]/40", iconColor: "text-[#386458]", detailText: "Asistencia • Contacto", members: 12 },
     { id: 5, title: "Voluntario", tag: "Básico", type: "apoyo", desc: "Acceso limitado", badgeColor: "bg-[#daebf5] text-[#294964]", checked: false, icon: "volunteer_activism", bgIconColor: "bg-[#aacaea]/30", iconColor: "text-[#42617d]", detailText: "Turnos • Avisos", members: 28 },
+    { id: 6, title: "Portero", tag: "Servicio", type: "apoyo", desc: "Registra ofrendas · Control de acceso", badgeColor: "bg-[#386458]/10 text-[#386458]", checked: true, icon: "door_open", bgIconColor: "bg-[#bdeddd]", iconColor: "text-[#386458]", detailText: "Acceso • Ofrendas", members: 0 },
+    { id: 7, title: "Ujieres", tag: "Servicio", type: "apoyo", desc: "Registra ofrendas · Orden y acomodo", badgeColor: "bg-[#386458]/10 text-[#386458]", checked: true, icon: "hail", bgIconColor: "bg-[#cde5ff]", iconColor: "text-[#42617d]", detailText: "Orden • Ofrendas", members: 0 },
+    { id: 8, title: "Servicio de Aseo", tag: "Servicio", type: "apoyo", desc: "Solicita gastos · Limpieza del templo", badgeColor: "bg-slate-200 text-slate-700", checked: true, icon: "cleaning_services", bgIconColor: "bg-[#e7f6ff]", iconColor: "text-[#42617d]", detailText: "Limpieza • Insumos", members: 0 },
+    { id: 9, title: "Cocina + Ayudantes", tag: "Servicio", type: "apoyo", desc: "Solicita gastos · Alimentación y convivios", badgeColor: "bg-slate-200 text-slate-700", checked: true, icon: "soup_kitchen", bgIconColor: "bg-[#ffd9de]", iconColor: "text-[#7f4e57]", detailText: "Cocina • Víveres", members: 0 },
   ]);
 
   const handleToggleSwitch = (id: number) => {
@@ -375,7 +379,10 @@ function FinanzasDashboardScreen({
     { id: 1, title: "Diezmo Mensual Familia Silva", category: "ministerios", amount: 120000, type: "plus", date: "Ayer, 18:30", badgeText: "Diezmo", badgeColor: "bg-[#bdeddd] text-[#214e43]", textColor: "text-[#386458]", bgIconColor: "bg-[#bdeddd]/60", icon: "volunteer_activism" },
     { id: 2, title: "Ofrenda Misión Patagonia", category: "misiones", amount: 65000, type: "plus", date: "14 May, 10:15", badgeText: "Ofrenda", badgeColor: "bg-[#cde5ff] text-[#294964]", textColor: "text-[#42617d]", bgIconColor: "bg-[#cde5ff]/50", icon: "public" },
     { id: 3, title: "Servicios Básicos & Suministros", category: "operaciones", amount: 48500, type: "minus", date: "12 May, 09:40", badgeText: "Gasto", badgeColor: "bg-[#ffd9de] text-[#663a42]", textColor: "text-[#7f4e57]", bgIconColor: "bg-[#ffd9de]", icon: "water_drop" },
-    { id: 4, title: "Retiro Espiritual de Jóvenes", category: "ministerios", amount: 85000, type: "plus", date: "10 May, 17:00", badgeText: "Ofrenda", badgeColor: "bg-[#bdeddd] text-[#214e43]", textColor: "text-[#386458]", bgIconColor: "bg-[#bdeddd]/60", icon: "diversity_1" }
+    { id: 4, title: "Retiro Espiritual de Jóvenes", category: "ministerios", amount: 85000, type: "plus", date: "10 May, 17:00", badgeText: "Ofrenda", badgeColor: "bg-[#bdeddd] text-[#214e43]", textColor: "text-[#386458]", bgIconColor: "bg-[#bdeddd]/60", icon: "diversity_1" },
+    { id: 5, title: "Insumos de Aseo Mensual", category: "operaciones", amount: 45000, type: "minus", date: "Hoy, 10:20", badgeText: "Gasto", badgeColor: "bg-[#ffd9de] text-[#663a42]", textColor: "text-[#7f4e57]", bgIconColor: "bg-[#ffd9de]", icon: "cleaning_services" },
+    { id: 6, title: "Víveres Cocina · Convivio", category: "operaciones", amount: 60000, type: "minus", date: "Ayer, 12:05", badgeText: "Gasto", badgeColor: "bg-[#ffd9de] text-[#663a42]", textColor: "text-[#7f4e57]", bgIconColor: "bg-[#ffd9de]", icon: "soup_kitchen" },
+    { id: 7, title: "Mantención Puerta y Accesos", category: "operaciones", amount: 25000, type: "minus", date: "13 May, 16:40", badgeText: "Gasto", badgeColor: "bg-[#ffd9de] text-[#663a42]", textColor: "text-[#7f4e57]", bgIconColor: "bg-[#ffd9de]", icon: "door_open" }
   ];
 
   const filteredTransactions = transactions.filter(t => 

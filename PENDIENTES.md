@@ -58,6 +58,27 @@ correctos (botones `#1a4b84` / `#C25E2E`, acentos celestial/ámbar en oscuro).
 
 ---
 
+## ✅ APLICADO — Equipos de servicio: Portero, Ujieres, Aseo y Cocina (Roles + Finanzas)
+
+**Estado:** ✅ Aplicado el 06-oct-2026, a pedido del usuario.
+
+**Roles** (`src/App.tsx`, `RolesScreen`): 4 roles nuevos tipo `apoyo`, tag
+`Servicio`, `members: 0`, activos — Portero (`door_open`, tinte menta:
+registra ofrendas + control de acceso), Ujieres (`hail`, tinte menta +
+azul: registran ofrendas + orden), Servicio de Aseo
+(`cleaning_services`: solicita gastos de limpieza) y Cocina + Ayudantes
+(`soup_kitchen`: solicita gastos de víveres). Iconos verificados `200`
+contra el CDN de Material Symbols. Solo tokens hex ya cubiertos por
+`temas-color.css` (cero reglas CSS nuevas); el filtro Apoyo y la Auditoría
+los cuentan sin cambios de código.
+
+**Finanzas** (`FinanzasDashboardScreen`): 3 movimientos `operaciones`
+(`minus`) — Insumos de Aseo −$45.000, Víveres Cocina −$60.000, Mantención
+Puerta −$25.000, familia rosa de gastos; el modal de reportes los suma
+solo. El donut de presupuesto es estático (no se tocó a propósito).
+
+---
+
 ## ✅ APLICADO — Acceso local y perfil + modales legibles en oscuro
 
 **Estado:** ✅ Aplicado el 05-oct-2026, a pedido del usuario.
