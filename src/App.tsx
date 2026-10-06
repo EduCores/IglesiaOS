@@ -1397,8 +1397,8 @@ function TemaColorBoton({ tema, onCambiar }: { tema: TemaColor; onCambiar: (t: T
       </button>
       {abierto && (
         <>
-          <div className="fixed inset-0 z-40" onClick={() => setAbierto(false)} />
-          <div className="menu-vidrio absolute right-0 top-10 z-50 w-44 rounded-[8px] border border-slate-100 shadow-[0_25px_60px_-15px_rgba(15,23,42,0.35)] p-1.5 animate-[scaleIn_0.15s_ease-out]">
+          <div className="fixed inset-0 z-[60] backdrop-blur-[2px]" onClick={() => setAbierto(false)} />
+          <div className="menu-vidrio fixed top-[68px] right-3 md:right-8 z-[70] w-44 rounded-[8px] border border-slate-100 shadow-[0_25px_60px_-15px_rgba(15,23,42,0.35)] p-1.5 animate-[scaleIn_0.15s_ease-out]">
             <p className="px-3 pt-1.5 pb-1 text-[10px] uppercase tracking-wider font-bold text-slate-400">
               Color
             </p>
