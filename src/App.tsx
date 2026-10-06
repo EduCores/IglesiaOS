@@ -20,6 +20,21 @@ import BibliaScreen from "./Biblia";
 // ==========================================================================
 // COMPONENTE: PANTALLA 5 - ROLES DEFINIDOS (Nueva pantalla de Stitch)
 // ==========================================================================
+// Lista inicial compartida: la usa RolesScreen como estado inicial y el
+// modal de Acceso/Perfil como opciones del selector de rol. Los roles
+// creados con "Crear Nuevo Rol" viven solo en el estado de la pantalla.
+const ROLES_INICIALES = [
+  { id: 1, title: "Pastor Principal", tag: "Total", type: "liderazgo", desc: "Acceso completo", badgeColor: "bg-[#386458]/10 text-[#386458]", checked: true, icon: "church", bgIconColor: "bg-[#bdeddd]", iconColor: "text-[#386458]", detailText: "Todas las funciones activas", members: 2 },
+  { id: 2, title: "Dir. Alabanza", tag: "Multimedia", type: "ministerios", desc: "Editor en Multimedia, Solo Lectura en Pastoral", badgeColor: "bg-[#cde5ff] text-[#294964]", checked: true, icon: "graphic_eq", bgIconColor: "bg-[#cde5ff]", iconColor: "text-[#42617d]", detailText: "Audio & Video • Eventos", members: 4 },
+  { id: 3, title: "Tesorero", tag: "Finanzas", type: "liderazgo", desc: "Editor en Finanzas, Solo Lectura", badgeColor: "bg-[#ffd9de] text-[#663a42]", checked: true, icon: "payments", bgIconColor: "bg-[#ffd9de]", iconColor: "text-[#7f4e57]", detailText: "Ofrendas • Balances", members: 1 },
+  { id: 4, title: "Líder de Célula", tag: "Grupos", type: "apoyo", desc: "Solo Lectura", badgeColor: "bg-slate-200 text-slate-700", checked: true, icon: "groups_3", bgIconColor: "bg-[#a1d0c1]/40", iconColor: "text-[#386458]", detailText: "Asistencia • Contacto", members: 12 },
+  { id: 5, title: "Voluntario", tag: "Básico", type: "apoyo", desc: "Acceso limitado", badgeColor: "bg-[#daebf5] text-[#294964]", checked: false, icon: "volunteer_activism", bgIconColor: "bg-[#aacaea]/30", iconColor: "text-[#42617d]", detailText: "Turnos • Avisos", members: 28 },
+  { id: 6, title: "Portero", tag: "Servicio", type: "apoyo", desc: "Registra ofrendas · Control de acceso", badgeColor: "bg-[#386458]/10 text-[#386458]", checked: true, icon: "door_open", bgIconColor: "bg-[#bdeddd]", iconColor: "text-[#386458]", detailText: "Acceso • Ofrendas", members: 0 },
+  { id: 7, title: "Ujieres", tag: "Servicio", type: "apoyo", desc: "Registra ofrendas · Orden y acomodo", badgeColor: "bg-[#386458]/10 text-[#386458]", checked: true, icon: "hail", bgIconColor: "bg-[#cde5ff]", iconColor: "text-[#42617d]", detailText: "Orden • Ofrendas", members: 0 },
+  { id: 8, title: "Servicio de Aseo", tag: "Servicio", type: "apoyo", desc: "Solicita gastos · Limpieza del templo", badgeColor: "bg-slate-200 text-slate-700", checked: true, icon: "cleaning_services", bgIconColor: "bg-[#e7f6ff]", iconColor: "text-[#42617d]", detailText: "Limpieza • Insumos", members: 0 },
+  { id: 9, title: "Cocina + Ayudantes", tag: "Servicio", type: "apoyo", desc: "Solicita gastos · Alimentación y convivios", badgeColor: "bg-slate-200 text-slate-700", checked: true, icon: "soup_kitchen", bgIconColor: "bg-[#ffd9de]", iconColor: "text-[#7f4e57]", detailText: "Cocina • Víveres", members: 0 },
+];
+
 function RolesScreen() {
   const [selectedFilter, setSelectedFilter] = useState<"todos" | "liderazgo" | "ministerios" | "apoyo">("todos");
   const [showAddRoleModal, setShowAddRoleModal] = useState(false);
@@ -30,17 +45,7 @@ function RolesScreen() {
   const [successToast, setSuccessToast] = useState<string | null>(null);
 
   // Lista dinámica de roles iniciales
-  const [roles, setRoles] = useState([
-    { id: 1, title: "Pastor Principal", tag: "Total", type: "liderazgo", desc: "Acceso completo", badgeColor: "bg-[#386458]/10 text-[#386458]", checked: true, icon: "church", bgIconColor: "bg-[#bdeddd]", iconColor: "text-[#386458]", detailText: "Todas las funciones activas", members: 2 },
-    { id: 2, title: "Dir. Alabanza", tag: "Multimedia", type: "ministerios", desc: "Editor en Multimedia, Solo Lectura en Pastoral", badgeColor: "bg-[#cde5ff] text-[#294964]", checked: true, icon: "graphic_eq", bgIconColor: "bg-[#cde5ff]", iconColor: "text-[#42617d]", detailText: "Audio & Video • Eventos", members: 4 },
-    { id: 3, title: "Tesorero", tag: "Finanzas", type: "liderazgo", desc: "Editor en Finanzas, Solo Lectura", badgeColor: "bg-[#ffd9de] text-[#663a42]", checked: true, icon: "payments", bgIconColor: "bg-[#ffd9de]", iconColor: "text-[#7f4e57]", detailText: "Ofrendas • Balances", members: 1 },
-    { id: 4, title: "Líder de Célula", tag: "Grupos", type: "apoyo", desc: "Solo Lectura", badgeColor: "bg-slate-200 text-slate-700", checked: true, icon: "groups_3", bgIconColor: "bg-[#a1d0c1]/40", iconColor: "text-[#386458]", detailText: "Asistencia • Contacto", members: 12 },
-    { id: 5, title: "Voluntario", tag: "Básico", type: "apoyo", desc: "Acceso limitado", badgeColor: "bg-[#daebf5] text-[#294964]", checked: false, icon: "volunteer_activism", bgIconColor: "bg-[#aacaea]/30", iconColor: "text-[#42617d]", detailText: "Turnos • Avisos", members: 28 },
-    { id: 6, title: "Portero", tag: "Servicio", type: "apoyo", desc: "Registra ofrendas · Control de acceso", badgeColor: "bg-[#386458]/10 text-[#386458]", checked: true, icon: "door_open", bgIconColor: "bg-[#bdeddd]", iconColor: "text-[#386458]", detailText: "Acceso • Ofrendas", members: 0 },
-    { id: 7, title: "Ujieres", tag: "Servicio", type: "apoyo", desc: "Registra ofrendas · Orden y acomodo", badgeColor: "bg-[#386458]/10 text-[#386458]", checked: true, icon: "hail", bgIconColor: "bg-[#cde5ff]", iconColor: "text-[#42617d]", detailText: "Orden • Ofrendas", members: 0 },
-    { id: 8, title: "Servicio de Aseo", tag: "Servicio", type: "apoyo", desc: "Solicita gastos · Limpieza del templo", badgeColor: "bg-slate-200 text-slate-700", checked: true, icon: "cleaning_services", bgIconColor: "bg-[#e7f6ff]", iconColor: "text-[#42617d]", detailText: "Limpieza • Insumos", members: 0 },
-    { id: 9, title: "Cocina + Ayudantes", tag: "Servicio", type: "apoyo", desc: "Solicita gastos · Alimentación y convivios", badgeColor: "bg-slate-200 text-slate-700", checked: true, icon: "soup_kitchen", bgIconColor: "bg-[#ffd9de]", iconColor: "text-[#7f4e57]", detailText: "Cocina • Víveres", members: 0 },
-  ]);
+  const [roles, setRoles] = useState(ROLES_INICIALES);
 
   const handleToggleSwitch = (id: number) => {
     setRoles(prev => 
@@ -1458,21 +1463,41 @@ export default function App() {
   const { theme, toggleTheme } = useTheme();
   const { temaColor, cambiarTemaColor } = useTemaColor();
 
-  // Sesión local (perfil / acceso sin backend: se guarda en este dispositivo)
-  const [sesion, setSesion] = useState<{ nombre: string; email: string } | null>(() => {
+  // Sesión local (perfil / acceso sin backend: se guarda en este dispositivo).
+  // Incluye el rol elegido al ingresar (de ROLES_INICIALES); las sesiones
+  // guardadas antes de esta versión no traen rol y quedan como "Miembro".
+  type Sesion = { nombre: string; email: string; rol: string };
+  const leerSesion = (): Sesion | null => {
     try {
       const raw = localStorage.getItem("iglesiaos-sesion");
-      return raw ? (JSON.parse(raw) as { nombre: string; email: string }) : null;
+      if (!raw) return null;
+      const s = JSON.parse(raw) as Partial<Sesion>;
+      if (!s || typeof s.nombre !== "string") return null;
+      return {
+        nombre: s.nombre,
+        email: typeof s.email === "string" ? s.email : "",
+        rol: typeof s.rol === "string" && s.rol ? s.rol : "Miembro",
+      };
     } catch {
       return null;
     }
-  });
+  };
+  const [sesion, setSesion] = useState<Sesion | null>(leerSesion);
+  const ROL_POR_DEFECTO = ROLES_INICIALES.find((r) => r.checked)?.title ?? "Miembro";
+  // Opciones del selector de rol: solo roles activos (los suspendidos no se ofrecen).
+  const ROLES_ACTIVOS = ROLES_INICIALES.filter((r) => r.checked);
   const [showPerfilModal, setShowPerfilModal] = useState(false);
   const [nombreInput, setNombreInput] = useState("");
   const [emailInput, setEmailInput] = useState("");
+  const [rolInput, setRolInput] = useState(ROL_POR_DEFECTO);
   const [loginError, setLoginError] = useState("");
   const [editandoPerfil, setEditandoPerfil] = useState(false);
   const [sesionToast, setSesionToast] = useState<string | null>(null);
+  // Si el rol guardado ya no está activo (p. ej. sesión migrada "Miembro"),
+  // se ofrece igual para no perderlo al editar.
+  const opcionesRol = ROLES_ACTIVOS.some((r) => r.title === rolInput)
+    ? ROLES_ACTIVOS.map((r) => r.title)
+    : [rolInput, ...ROLES_ACTIVOS.map((r) => r.title)];
 
   const avisarSesion = (msg: string) => {
     setSesionToast(msg);
@@ -1489,7 +1514,7 @@ export default function App() {
       setLoginError("Ingresa un correo válido (ej: usuario@correo.com).");
       return;
     }
-    const s = { nombre: nombreInput.trim(), email: emailInput.trim() };
+    const s = { nombre: nombreInput.trim(), email: emailInput.trim(), rol: rolInput };
     try {
       localStorage.setItem("iglesiaos-sesion", JSON.stringify(s));
     } catch {
@@ -1511,7 +1536,7 @@ export default function App() {
       setLoginError("Ingresa un correo válido (ej: usuario@correo.com).");
       return;
     }
-    const s = { nombre: nombreInput.trim(), email: emailInput.trim() };
+    const s = { nombre: nombreInput.trim(), email: emailInput.trim(), rol: rolInput };
     try {
       localStorage.setItem("iglesiaos-sesion", JSON.stringify(s));
     } catch {
@@ -1532,6 +1557,7 @@ export default function App() {
     setSesion(null);
     setNombreInput("");
     setEmailInput("");
+    setRolInput(ROL_POR_DEFECTO);
     setShowPerfilModal(false);
     avisarSesion("Sesión cerrada en paz.");
   };
@@ -2264,8 +2290,8 @@ export default function App() {
 
                 <div className="flex items-center gap-4">
                   <div className="text-right hidden sm:block">
-                    <p className="text-sm font-bold text-slate-800 dark:text-slate-100">Célula Betania</p>
-                    <p className="text-[11px] text-emerald-600 dark:text-emerald-300 font-bold uppercase tracking-wider">Modo Integrado</p>
+                    <p className="text-sm font-bold text-slate-800 dark:text-slate-100">{sesion ? sesion.nombre : "Pastor Samuel"}</p>
+                    <p className="text-[11px] text-emerald-600 dark:text-emerald-300 font-bold uppercase tracking-wider">{sesion ? sesion.rol : "Pastor"}</p>
                   </div>
                   <button
                     type="button"
@@ -2725,6 +2751,18 @@ export default function App() {
                         className="w-full px-4 py-3 text-xs border border-slate-200 rounded-xl focus:border-[#386458] focus:outline-none"
                       />
                     </div>
+                    <div className="space-y-1">
+                      <label className="text-[11px] text-slate-500 font-bold uppercase">Rol</label>
+                      <select
+                        value={rolInput}
+                        onChange={(e) => setRolInput(e.target.value)}
+                        className="w-full px-4 py-3 text-xs border border-slate-200 rounded-xl focus:border-[#386458] focus:outline-none bg-white text-slate-800 font-semibold"
+                      >
+                        {opcionesRol.map((titulo) => (
+                          <option key={titulo} value={titulo}>{titulo}</option>
+                        ))}
+                      </select>
+                    </div>
                     {loginError && (
                       <p className="text-[10px] text-rose-500 font-medium animate-[fadeIn_0.2s_ease-out]">{loginError}</p>
                     )}
@@ -2758,6 +2796,7 @@ export default function App() {
                     <div className="min-w-0">
                       <p className="text-sm font-bold text-slate-900 truncate">{sesion.nombre}</p>
                       <p className="text-[11px] text-slate-400 font-medium truncate">{sesion.email}</p>
+                      <p className="text-[10px] text-[#386458] font-bold uppercase tracking-wider truncate mt-0.5">{sesion.rol}</p>
                     </div>
                   </div>
                   <p className="text-[11px] text-slate-400 font-medium">Sesión guardada en este dispositivo.</p>
@@ -2789,6 +2828,7 @@ export default function App() {
                       onClick={() => {
                         setNombreInput(sesion.nombre);
                         setEmailInput(sesion.email);
+                        setRolInput(sesion.rol);
                         setLoginError("");
                         setEditandoPerfil(true);
                       }}
@@ -2825,6 +2865,18 @@ export default function App() {
                       placeholder="ejemplo@correo.com"
                       className="w-full px-4 py-3 text-xs border border-slate-200 rounded-xl focus:border-[#386458] focus:outline-none"
                     />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-[11px] text-slate-500 font-bold uppercase">Rol</label>
+                    <select
+                      value={rolInput}
+                      onChange={(e) => setRolInput(e.target.value)}
+                      className="w-full px-4 py-3 text-xs border border-slate-200 rounded-xl focus:border-[#386458] focus:outline-none bg-white text-slate-800 font-semibold"
+                    >
+                      {opcionesRol.map((titulo) => (
+                        <option key={titulo} value={titulo}>{titulo}</option>
+                      ))}
+                    </select>
                   </div>
                   {loginError && (
                     <p className="text-[10px] text-rose-500 font-medium animate-[fadeIn_0.2s_ease-out]">{loginError}</p>

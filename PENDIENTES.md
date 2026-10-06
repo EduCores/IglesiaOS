@@ -79,6 +79,31 @@ solo. El donut de presupuesto es estático (no se tocó a propósito).
 
 ---
 
+## ✅ APLICADO — Insignia con nombre y rol de quien se loguea
+
+**Estado:** ✅ Aplicado el 06-oct-2026, a pedido del usuario.
+
+**Insignia del header de escritorio** (`src/App.tsx`): con sesión muestra
+el **nombre** (línea 1) y su **rol** (línea 2, mayúsculas); sin sesión
+muestra **"Pastor Samuel" / "Pastor"** (texto pedido, reemplaza al
+"Célula Betania / Modo Integrado" anterior). En móvil no existe esa
+insignia: el rol se ve en la ficha del modal Perfil (compartido).
+
+**Sesión con rol** (`src/App.tsx`): tipo `{nombre, email, rol}` en
+`localStorage ("iglesiaos-sesion")`; sesiones viejas sin rol migran a
+`"Miembro"`. Formularios de Acceso y Editar perfil con **selector de rol**
+(solo roles activos de `ROLES_INICIALES`; si el guardado ya no está
+activo, se ofrece igual para no perderlo). La ficha "Mi perfil" muestra
+el rol bajo el correo.
+
+**Refactor previo:** la lista inicial de roles sale del estado de
+`RolesScreen` a la constante `ROLES_INICIALES` (mismo contenido, cero
+cambio visual en Roles). Límite honesto: los roles creados con "Crear
+Nuevo Rol" no salen en el selector hasta recargar; el rol es declarativo
+(sin backend no hay verificación real).
+
+---
+
 ## ✅ APLICADO — Acceso local y perfil + modales legibles en oscuro
 
 **Estado:** ✅ Aplicado el 05-oct-2026, a pedido del usuario.
