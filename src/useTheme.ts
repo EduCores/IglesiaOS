@@ -41,3 +41,54 @@ export function useTheme() {
 
   return { theme, toggleTheme, isDark: theme === "dark" };
 }
+
+export type TemaColor = "eucalipto" | "zafiro" | "terracota";
+
+export const TEMAS_COLOR: { id: TemaColor; nombre: string; punto: string }[] = [
+  { id: "eucalipto", nombre: "Eucalipto", punto: "#386458" },
+  { id: "zafiro", nombre: "Zafiro", punto: "#1a4b84" },
+  { id: "terracota", nombre: "Terracota", punto: "#C25E2E" },
+];
+
+const TEMA_COLOR_KEY = "iglesiaos-tema-color";
+
+function getInitialTemaColor(): TemaColor {
+  if (typeof window === "undefined") return "eucalipto";
+  try {
+    const saved = window.localStorage.getItem(TEMA_COLOR_KEY);
+    if (saved === "zafiro" || saved === "terracota" || saved === "eucalipto") return saved;
+  } catch {
+    /* localStorage no disponible: se usa el valor por defecto */
+  }
+  return "eucalipto";
+}
+
+/**
+ * Color de marca global (Eucalipto = CSS base, Zafiro/Terracota = overrides
+ * en src/temas-color.css).
+ * - Aplica `data-tema` en <html> (los overrides cuelgan de html[data-tema]).
+ * - Persiste en localStorage ("iglesiaos-tema-color").
+ * - Independiente del modo claro/oscuro: cada tema trae versión light y dark.
+ */
+export function useTemaColor() {
+  const [temaColor, setTemaColor] = useState<TemaColor>(getInitialTemaColor);
+
+  useEffect(() => {
+    try {
+      document.documentElement.dataset.tema = temaColor;
+    } catch {
+      /* DOM no disponible */
+    }
+    try {
+      window.localStorage.setItem(TEMA_COLOR_KEY, temaColor);
+    } catch {
+      /* almacenamiento no disponible: el tema solo vive en memoria */
+    }
+  }, [temaColor]);
+
+  const cambiarTemaColor = useCallback((t: TemaColor) => {
+    setTemaColor(t);
+  }, []);
+
+  return { temaColor, cambiarTemaColor };
+}

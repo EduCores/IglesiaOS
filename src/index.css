@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./temas-color.css";
 
 /* Tailwind v4 usa `prefers-color-scheme` por defecto: esta línea cambia
    la estrategia a clase manual para que `dark:` responda al toggle

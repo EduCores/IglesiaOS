@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { useTheme } from "./useTheme";
+import { useTheme, useTemaColor, TEMAS_COLOR, type TemaColor } from "./useTheme";
 import DirectorioScreen from "./Directorio";
 import CelulasScreen from "./Celulas";
 import MultimediaScreen from "./Multimedia";
@@ -1378,6 +1378,60 @@ function ThemeToggle({ theme, onToggle }: { theme: "light" | "dark"; onToggle: (
 }
 
 // ==========================================================================
+// SELECTOR DE COLOR DE MARCA (Eucalipto / Zafiro / Terracota)
+// Icono palette junto al toggle claro/oscuro (móvil y escritorio).
+// ==========================================================================
+function TemaColorBoton({ tema, onCambiar }: { tema: TemaColor; onCambiar: (t: TemaColor) => void }) {
+  const [abierto, setAbierto] = useState(false);
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setAbierto((v) => !v)}
+        aria-label="Cambiar color de marca"
+        title="Cambiar color de marca"
+        aria-expanded={abierto}
+        className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-full bg-slate-900/5 text-slate-800 hover:bg-slate-900/10 active:scale-90 transition-all cursor-pointer dark:bg-white/10 dark:text-amber-200 dark:hover:bg-white/15"
+      >
+        <span className="material-symbols-outlined text-[20px]">palette</span>
+      </button>
+      {abierto && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setAbierto(false)} />
+          <div className="menu-vidrio absolute right-0 top-10 z-50 w-44 rounded-[8px] border border-slate-100 shadow-[0_25px_60px_-15px_rgba(15,23,42,0.35)] p-1.5 animate-[scaleIn_0.15s_ease-out]">
+            <p className="px-3 pt-1.5 pb-1 text-[10px] uppercase tracking-wider font-bold text-slate-400">
+              Color
+            </p>
+            {TEMAS_COLOR.map((t) => (
+              <button
+                key={t.id}
+                type="button"
+                onClick={() => {
+                  onCambiar(t.id);
+                  setAbierto(false);
+                }}
+                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-left transition-all cursor-pointer ${
+                  tema === t.id ? "bg-[#386458]/10 text-slate-900 dark:text-white" : "text-slate-700 hover:bg-slate-900/5"
+                }`}
+              >
+                <span
+                  className="w-4 h-4 rounded-full shrink-0 border border-black/10"
+                  style={{ backgroundColor: t.punto }}
+                />
+                <span className="text-xs font-bold flex-1">{t.nombre}</span>
+                {tema === t.id && (
+                  <span className="material-symbols-outlined text-[16px] text-[#386458]">check</span>
+                )}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ==========================================================================
 // COMPONENTE PRINCIPAL (MAIN WRAPPER & STATE MANAGER)
 // ==========================================================================
 export default function App() {
@@ -1388,6 +1442,7 @@ export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeScreen, setActiveScreen] = useState<ScreenId>("inicio");
   const { theme, toggleTheme } = useTheme();
+  const { temaColor, cambiarTemaColor } = useTemaColor();
 
   // Sesión local (perfil / acceso sin backend: se guarda en este dispositivo)
   const [sesion, setSesion] = useState<{ nombre: string; email: string } | null>(() => {
@@ -1693,6 +1748,7 @@ export default function App() {
                 </h1>
                 <div className="flex items-center gap-1.5">
                   <ThemeToggle theme={theme} onToggle={toggleTheme} />
+                  <TemaColorBoton tema={temaColor} onCambiar={cambiarTemaColor} />
                   <button
                     onClick={() => setShowPerfilModal(true)}
                     className="w-8 h-8 rounded-full bg-[#386458] flex items-center justify-center text-white hover:scale-105 active:scale-95 transition-all cursor-pointer shadow-sm hover:shadow"
@@ -2207,6 +2263,7 @@ export default function App() {
                     <span className="material-symbols-outlined text-[22px]">{isMenuOpen ? "close" : "apps"}</span>
                   </button>
                   <ThemeToggle theme={theme} onToggle={toggleTheme} />
+                  <TemaColorBoton tema={temaColor} onCambiar={cambiarTemaColor} />
                   <button
                     type="button"
                     onClick={() => setShowPerfilModal(true)}

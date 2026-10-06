@@ -4,6 +4,33 @@
 
 ---
 
+## ✅ APLICADO — Temas de color: Zafiro y Terracota (light/dark c/u) + icono palette
+
+**Estado:** ✅ Aplicado el 06-oct-2026, desde `DESIGN (1).md` (Serene Ecclesia →
+**Zafiro** `#1a4b84`) y `DESIGN (2).md` (Sanctuary Warmth → **Terracota**
+`#C25E2E`). Eucalipto (verde actual) sigue por defecto.
+
+**Mecanismo:** la marca vive como hex literales en cientos de clases, así que el
+tema es override CSS, no refactor: `src/temas-color.css` (generado, 59 tokens ×
+2 temas × claro/oscuro, 241 reglas) cuelga de `html[data-tema]` (+ `.dark`) con
+`!important`; el alfa de cada token se preserva (solo cambia el matiz).
+Eucalipto no tiene reglas (CSS base intacto).
+
+**Switcher:** icono `palette` junto al toggle claro/oscuro (móvil y escritorio)
+con panel vidrio (Eucalipto/Zafiro/Terracota + check). Hook `useTemaColor` en
+`src/useTheme.ts`, persiste `iglesiaos-tema-color`, independiente del modo
+claro/oscuro: cada color trae versión light y dark de los docs.
+
+**Verificado:** capturas Edge headless de las 4 combinaciones con matices
+correctos (botones `#1a4b84` / `#C25E2E`, acentos celestial/ámbar en oscuro).
+
+**Limitaciones conocidas:** rampas del gráfico (verdes/azules fijos) y chips con
+hex fuera de los 59 tokens conservan su matiz; superficies neutras no cambian
+(solo el color de marca). Regenerar con el método documentado en la cabecera
+de `temas-color.css` si aparecen tokens nuevos.
+
+---
+
 ## ✅ APLICADO — Acceso local y perfil + modales legibles en oscuro
 
 **Estado:** ✅ Aplicado el 05-oct-2026, a pedido del usuario.
