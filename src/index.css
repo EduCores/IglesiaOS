@@ -651,3 +651,33 @@ section[class*="bg-white"]:not([class*="rounded-full"]):not([class*="max-w-sm"])
    pastilla de Pastoral, botón de Roles y avatares del Directorio)
    llevan el VIDRIO DE ACENTO en claro y su remapeo en MODO OSCURO,
    ambos definidos más arriba. */
+
+/* ==============================================================
+   TEMAS DE COLOR: piezas fuera del override por clases
+   --------------------------------------------------------------
+   `temas-color.css` remapea por substring de clase; estas dos piezas
+   no las alcanza y llevaban verde Eucalipto fijo en Zafiro/Terracota:
+     · `accent-color` de checkboxes/radios (propiedad nativa, sin clase
+       de color a la que agarrarse).
+     · Botón "Perfil" del header: la regla `button[aria-label=...]`
+       de AJUSTES PUNTUALES (más especificidad + escrita después)
+       ganaba al override genérico y lo dejaba siempre verde.
+   Van al FINAL a propósito: misma o mayor especificidad que sus
+   rivales, y en empate gana la última escrita. Sin variante `.dark`:
+   el valor saturado vale en ambos modos (igual que el mapeo base
+   `bg-[#386458]` → sólido en claro y oscuro).
+   ============================================================== */
+html[data-tema="zafiro"] input[type="checkbox"],
+html[data-tema="zafiro"] input[type="radio"] {
+  accent-color: #1a4b84 !important;
+}
+html[data-tema="terracota"] input[type="checkbox"],
+html[data-tema="terracota"] input[type="radio"] {
+  accent-color: #c25e2e !important;
+}
+html[data-tema="zafiro"] button[aria-label="Perfil"].bg-\[\#386458\] {
+  background-color: #1a4b84ad !important;
+}
+html[data-tema="terracota"] button[aria-label="Perfil"].bg-\[\#386458\] {
+  background-color: #c25e2ead !important;
+}

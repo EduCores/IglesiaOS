@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { createPortal } from "react-dom";
 import { useTheme, useTemaColor, TEMAS_COLOR, type TemaColor } from "./useTheme";
 import DirectorioScreen from "./Directorio";
 import CelulasScreen from "./Celulas";
@@ -233,7 +234,7 @@ function RolesScreen() {
         <div className="pt-2">
           <button 
             onClick={() => setShowAddRoleModal(true)}
-            className="w-full py-4 px-5 bg-[#386458] hover:bg-[#2c4e45] text-white text-xs font-bold shadow-[0_8px_24px_rgba(56,100,88,0.25)] flex items-center justify-center space-x-2 active:scale-[0.99] transition-all cursor-pointer"
+            className="w-full py-4 px-5 bg-[#386458] hover:bg-[#2c4e45] text-white text-xs font-bold shadow-[#386458]/35 flex items-center justify-center space-x-2 active:scale-[0.99] transition-all cursor-pointer"
             style={{ borderRadius: "4px" }}
           >
             <span className="material-symbols-outlined text-[20px]">add</span>
@@ -1380,6 +1381,11 @@ function ThemeToggle({ theme, onToggle }: { theme: "light" | "dark"; onToggle: (
 // ==========================================================================
 // SELECTOR DE COLOR DE MARCA (Eucalipto / Zafiro / Terracota)
 // Icono palette junto al toggle claro/oscuro (móvil y escritorio).
+// El overlay + panel van por PORTAL a document.body: el botón vive dentro
+// del header (`relative z-10`) y el contenido de la pantalla —hermano
+// posterior con su propio `relative z-10`— pintaba ENCIMA de todo el
+// contexto del header (incluido un `fixed z-[70]`, que solo compite dentro
+// de su propio stacking context). En el body no hay ancestro que lo atrape.
 // ==========================================================================
 function TemaColorBoton({ tema, onCambiar }: { tema: TemaColor; onCambiar: (t: TemaColor) => void }) {
   const [abierto, setAbierto] = useState(false);
@@ -1395,7 +1401,7 @@ function TemaColorBoton({ tema, onCambiar }: { tema: TemaColor; onCambiar: (t: T
       >
         <span className="material-symbols-outlined text-[20px]">palette</span>
       </button>
-      {abierto && (
+      {abierto && typeof document !== "undefined" && createPortal(
         <>
           <div className="fixed inset-0 z-[60] backdrop-blur-[2px]" onClick={() => setAbierto(false)} />
           <div className="menu-vidrio fixed top-[68px] right-3 md:right-8 z-[70] w-44 rounded-[8px] border border-slate-100 shadow-[0_25px_60px_-15px_rgba(15,23,42,0.35)] p-1.5 animate-[scaleIn_0.15s_ease-out]">
@@ -1425,7 +1431,8 @@ function TemaColorBoton({ tema, onCambiar }: { tema: TemaColor; onCambiar: (t: T
               </button>
             ))}
           </div>
-        </>
+        </>,
+        document.body
       )}
     </div>
   );

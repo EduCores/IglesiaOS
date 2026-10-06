@@ -24,10 +24,37 @@ claro/oscuro: cada color trae versión light y dark de los docs.
 **Verificado:** capturas Edge headless de las 4 combinaciones con matices
 correctos (botones `#1a4b84` / `#C25E2E`, acentos celestial/ámbar en oscuro).
 
-**Limitaciones conocidas:** rampas del gráfico (verdes/azules fijos) y chips con
-hex fuera de los 59 tokens conservan su matiz; superficies neutras no cambian
-(solo el color de marca). Regenerar con el método documentado en la cabecera
-de `temas-color.css` si aparecen tokens nuevos.
+**Ampliación 06-oct-2026 (tarde): cobertura total de marca + panel por portal.**
+- `src/temas-color.css` pasa de 59 a **90 combinaciones** (241 → 365 reglas):
+  verde medio `#507d70`, rampa del gráfico `#d5e9e1/#c0ded3/#a8d2c4/#7fb3a1`
+  (Zafiro: escala `#d5e3ff→#99cbff` / vidrio celestial en oscuro; Terracota:
+  arena→durazno→miel `#F3EEE6→#E09F3E` / vidrio `#E07A5F` en oscuro) y familia
+  azul-gris `#bddefe/#e0f0fb/#e7f6ff/#e6f0f6/#daebf5/#aacaea/#aecdf5/#ccdce7/
+  #d8e7f0/#9bc8f0/#43627e` con paletas de `DESIGN (1).md` y `DESIGN (2).md`.
+- **Bug de especificidad en oscuro (detectado por probe de estilos
+  computados):** las reglas `.dark` de `index.css` con `:not()` tienen
+  `(0,4,0)/(0,5,0)` y ganaban a los overrides `(0,3,1)`, así que en oscuro
+  `bg-[#bdeddd]`, `text-[#386458]` y afines **nunca remapeaban**. Las 38
+  reglas dark afectadas ahora espejan la misma cadena `:not()` del rival
+  (`(0,5,1)` gana) — misma convención del bloque HOVERS.
+- `src/index.css` (final): `accent-color` de checkboxes/radios y botón
+  "Perfil" por tema (el override por clases no los alcanzaba).
+- `src/App.tsx`: sombra `rgba(56,100,88,…)` fija → `shadow-[#386458]/35`
+  (token remapeable).
+- **Panel del selector por PORTAL a `document.body`:** el `fixed z-[70]`
+  vivía dentro del header (`relative z-10`) y el contenido posterior (su
+  propio `z-10`) pintaba encima de todo ese stacking context. En el body no
+  hay ancestro que lo atrape. Geometría probada en DOM: `right=13.5px`,
+  `w=198px`, `pos=fixed` (el "corte" visto en capturas headless era
+  reescalado del propio headless, `vw=756` real vs imagen de 390).
+- **Se conservan a propósito (semánticos, no marca):** familia rosa
+  (`#ffd9de/#f4b6bf/#663a42/#7f4e57/#331018`), error `#ba1a1a`, neutros
+  (`#23323a/#f4faff/#0e1d25/#001d32/#002019/#404845`) y verde
+  `text-emerald-600` de "MODO INTEGRADO".
+- **Verificado:** estilos computados exactos en las 4 combinaciones
+  (p. ej. oscuro+zafiro: texto `#38bdf8`, barra J `#2060aa`, icono
+  `rgba(23,47,82,0.45)`; oscuro+terracota: `#E07A5F`, `#A34E26`,
+  `rgba(44,38,33,0.45)`) + capturas claro/oscuro en ambos temas.
 
 ---
 
