@@ -6,6 +6,13 @@
     familia #bddefe/#e0f0fb/#e7f6ff/#e6f0f6/#daebf5/#aacaea/#aecdf5/#ccdce7/
     #d8e7f0/#9bc8f0/#43627e) con gen-temas-extra.js (tampoco versionado;
     bloques intermedios bloque-zafiro/terracota.css eliminados tras pegarlos).
+    38 reglas dark reforzadas con la cadena :not() del rival (fix-spec.js).
+    58 guards anti-fuga (fix-leaks.js): las reglas PLANAS excluian con :not()
+    las variantes hover:/focus:/focus-within:/selection:/group-hover: del
+    mismo token, porque el substring casaba con ellas y las pintaba en
+    reposo (menu solido, inputs con borde siempre, pagina tenida por
+    selection:). Auditado: ningun elemento combina base + variante de la
+    misma familia, asi que la exclusion nunca quita un reposo legitimo.
     Metodo: override
    html[data-tema][.dark] con !important; el alfa del token se preserva
    (solo cambia el matiz). Paletas: DESIGN (1).md Serene Ecclesia (Zafiro)
@@ -15,14 +22,14 @@
    ========================================================================== */
 
 /* ---------- Tema zafiro ---------- */
-html[data-tema="zafiro"] [class*="bg-[#386458]"] { background-color: #1a4b84 !important; }
-html[data-tema="zafiro"].dark [class*="bg-[#386458]"] { background-color: #1a4b84 !important; }
-html[data-tema="zafiro"] [class*="bg-[#386458]/10"] { background-color: #1a4b841a !important; }
-html[data-tema="zafiro"].dark [class*="bg-[#386458]/10"]:not([class*="hover:bg-[#386458]/10"]) { background-color: #1a4b841a !important; }
-html[data-tema="zafiro"] [class*="bg-[#386458]/5"] { background-color: #1a4b840d !important; }
-html[data-tema="zafiro"].dark [class*="bg-[#386458]/5"]:not([class*="hover:bg-[#386458]/5"]) { background-color: #1a4b840d !important; }
-html[data-tema="zafiro"] [class*="border-[#386458]"] { border-color: #1a4b84 !important; }
-html[data-tema="zafiro"].dark [class*="border-[#386458]"] { border-color: #38bdf8 !important; }
+html[data-tema="zafiro"] [class*="bg-[#386458]"]:not([class*="hover:bg-[#386458]"]) { background-color: #1a4b84 !important; }
+html[data-tema="zafiro"].dark [class*="bg-[#386458]"]:not([class*="hover:bg-[#386458]"]) { background-color: #1a4b84 !important; }
+html[data-tema="zafiro"] [class*="bg-[#386458]/10"]:not([class*="hover:bg-[#386458]"]):not([class*="selection:bg-[#386458]"]) { background-color: #1a4b841a !important; }
+html[data-tema="zafiro"].dark [class*="bg-[#386458]/10"]:not([class*="hover:bg-[#386458]/10"]):not([class*="hover:bg-[#386458]"]):not([class*="selection:bg-[#386458]"]) { background-color: #1a4b841a !important; }
+html[data-tema="zafiro"] [class*="bg-[#386458]/5"]:not([class*="hover:bg-[#386458]"]) { background-color: #1a4b840d !important; }
+html[data-tema="zafiro"].dark [class*="bg-[#386458]/5"]:not([class*="hover:bg-[#386458]/5"]):not([class*="hover:bg-[#386458]"]) { background-color: #1a4b840d !important; }
+html[data-tema="zafiro"] [class*="border-[#386458]"]:not([class*="hover:border-[#386458]"]):not([class*="focus:border-[#386458]"]):not([class*="focus-within:border-[#386458]"]) { border-color: #1a4b84 !important; }
+html[data-tema="zafiro"].dark [class*="border-[#386458]"]:not([class*="hover:border-[#386458]"]):not([class*="focus:border-[#386458]"]):not([class*="focus-within:border-[#386458]"]) { border-color: #38bdf8 !important; }
 html[data-tema="zafiro"] [class*="border-t-[#386458]"] { border-top-color: #1a4b84 !important; }
 html[data-tema="zafiro"].dark [class*="border-t-[#386458]"] { border-top-color: #38bdf8 !important; }
 html[data-tema="zafiro"].dark [class*="dark:bg-[#386458]/10"]:not([class*="hover:bg-[#386458]/10"]) { background-color: #1a4b841a !important; }
@@ -60,8 +67,8 @@ html[data-tema="zafiro"] [class*="shadow-[#386458]/10"] { --tw-shadow-color: #1a
 html[data-tema="zafiro"].dark [class*="shadow-[#386458]/10"] { --tw-shadow-color: #1a4b841a !important; }
 html[data-tema="zafiro"] [class*="shadow-[#386458]/35"] { --tw-shadow-color: #1a4b8459 !important; }
 html[data-tema="zafiro"].dark [class*="shadow-[#386458]/35"] { --tw-shadow-color: #1a4b8459 !important; }
-html[data-tema="zafiro"] [class*="text-[#386458]"] { color: #1a4b84 !important; }
-html[data-tema="zafiro"].dark [class*="text-[#386458]"]:not([class*="hover:text-[#386458]"]):not([class*="group-hover:text-[#386458]"]) { color: #38bdf8 !important; }
+html[data-tema="zafiro"] [class*="text-[#386458]"]:not([class*="hover:text-[#386458]"]):not([class*="selection:text-[#386458]"]):not([class*="group-hover:text-[#386458]"]) { color: #1a4b84 !important; }
+html[data-tema="zafiro"].dark [class*="text-[#386458]"]:not([class*="hover:text-[#386458]"]):not([class*="group-hover:text-[#386458]"]):not([class*="selection:text-[#386458]"]) { color: #38bdf8 !important; }
 html[data-tema="zafiro"] [class*="to-[#386458]/40"] { --tw-gradient-to: #1a4b8466 !important; }
 html[data-tema="zafiro"].dark [class*="to-[#386458]/40"] { --tw-gradient-to: #1a4b8466 !important; }
 html[data-tema="zafiro"] [class*="via-[#386458]/20"] { --tw-gradient-via: #1a4b8433 !important; }
@@ -76,7 +83,7 @@ html[data-tema="zafiro"] [class*="bg-[#42617d]/5"] { background-color: #d6e3ff0d
 html[data-tema="zafiro"].dark [class*="bg-[#42617d]/5"] { background-color: #1e3d680d !important; }
 html[data-tema="zafiro"] [class*="bg-[#a1d0c1]/40"] { background-color: #e0f2fe66 !important; }
 html[data-tema="zafiro"].dark [class*="bg-[#a1d0c1]/40"] { background-color: #172f5266 !important; }
-html[data-tema="zafiro"] [class*="bg-[#bdeddd]"] { background-color: #e8f1fc !important; }
+html[data-tema="zafiro"] [class*="bg-[#bdeddd]"]:not([class*="hover:bg-[#bdeddd]"]) { background-color: #e8f1fc !important; }
 html[data-tema="zafiro"].dark [class*="bg-[#bdeddd]"]:not([class*="hover:bg-[#bdeddd]"]):not([class*="hover:bg-[#a1d0c1]"]) { background-color: #172f52 !important; }
 html[data-tema="zafiro"] [class*="bg-[#bdeddd]/20"] { background-color: #e8f1fc33 !important; }
 html[data-tema="zafiro"].dark [class*="bg-[#bdeddd]/20"]:not([class*="hover:bg-[#bdeddd]"]):not([class*="hover:bg-[#a1d0c1]"]) { background-color: #172f5233 !important; }
@@ -90,8 +97,8 @@ html[data-tema="zafiro"] [class*="bg-[#bdeddd]/45"] { background-color: #e8f1fc7
 html[data-tema="zafiro"].dark [class*="bg-[#bdeddd]/45"]:not([class*="hover:bg-[#bdeddd]"]):not([class*="hover:bg-[#a1d0c1]"]) { background-color: #172f5273 !important; }
 html[data-tema="zafiro"] [class*="bg-[#bdeddd]/50"] { background-color: #e8f1fc80 !important; }
 html[data-tema="zafiro"].dark [class*="bg-[#bdeddd]/50"]:not([class*="hover:bg-[#bdeddd]"]):not([class*="hover:bg-[#a1d0c1]"]) { background-color: #172f5280 !important; }
-html[data-tema="zafiro"] [class*="bg-[#bdeddd]/60"] { background-color: #e8f1fc99 !important; }
-html[data-tema="zafiro"].dark [class*="bg-[#bdeddd]/60"]:not([class*="hover:bg-[#bdeddd]"]):not([class*="hover:bg-[#a1d0c1]"]) { background-color: #172f5299 !important; }
+html[data-tema="zafiro"] [class*="bg-[#bdeddd]/60"]:not([class*="hover:bg-[#bdeddd]/60"]) { background-color: #e8f1fc99 !important; }
+html[data-tema="zafiro"].dark [class*="bg-[#bdeddd]/60"]:not([class*="hover:bg-[#bdeddd]"]):not([class*="hover:bg-[#a1d0c1]"]):not([class*="hover:bg-[#bdeddd]/60"]) { background-color: #172f5299 !important; }
 html[data-tema="zafiro"] [class*="bg-[#cde5ff]"] { background-color: #f0f7ff !important; }
 html[data-tema="zafiro"].dark [class*="bg-[#cde5ff]"] { background-color: #172f52 !important; }
 html[data-tema="zafiro"] [class*="bg-[#cde5ff]/40"] { background-color: #f0f7ff66 !important; }
@@ -117,8 +124,8 @@ html[data-tema="zafiro"] [class*="hover:text-[#2c4e45]"]:hover { color: #2060aa 
 html[data-tema="zafiro"].dark [class*="hover:text-[#2c4e45]"]:hover { color: #3880d4 !important; }
 html[data-tema="zafiro"] [class*="hover:text-[#a1d0c1]"]:hover { color: #42a5f5 !important; }
 html[data-tema="zafiro"].dark [class*="hover:text-[#a1d0c1]"]:hover { color: #38bdf8 !important; }
-html[data-tema="zafiro"] [class*="text-[#214e43]"] { color: #144780 !important; }
-html[data-tema="zafiro"].dark [class*="text-[#214e43]"] { color: #7fc0ff !important; }
+html[data-tema="zafiro"] [class*="text-[#214e43]"]:not([class*="hover:text-[#214e43]"]) { color: #144780 !important; }
+html[data-tema="zafiro"].dark [class*="text-[#214e43]"]:not([class*="hover:text-[#214e43]"]) { color: #7fc0ff !important; }
 html[data-tema="zafiro"] [class*="text-[#214e43]/80"] { color: #144780cc !important; }
 html[data-tema="zafiro"].dark [class*="text-[#214e43]/80"] { color: #7fc0ffcc !important; }
 html[data-tema="zafiro"] [class*="text-[#294964]"] { color: #144780 !important; }
@@ -127,8 +134,8 @@ html[data-tema="zafiro"] [class*="text-[#294964]/80"] { color: #144780cc !import
 html[data-tema="zafiro"].dark [class*="text-[#294964]/80"] { color: #a6c8ffcc !important; }
 html[data-tema="zafiro"] [class*="text-[#42617d]"] { color: #475569 !important; }
 html[data-tema="zafiro"].dark [class*="text-[#42617d]"] { color: #93bcfc !important; }
-html[data-tema="zafiro"] [class*="text-[#a1d0c1]"] { color: #42a5f5 !important; }
-html[data-tema="zafiro"].dark [class*="text-[#a1d0c1]"] { color: #38bdf8 !important; }
+html[data-tema="zafiro"] [class*="text-[#a1d0c1]"]:not([class*="hover:text-[#a1d0c1]"]) { color: #42a5f5 !important; }
+html[data-tema="zafiro"].dark [class*="text-[#a1d0c1]"]:not([class*="hover:text-[#a1d0c1]"]) { color: #38bdf8 !important; }
 html[data-tema="zafiro"] [class*="text-[#bdeddd]"] { color: #1a4b84 !important; }
 html[data-tema="zafiro"].dark [class*="text-[#bdeddd]"] { color: #38bdf8 !important; }
 html[data-tema="zafiro"] [class*="to-[#214e43]/20"] { --tw-gradient-to: #1a4b8433 !important; }
@@ -150,7 +157,7 @@ html[data-tema="zafiro"] [class*="bg-[#a8d2c4]"] { background-color: #a6c8ff !im
 html[data-tema="zafiro"].dark [class*="bg-[#a8d2c4]"] { background-color: #38bdf83d !important; }
 html[data-tema="zafiro"] [class*="bg-[#7fb3a1]"] { background-color: #99cbff !important; }
 html[data-tema="zafiro"].dark [class*="bg-[#7fb3a1]"] { background-color: #38bdf84d !important; }
-html[data-tema="zafiro"] [class*="bg-[#bddefe]"] { background-color: #d5e3ff !important; }
+html[data-tema="zafiro"] [class*="bg-[#bddefe]"]:not([class*="hover:bg-[#bddefe]"]) { background-color: #d5e3ff !important; }
 html[data-tema="zafiro"].dark [class*="bg-[#bddefe]"]:not([class*="hover:bg-[#bddefe]"]) { background-color: #1e3d68 !important; }
 html[data-tema="zafiro"] [class*="bg-[#bddefe]/30"] { background-color: #d5e3ff4d !important; }
 html[data-tema="zafiro"].dark [class*="bg-[#bddefe]/30"]:not([class*="hover:bg-[#bddefe]"]) { background-color: #1e3d684d !important; }
@@ -170,8 +177,8 @@ html[data-tema="zafiro"] [class*="border-[#bddefe]/40"] { border-color: #a6c8ff6
 html[data-tema="zafiro"].dark [class*="border-[#bddefe]/40"] { border-color: #1e3d6866 !important; }
 html[data-tema="zafiro"] [class*="to-[#bddefe]/50"] { --tw-gradient-to: #d5e3ff80 !important; }
 html[data-tema="zafiro"].dark [class*="to-[#bddefe]/50"] { --tw-gradient-to: #1e3d6880 !important; }
-html[data-tema="zafiro"] [class*="bg-[#e0f0fb]"] { background-color: #e0f2fe !important; }
-html[data-tema="zafiro"].dark [class*="bg-[#e0f0fb]"]:not([class*="hover:bg-[#e0f0fb]"]) { background-color: #172f52 !important; }
+html[data-tema="zafiro"] [class*="bg-[#e0f0fb]"]:not([class*="hover:bg-[#e0f0fb]"]):not([class*="focus:bg-[#e0f0fb]"]) { background-color: #e0f2fe !important; }
+html[data-tema="zafiro"].dark [class*="bg-[#e0f0fb]"]:not([class*="hover:bg-[#e0f0fb]"]):not([class*="focus:bg-[#e0f0fb]"]) { background-color: #172f52 !important; }
 html[data-tema="zafiro"] [class*="focus:bg-[#e0f0fb]"]:focus { background-color: #e0f2fe !important; }
 html[data-tema="zafiro"].dark [class*="focus:bg-[#e0f0fb]"]:focus { background-color: #172f52 !important; }
 html[data-tema="zafiro"] [class*="hover:bg-[#e0f0fb]"]:hover { background-color: #e0f2fe !important; }
@@ -200,14 +207,14 @@ html[data-tema="zafiro"] [class*="text-[#43627e]"] { color: #55637d !important; 
 html[data-tema="zafiro"].dark [class*="text-[#43627e]"] { color: #93bcfc !important; }
 
 /* ---------- Tema terracota ---------- */
-html[data-tema="terracota"] [class*="bg-[#386458]"] { background-color: #C25E2E !important; }
-html[data-tema="terracota"].dark [class*="bg-[#386458]"] { background-color: #C25E2E !important; }
-html[data-tema="terracota"] [class*="bg-[#386458]/10"] { background-color: #C25E2E1a !important; }
-html[data-tema="terracota"].dark [class*="bg-[#386458]/10"]:not([class*="hover:bg-[#386458]/10"]) { background-color: #C25E2E1a !important; }
-html[data-tema="terracota"] [class*="bg-[#386458]/5"] { background-color: #C25E2E0d !important; }
-html[data-tema="terracota"].dark [class*="bg-[#386458]/5"]:not([class*="hover:bg-[#386458]/5"]) { background-color: #C25E2E0d !important; }
-html[data-tema="terracota"] [class*="border-[#386458]"] { border-color: #C25E2E !important; }
-html[data-tema="terracota"].dark [class*="border-[#386458]"] { border-color: #E07A5F !important; }
+html[data-tema="terracota"] [class*="bg-[#386458]"]:not([class*="hover:bg-[#386458]"]) { background-color: #C25E2E !important; }
+html[data-tema="terracota"].dark [class*="bg-[#386458]"]:not([class*="hover:bg-[#386458]"]) { background-color: #C25E2E !important; }
+html[data-tema="terracota"] [class*="bg-[#386458]/10"]:not([class*="hover:bg-[#386458]"]):not([class*="selection:bg-[#386458]"]) { background-color: #C25E2E1a !important; }
+html[data-tema="terracota"].dark [class*="bg-[#386458]/10"]:not([class*="hover:bg-[#386458]/10"]):not([class*="hover:bg-[#386458]"]):not([class*="selection:bg-[#386458]"]) { background-color: #C25E2E1a !important; }
+html[data-tema="terracota"] [class*="bg-[#386458]/5"]:not([class*="hover:bg-[#386458]"]) { background-color: #C25E2E0d !important; }
+html[data-tema="terracota"].dark [class*="bg-[#386458]/5"]:not([class*="hover:bg-[#386458]/5"]):not([class*="hover:bg-[#386458]"]) { background-color: #C25E2E0d !important; }
+html[data-tema="terracota"] [class*="border-[#386458]"]:not([class*="hover:border-[#386458]"]):not([class*="focus:border-[#386458]"]):not([class*="focus-within:border-[#386458]"]) { border-color: #C25E2E !important; }
+html[data-tema="terracota"].dark [class*="border-[#386458]"]:not([class*="hover:border-[#386458]"]):not([class*="focus:border-[#386458]"]):not([class*="focus-within:border-[#386458]"]) { border-color: #E07A5F !important; }
 html[data-tema="terracota"] [class*="border-t-[#386458]"] { border-top-color: #C25E2E !important; }
 html[data-tema="terracota"].dark [class*="border-t-[#386458]"] { border-top-color: #E07A5F !important; }
 html[data-tema="terracota"].dark [class*="dark:bg-[#386458]/10"]:not([class*="hover:bg-[#386458]/10"]) { background-color: #C25E2E1a !important; }
@@ -245,8 +252,8 @@ html[data-tema="terracota"] [class*="shadow-[#386458]/10"] { --tw-shadow-color: 
 html[data-tema="terracota"].dark [class*="shadow-[#386458]/10"] { --tw-shadow-color: #C25E2E1a !important; }
 html[data-tema="terracota"] [class*="shadow-[#386458]/35"] { --tw-shadow-color: #C25E2E59 !important; }
 html[data-tema="terracota"].dark [class*="shadow-[#386458]/35"] { --tw-shadow-color: #C25E2E59 !important; }
-html[data-tema="terracota"] [class*="text-[#386458]"] { color: #C25E2E !important; }
-html[data-tema="terracota"].dark [class*="text-[#386458]"]:not([class*="hover:text-[#386458]"]):not([class*="group-hover:text-[#386458]"]) { color: #E07A5F !important; }
+html[data-tema="terracota"] [class*="text-[#386458]"]:not([class*="hover:text-[#386458]"]):not([class*="selection:text-[#386458]"]):not([class*="group-hover:text-[#386458]"]) { color: #C25E2E !important; }
+html[data-tema="terracota"].dark [class*="text-[#386458]"]:not([class*="hover:text-[#386458]"]):not([class*="group-hover:text-[#386458]"]):not([class*="selection:text-[#386458]"]) { color: #E07A5F !important; }
 html[data-tema="terracota"] [class*="to-[#386458]/40"] { --tw-gradient-to: #C25E2E66 !important; }
 html[data-tema="terracota"].dark [class*="to-[#386458]/40"] { --tw-gradient-to: #C25E2E66 !important; }
 html[data-tema="terracota"] [class*="via-[#386458]/20"] { --tw-gradient-via: #C25E2E33 !important; }
@@ -261,7 +268,7 @@ html[data-tema="terracota"] [class*="bg-[#42617d]/5"] { background-color: #E8E1D
 html[data-tema="terracota"].dark [class*="bg-[#42617d]/5"] { background-color: #4037300d !important; }
 html[data-tema="terracota"] [class*="bg-[#a1d0c1]/40"] { background-color: #F0EAE166 !important; }
 html[data-tema="terracota"].dark [class*="bg-[#a1d0c1]/40"] { background-color: #2C262166 !important; }
-html[data-tema="terracota"] [class*="bg-[#bdeddd]"] { background-color: #F3EEE6 !important; }
+html[data-tema="terracota"] [class*="bg-[#bdeddd]"]:not([class*="hover:bg-[#bdeddd]"]) { background-color: #F3EEE6 !important; }
 html[data-tema="terracota"].dark [class*="bg-[#bdeddd]"]:not([class*="hover:bg-[#bdeddd]"]):not([class*="hover:bg-[#a1d0c1]"]) { background-color: #2C2621 !important; }
 html[data-tema="terracota"] [class*="bg-[#bdeddd]/20"] { background-color: #F3EEE633 !important; }
 html[data-tema="terracota"].dark [class*="bg-[#bdeddd]/20"]:not([class*="hover:bg-[#bdeddd]"]):not([class*="hover:bg-[#a1d0c1]"]) { background-color: #2C262133 !important; }
@@ -275,8 +282,8 @@ html[data-tema="terracota"] [class*="bg-[#bdeddd]/45"] { background-color: #F3EE
 html[data-tema="terracota"].dark [class*="bg-[#bdeddd]/45"]:not([class*="hover:bg-[#bdeddd]"]):not([class*="hover:bg-[#a1d0c1]"]) { background-color: #2C262173 !important; }
 html[data-tema="terracota"] [class*="bg-[#bdeddd]/50"] { background-color: #F3EEE680 !important; }
 html[data-tema="terracota"].dark [class*="bg-[#bdeddd]/50"]:not([class*="hover:bg-[#bdeddd]"]):not([class*="hover:bg-[#a1d0c1]"]) { background-color: #2C262180 !important; }
-html[data-tema="terracota"] [class*="bg-[#bdeddd]/60"] { background-color: #F3EEE699 !important; }
-html[data-tema="terracota"].dark [class*="bg-[#bdeddd]/60"]:not([class*="hover:bg-[#bdeddd]"]):not([class*="hover:bg-[#a1d0c1]"]) { background-color: #2C262199 !important; }
+html[data-tema="terracota"] [class*="bg-[#bdeddd]/60"]:not([class*="hover:bg-[#bdeddd]/60"]) { background-color: #F3EEE699 !important; }
+html[data-tema="terracota"].dark [class*="bg-[#bdeddd]/60"]:not([class*="hover:bg-[#bdeddd]"]):not([class*="hover:bg-[#a1d0c1]"]):not([class*="hover:bg-[#bdeddd]/60"]) { background-color: #2C262199 !important; }
 html[data-tema="terracota"] [class*="bg-[#cde5ff]"] { background-color: #F3EEE6 !important; }
 html[data-tema="terracota"].dark [class*="bg-[#cde5ff]"] { background-color: #2C2621 !important; }
 html[data-tema="terracota"] [class*="bg-[#cde5ff]/40"] { background-color: #F3EEE666 !important; }
@@ -302,8 +309,8 @@ html[data-tema="terracota"] [class*="hover:text-[#2c4e45]"]:hover { color: #A34E
 html[data-tema="terracota"].dark [class*="hover:text-[#2c4e45]"]:hover { color: #E07A5F !important; }
 html[data-tema="terracota"] [class*="hover:text-[#a1d0c1]"]:hover { color: #C25E2E !important; }
 html[data-tema="terracota"].dark [class*="hover:text-[#a1d0c1]"]:hover { color: #E07A5F !important; }
-html[data-tema="terracota"] [class*="text-[#214e43]"] { color: #7C3E24 !important; }
-html[data-tema="terracota"].dark [class*="text-[#214e43]"] { color: #E07A5F !important; }
+html[data-tema="terracota"] [class*="text-[#214e43]"]:not([class*="hover:text-[#214e43]"]) { color: #7C3E24 !important; }
+html[data-tema="terracota"].dark [class*="text-[#214e43]"]:not([class*="hover:text-[#214e43]"]) { color: #E07A5F !important; }
 html[data-tema="terracota"] [class*="text-[#214e43]/80"] { color: #7C3E24cc !important; }
 html[data-tema="terracota"].dark [class*="text-[#214e43]/80"] { color: #E07A5Fcc !important; }
 html[data-tema="terracota"] [class*="text-[#294964]"] { color: #7C3E24 !important; }
@@ -312,8 +319,8 @@ html[data-tema="terracota"] [class*="text-[#294964]/80"] { color: #7C3E24cc !imp
 html[data-tema="terracota"].dark [class*="text-[#294964]/80"] { color: #E07A5Fcc !important; }
 html[data-tema="terracota"] [class*="text-[#42617d]"] { color: #635A52 !important; }
 html[data-tema="terracota"].dark [class*="text-[#42617d]"] { color: #A8A199 !important; }
-html[data-tema="terracota"] [class*="text-[#a1d0c1]"] { color: #C25E2E !important; }
-html[data-tema="terracota"].dark [class*="text-[#a1d0c1]"] { color: #E07A5F !important; }
+html[data-tema="terracota"] [class*="text-[#a1d0c1]"]:not([class*="hover:text-[#a1d0c1]"]) { color: #C25E2E !important; }
+html[data-tema="terracota"].dark [class*="text-[#a1d0c1]"]:not([class*="hover:text-[#a1d0c1]"]) { color: #E07A5F !important; }
 html[data-tema="terracota"] [class*="text-[#bdeddd]"] { color: #7C3E24 !important; }
 html[data-tema="terracota"].dark [class*="text-[#bdeddd]"] { color: #E07A5F !important; }
 html[data-tema="terracota"] [class*="to-[#214e43]/20"] { --tw-gradient-to: #7C3E2433 !important; }
@@ -335,7 +342,7 @@ html[data-tema="terracota"] [class*="bg-[#a8d2c4]"] { background-color: #ffddb4 
 html[data-tema="terracota"].dark [class*="bg-[#a8d2c4]"] { background-color: #E07A5F3d !important; }
 html[data-tema="terracota"] [class*="bg-[#7fb3a1]"] { background-color: #E09F3E !important; }
 html[data-tema="terracota"].dark [class*="bg-[#7fb3a1]"] { background-color: #E07A5F4d !important; }
-html[data-tema="terracota"] [class*="bg-[#bddefe]"] { background-color: #ffdbcd !important; }
+html[data-tema="terracota"] [class*="bg-[#bddefe]"]:not([class*="hover:bg-[#bddefe]"]) { background-color: #ffdbcd !important; }
 html[data-tema="terracota"].dark [class*="bg-[#bddefe]"]:not([class*="hover:bg-[#bddefe]"]) { background-color: #403730 !important; }
 html[data-tema="terracota"] [class*="bg-[#bddefe]/30"] { background-color: #ffdbcd4d !important; }
 html[data-tema="terracota"].dark [class*="bg-[#bddefe]/30"]:not([class*="hover:bg-[#bddefe]"]) { background-color: #4037304d !important; }
@@ -355,8 +362,8 @@ html[data-tema="terracota"] [class*="border-[#bddefe]/40"] { border-color: #E8E1
 html[data-tema="terracota"].dark [class*="border-[#bddefe]/40"] { border-color: #40373066 !important; }
 html[data-tema="terracota"] [class*="to-[#bddefe]/50"] { --tw-gradient-to: #ffdbcd80 !important; }
 html[data-tema="terracota"].dark [class*="to-[#bddefe]/50"] { --tw-gradient-to: #40373080 !important; }
-html[data-tema="terracota"] [class*="bg-[#e0f0fb]"] { background-color: #F3EEE6 !important; }
-html[data-tema="terracota"].dark [class*="bg-[#e0f0fb]"]:not([class*="hover:bg-[#e0f0fb]"]) { background-color: #2C2621 !important; }
+html[data-tema="terracota"] [class*="bg-[#e0f0fb]"]:not([class*="hover:bg-[#e0f0fb]"]):not([class*="focus:bg-[#e0f0fb]"]) { background-color: #F3EEE6 !important; }
+html[data-tema="terracota"].dark [class*="bg-[#e0f0fb]"]:not([class*="hover:bg-[#e0f0fb]"]):not([class*="focus:bg-[#e0f0fb]"]) { background-color: #2C2621 !important; }
 html[data-tema="terracota"] [class*="focus:bg-[#e0f0fb]"]:focus { background-color: #F3EEE6 !important; }
 html[data-tema="terracota"].dark [class*="focus:bg-[#e0f0fb]"]:focus { background-color: #2C2621 !important; }
 html[data-tema="terracota"] [class*="hover:bg-[#e0f0fb]"]:hover { background-color: #F3EEE6 !important; }

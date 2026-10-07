@@ -55,6 +55,16 @@ correctos (botones `#1a4b84` / `#C25E2E`, acentos celestial/ámbar en oscuro).
   (p. ej. oscuro+zafiro: texto `#38bdf8`, barra J `#2060aa`, icono
   `rgba(23,47,82,0.45)`; oscuro+terracota: `#E07A5F`, `#A34E26`,
   `rgba(44,38,33,0.45)`) + capturas claro/oscuro en ambos temas.
+- **Corrección (misma tarde): fuga substring en variantes.** Los links del
+  menú quedaban sólidos en Zafiro/Terracota: la regla plana
+  `bg-[#386458]` casaba por substring con `hover:bg-[#386458]/5` y pintaba
+  en reposo (probe: inactivo `rgb(26,75,132)`). Era sistémico: 11 reglas
+  planas fugaban a `hover:/focus:/focus-within:/selection:/group-hover:`
+  (inputs con borde siempre, iconos `group-hover` fijos, página teñida por
+  `selection:` del root). Se agregaron 58 `:not()` guards anti-fuga
+  (script `fix-leaks.js`, no versionado); auditado que ningún elemento
+  combina base + variante de la misma familia. Menú verificado por probe
+  (inactivo transparente) y captura.
 
 ---
 
