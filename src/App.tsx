@@ -16,6 +16,7 @@ import CheckinNinosScreen from "./CheckinNinos";
 import OfflineSyncScreen from "./OfflineSync";
 import ConfirmacionRegistroScreen from "./ConfirmacionRegistro";
 import BibliaScreen from "./Biblia";
+import AngelAsistente from "./AngelAsistente";
 
 // ==========================================================================
 // COMPONENTE: PANTALLA 5 - ROLES DEFINIDOS (Nueva pantalla de Stitch)
@@ -2894,6 +2895,11 @@ export default function App() {
             </div>
           </div>
         )}
+
+        {/* Asistente Ángel flotante: botón + chat de ayuda y navegación.
+            Fixed en z-40 (sobre el bottom-nav z-30, bajo modales z-50);
+            visible en todas las pantallas de la app. */}
+        <AngelAsistente onNavigate={(screen) => setActiveScreen(screen as ScreenId)} />
 
       </div>
 
