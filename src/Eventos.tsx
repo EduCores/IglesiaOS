@@ -173,7 +173,7 @@ export default function EventosScreen({ onNavigateToLive, onNavigateToCheckin }:
             </div>
 
             <p className="text-[11px] text-slate-600 dark:text-white/90 leading-relaxed line-clamp-2">
-              Una atmósfera serena para renovar el espíritu a través de acordes contemplativos y gratitud comunitaria.
+              Una atmósfera serena para renovar el espíritu a través de acordes de adoración y gratitud comunitaria.
             </p>
 
             <div className="flex items-center justify-between pt-1 border-t border-slate-900/10 dark:border-white/10 mt-1">

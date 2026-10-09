@@ -117,7 +117,7 @@ export default function OnboardingSetupScreen({ onBack }: { onBack?: () => void 
             <div className="space-y-1">
               <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Comienza a edificar tu congregación</h2>
               <p className="text-[11px] text-slate-400 font-semibold leading-relaxed">
-                Aún no hay datos registrados en este módulo. Configura los primeros pilares para gestionar tu iglesia con orden, serenidad y gracia.
+                Aún no hay datos registrados en este módulo. Configura los primeros pilares para gestionar tu iglesia con orden, paz y gracia.
               </p>
             </div>
 

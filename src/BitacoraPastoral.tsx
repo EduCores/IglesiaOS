@@ -10,7 +10,7 @@ export default function BitacoraPastoralScreen({ onBack, onNavigateToBiblia }: {
   const [connectionPlace, setConnectionPlace] = useState("hogar");
   const [estimatedDuration, setEstimatedDuration] = useState("45 minutos");
   const [visitDate, setVisitDate] = useState("Hoy, 24 Octubre");
-  const [moodAssessment, setMoodAssessment] = useState("Calma");
+  const [moodAssessment, setMoodAssessment] = useState("En Paz");
   const [privacyLevel, setPrivacyLevel] = useState<"solo_pastor" | "equipo">("solo_pastor");
   const [noteContent, setConfidentialNote] = useState("");
   const [assignedLeader, setAssignedLeader] = useState("Pastor Andrés V.");
@@ -238,7 +238,7 @@ export default function BitacoraPastoralScreen({ onBack, onNavigateToBiblia }: {
             {[
               { text: "Quebranto", emoji: "🌧️" },
               { text: "Inquietud", emoji: "⛅" },
-              { text: "Calma", emoji: "🌿" },
+              { text: "En Paz", emoji: "🌿" },
               { text: "Fortaleza", emoji: "🌱" },
               { text: "En Gozo", emoji: "✨" }
             ].map((mood) => {

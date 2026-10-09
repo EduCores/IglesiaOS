@@ -89,6 +89,25 @@ solo. El donut de presupuesto es estático (no se tocó a propósito).
 
 ---
 
+## ✅ APLICADO — Lenguaje eclesial (fuera conceptos de meditación)
+
+**Estado:** ✅ Aplicado el 06-oct-2026, a pedido del usuario. Auditoría
+previa (ES+EN: `meditac|mindful|yoga|respira|bienestar|afirmac|decreto|…`)
+sin prácticas de meditación en el código; se ajustaron 5 textos con
+resonancia wellness a lenguaje eclesial/neutro:
+- `App.tsx` tarjeta devocional: "Pausa Espiritual" → **"Devocional"**.
+- `OnboardingSetup.tsx`: "orden, serenidad y gracia" → **"orden, paz y gracia"**.
+- `Eventos.tsx`: "acordes contemplativos" → **"acordes de adoración"**.
+- `AngelAsistente.tsx`: "revisarlo con calma" → **"revisarlo en detalle"**.
+- `BitacoraPastoral.tsx`: estado de ánimo "Calma" → **"En Paz"** (a juego
+  con "En Gozo"; son estados observados en la visita, no prácticas).
+- Se conservan por ser eclesiales: "Versículo del día", "Devocional",
+  "Reflexión Pastoral", "Vigilia", "Retiro", "Paz/Gracia", letra de
+  "Cuán Grande es Dios" y el nombre "Fuego & Quietud" (título propio de
+  la actividad).
+
+---
+
 ## ✅ APLICADO — Insignia con nombre y rol de quien se loguea
 
 **Estado:** ✅ Aplicado el 06-oct-2026, a pedido del usuario.

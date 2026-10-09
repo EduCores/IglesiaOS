@@ -132,7 +132,7 @@ const INTENCIONES_A: IntencionAngel[] = [
   },
   {
     claves: ["confirmar registro", "ficha de registro"],
-    texto: "La Confirmación de Registro muestra el resumen del trámite recién guardado para revisarlo con calma.",
+    texto: "La Confirmación de Registro muestra el resumen del trámite recién guardado para revisarlo en detalle.",
     accion: DESTINOS.confirmacion,
   },
 ];

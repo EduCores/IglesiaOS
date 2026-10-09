@@ -1140,7 +1140,7 @@ function InicioScreen({
             <div className="flex-1 min-w-0">
               <div className="flex items-center space-x-1 text-[#386458]">
                 <span className="material-symbols-outlined text-[15px]">volunteer_activism</span>
-                <span className="text-[10px] font-bold uppercase tracking-wider truncate">Pausa Espiritual</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider truncate">Devocional</span>
               </div>
               <h4 className="text-xs font-bold text-slate-900 truncate mt-0.5">Momento de Oración y Alabanza</h4>
             </div>
