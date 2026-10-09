@@ -108,6 +108,53 @@ resonancia wellness a lenguaje eclesial/neutro:
 
 ---
 
+## ✅ APLICADO — Punto de inflexión: base de datos preparada (Supabase, sin migrar a Next.js)
+
+**Estado:** ✅ Aplicado el 06-oct-2026. Decisión tomada: **React + Vite se
+mantiene**; se prepara la capa de datos.
+
+**Por qué NO Next.js (respuesta con datos, no opinión):** el deploy es
+GitHub Pages (`deploy.yml` → `vite build` → artifact = hosting **estático**);
+el código tiene **0** llamadas `fetch`/axios/GraphQL (app 100 % cliente);
+y SSR/SEO no aporta en una app interna detrás de login. Migrar obligaría a
+cambiar de hosting y reescribir 8.882 líneas *antes* de que exista la base
+de datos. La red social futura **sí** querría Next.js (SEO público), pero
+como **proyecto aparte**: no debe compartir datos con IglesiaOS.
+
+**Por qué Supabase y no Neon:** no son la misma categoría. Neon es solo
+hosting de Postgres (habría que agregarle auth y permisos aparte);
+Supabase = Postgres + Auth + Storage + **RLS** (permisos aplicados en la
+base) + Realtime. Los roles agregados (Portero/Ujieres/Aseo/Cocina) dejan
+de ser texto: `role_permissions` los vuelve comprobables.
+
+**Entregado:**
+- `supabase/schema.sql` — 14 tablas (perfiles, roles, role_permissions,
+  miembros, células, transacciones, bitácora pastoral, motivos de oración,
+  sacramentos, eventos, asistencia, check-in niños, difusión) + RLS con
+  políticas por permiso + bucket privado `avatars` + **seed de los 9 roles**
+  actuales (coinciden con `ROLES_INICIALES`, así el selector de rol del
+  login los puede leer tal cual).
+- `src/lib/supabase.ts` — cliente que **no rompe la app**: sin variables de
+  entorno exporta `supabase = null` / `isSupabaseReady = false` y la app
+  sigue con los datos actuales (verificado en captura).
+- `src/lib/tipos.ts` — tipos del dominio (evita `any` al integrar).
+- `.env.example` reescrito (VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY).
+- `docs/base-de-datos.md` — arquitectura, pasos de conexión y checklist de
+  datos sensibles (Ley 19.628).
+- `metadata.json` **eliminado**: boilerplate muerto de AI Studio
+  (mencionaba Cloud Run y Gemini; nada en el repo lo referenciaba).
+
+**Datos sensibles detectados al modelar:** `CensoMiembro` (RUT, nacimiento,
+dirección), `CheckinNinos` (alergias de menores), `BitacoraPastoral` (notas
+confidenciales de salud). Por eso `children_checkins` va en tabla aparte
+con RLS estricta, y la bitácora filtra por `privacy`.
+
+**Pendiente (siguiente paso acordado):** partir `App.tsx` (2.752 líneas)
+en módulos **antes** de reemplazar los arrays por queries, y agregar router
+(react-router) para URLs y botón atrás.
+
+---
+
 ## ✅ APLICADO — Insignia con nombre y rol de quien se loguea
 
 **Estado:** ✅ Aplicado el 06-oct-2026, a pedido del usuario.
