@@ -1,4 +1,14 @@
 import React, { useState } from "react";
+import { supabase } from "./lib/supabase";
+import { useAuth } from "./lib/auth";
+
+/** "45 minutos" (texto libre) -> 45 o null. */
+function parseMinutos(s: string): number | null {
+  const m = s.trim().match(/^(\d{1,4})/);
+  if (!m) return null;
+  const n = Number(m[1]);
+  return n >= 0 && n <= 1440 ? n : null;
+}
 
 interface PrayerPetition {
   id: number;
@@ -6,6 +16,7 @@ interface PrayerPetition {
 }
 
 export default function BitacoraPastoralScreen({ onBack, onNavigateToBiblia }: { onBack?: () => void; onNavigateToBiblia?: () => void }) {
+  const nube = useAuth();
   const [encounterType, setEncounterType] = useState("Visita Domiciliaria");
   const [connectionPlace, setConnectionPlace] = useState("hogar");
   const [estimatedDuration, setEstimatedDuration] = useState("45 minutos");
@@ -36,6 +47,40 @@ export default function BitacoraPastoralScreen({ onBack, onNavigateToBiblia }: {
   };
 
   const handleSaveLog = () => {
+    // Con sesión en la nube, la visita queda guardada en `pastoral_logs`
+    // (+ `prayer_requests`). Requiere `ver_todos_pastoral` o `ver_directorio`.
+    // visited_at = hoy (el formulario trae texto libre, no fecha); la familia
+    // visitada aún no se elige (member_id null) ni el seguimiento tiene fecha
+    // parseable: pendiente de selector de miembro. Si RLS niega, aviso honesto.
+    if (supabase && nube.user) {
+      const logId = crypto.randomUUID();
+      const nota = noteContent.trim() || null;
+      void supabase
+        .from("pastoral_logs")
+        .insert({
+          id: logId,
+          member_id: null,
+          author_id: nube.user.id,
+          connection_place: connectionPlace.trim() || null,
+          duration_minutes: parseMinutos(estimatedDuration),
+          mood: moodAssessment,
+          privacy: privacyLevel,
+          note: nota,
+          next_follow_up: null,
+        })
+        .then(async ({ error }) => {
+          if (error) {
+            notify("Sin permiso en la nube: bitácora solo local.");
+            return;
+          }
+          if (prayers.length > 0 && supabase) {
+            await supabase.from("prayer_requests").insert(
+              prayers.map((p) => ({ log_id: logId, petition: p.text }))
+            );
+          }
+        });
+    }
+
     notify("¡Bitácora pastoral guardada y cifrada con AES-256 en la ficha del miembro!");
     if (onBack) onBack();
   };
