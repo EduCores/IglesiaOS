@@ -23,30 +23,13 @@
 create extension if not exists "pgcrypto"; -- gen_random_uuid()
 
 -- --------------------------------------------------------------------------
--- 1. Perfiles de usuario (rol + iglesia)
---    Espejo de la sesión actual (App.tsx: {nombre, email, rol}), pero ahora
---    respaldado por auth.users. `rol_id` es la FK que hace que los permisos
---    de Portero/Ujieres/Aseo/Cocina sean REALES (ver RLS).
--- --------------------------------------------------------------------------
-create table if not exists public.perfiles (
-  id          uuid primary key references auth.users (id) on delete cascade,
-  full_name   text        not null,
-  email       text,
-  phone       text,
-  rol_id      uuid        references public.roles (id) on delete set null,
-  congregation text       default 'Célula Betania',
-  is_active   boolean     not null default true,
-  created_at  timestamptz not null default now(),
-  updated_at  timestamptz not null default now()
-);
-
--- --------------------------------------------------------------------------
--- 2. Roles y permisos  (pantalla Roles: App.tsx ROLES_INICIALES)
+-- 1. Roles y permisos  (pantalla Roles: App.tsx ROLES_INICIALES)
 --    Los 9 roles actuales: Pastor Principal, Dir. Alabanza, Tesorero,
 --    Líder de Célula, Voluntario (suspendido), Portero, Ujieres,
 --    Servicio de Aseo, Cocina + Ayudantes.
 --    `type` reproduce los filtros de la pantalla (todos/liderazgo/
 --    ministerios/apoyo) -> la UI sigue igual, ahora con datos.
+--    ⚠️ Va PRIMERO: profiles y role_permissions lo referencian.
 -- --------------------------------------------------------------------------
 create table if not exists public.roles (
   id           uuid primary key default gen_random_uuid(),
@@ -61,17 +44,35 @@ create table if not exists public.roles (
 );
 
 -- Permisos por rol. En vez de un campo `desc` de texto (decorativo hoy),
--- cada permiso es una fila comprobable: la appoperative podra verificarlo y
--- RLS puede envolverlo. Ejemplos del pedido:
+-- cada permiso es una fila comprobable: la app podrá verificarlo y RLS
+-- puede envolverlo. Ejemplos del pedido:
 --   ujieres   -> registrar_ofrendas = true, solicitar_gastos = false
 --   aseo/cocina -> solicitar_gastos = true, registrar_ofrendas = false
 create table if not exists public.role_permissions (
   id            uuid primary key default gen_random_uuid(),
   rol_id        uuid not null references public.roles (id) on delete cascade,
   permission    text not null,   -- 'registrar_ofrendas','solicitar_gastos',
-                                 -- 'ver_finanzas','ver_directorio','gestionar_roles',…
+                                 -- 'ver_finanzas','ver_directorio','gestionar_roles',...
   allowed       boolean not null default false,
   unique (rol_id, permission)
+);
+
+-- --------------------------------------------------------------------------
+-- 2. Perfiles de usuario (rol + iglesia)
+--    Espejo de la sesión local actual (App.tsx: {nombre, email, rol}), pero
+--    ahora respaldado por auth.users. `rol_id` es la FK que hace que los
+--    permisos de Portero/Ujieres/Aseo/Cocina sean REALES (ver RLS).
+-- --------------------------------------------------------------------------
+create table if not exists public.profiles (
+  id          uuid primary key references auth.users (id) on delete cascade,
+  full_name   text        not null,
+  email       text,
+  phone       text,
+  rol_id      uuid        references public.roles (id) on delete set null,
+  congregation text       default 'Célula Betania',
+  is_active   boolean     not null default true,
+  created_at  timestamptz not null default now(),
+  updated_at  timestamptz not null default now()
 );
 
 -- --------------------------------------------------------------------------
@@ -288,6 +289,13 @@ on conflict (rol_id, permission) do update set allowed = excluded.allowed;
 --     Por qué importa: hoy los permisos son TEXTO. Con RLS el permiso se
 --     cumple en la base: si alguien manipula el front, sigue bloqueado.
 --     Cada pantalla sensible necesita su política; este bloque es la base.
+--
+--     NOTA sobre "Habilitar RLS automático" (casilla del alta de proyecto):
+--     es solo un event trigger que activa RLS en tablas NUEVAS de `public`
+--     (no crea políticas). Este archivo ya hace `enable row level security`
+--     explícito en las 14 tablas (bloque siguiente), que es lo que de verdad
+--     importa. Puedes dejar la casilla activada o desactivada: el resultado
+--     es el mismo para este esquema.
 -- ==========================================================================
 
 -- Helpers: who is the current user and what permissions does their role have.
