@@ -24,8 +24,7 @@ export type ScreenId =
   | "offline_sync"
   | "confirmacion_registro"
   | "biblia";
-export const NAV_GROUPS: { title: string; links: { screen: ScreenId; label: string; icon: string }[] }[] = [
-  {
+export const NAV_GROUPS: { title: string; links: { screen: ScreenId; label: string; icon: string }[] }[] = [  {
     title: "Principal",
     links: [{ screen: "inicio", label: "Inicio", icon: "church" }],
   },
@@ -81,3 +80,55 @@ export const NAV_GROUPS: { title: string; links: { screen: ScreenId; label: stri
     ],
   },
 ];
+
+// ==========================================================================
+// RUTAS URL (react-router, Fase 2). Cada pantalla tiene URL propia en
+// español: recargar no pierde la pantalla, el botón atrás funciona y los
+// enlaces se pueden compartir. `basename` sale de Vite ("/" en dev,
+// "/IglesiaOS/" en build de GitHub Pages); `public/404.html` + el script
+// de `index.html` rescatan recargas y enlaces profundos en Pages.
+// ==========================================================================
+export const SCREEN_PATHS: Record<ScreenId, string> = {
+  inicio: "/",
+  formulario: "/consagracion",
+  comunicaciones: "/comunicaciones",
+  finanzas: "/finanzas",
+  roles: "/roles",
+  personas: "/hermanos",
+  celulas: "/celulas",
+  multimedia: "/multimedia",
+  pastoral: "/pastoral",
+  eventos: "/eventos",
+  culto_vivo: "/culto-en-vivo",
+  censo_miembro: "/censo",
+  sacramentos: "/sacramentos",
+  bitacora_pastoral: "/bitacora",
+  difusion_whatsapp: "/difusion",
+  onboarding_setup: "/configuracion",
+  checkin_ninos: "/checkin-ninos",
+  offline_sync: "/sin-conexion",
+  confirmacion_registro: "/confirmacion",
+  biblia: "/biblia",
+};
+
+const PATH_SCREENS: Record<string, ScreenId> = Object.fromEntries(
+  Object.entries(SCREEN_PATHS).map(([screen, path]) => [path, screen as ScreenId])
+);
+
+/** basename del router desde Vite (sin slash final; "/" en dev). */
+export const ROUTER_BASENAME =
+  (import.meta.env.BASE_URL as string).replace(/\/$/, "") || "/";
+
+/** Quita basename y slash final: "/IglesiaOS/finanzas/" -> "/finanzas". */
+export function normalizePath(rawPathname: string): string {
+  const base = ROUTER_BASENAME === "/" ? "" : ROUTER_BASENAME;
+  const sinBase = base && rawPathname.startsWith(base)
+    ? rawPathname.slice(base.length) || "/"
+    : rawPathname;
+  return sinBase.length > 1 ? sinBase.replace(/\/$/, "") : sinBase;
+}
+
+/** Pantalla para una URL, o null si no existe (App redirige a inicio). */
+export function screenFromPath(rawPathname: string): ScreenId | null {
+  return PATH_SCREENS[normalizePath(rawPathname)] ?? null;
+}

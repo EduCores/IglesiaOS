@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>IglesiaOS — redirigiendo…</title>
+    <!-- Rescate SPA para GitHub Pages (Fase 2: rutas con react-router).
+         Pages no tiene fallback de servidor: una recarga o un enlace
+         profundo (/IglesiaOS/finanzas) caería aquí con 404. Esta página
+         codifica la ruta pedida en "?/…" y vuelve al índice, donde el
+         script de index.html la restaura antes de que React arranque.
+         Receta estándar spa-github-pages, con pathSegmentsToKeep = 1
+         porque el sitio vive en el subdirectorio /IglesiaOS/. -->
+    <script>
+      // https://github.com/rafgraph/spa-github-pages — MIT
+      var pathSegmentsToKeep = 1;
+      var l = window.location;
+      l.replace(
+        l.protocol + "//" + l.hostname + (l.port ? ":" + l.port : "") +
+        l.pathname.split("/").slice(0, 1 + pathSegmentsToKeep).join("/") + "/?/" +
+        l.pathname.slice(1).split("/").slice(pathSegmentsToKeep).join("/").replace(/&/g, "~and~") +
+        (l.search ? "&" + l.search.slice(1).replace(/&/g, "~and~") : "") +
+        l.hash
+      );
+    </script>
+  </head>
+  <body></body>
+</html>

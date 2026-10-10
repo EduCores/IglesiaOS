@@ -1,4 +1,5 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { BrowserRouter, useLocation, useNavigate } from "react-router";
 import { useTheme, useTemaColor, type TemaColor } from "./useTheme";
 import DirectorioScreen from "./Directorio";
 import CelulasScreen from "./Celulas";
@@ -22,25 +23,40 @@ import FinanzasDashboardScreen from "./screens/FinanzasDashboardScreen";
 import RolesScreen from "./screens/RolesScreen";
 import { ROLES_INICIALES } from "./data/roles";
 import type { ScreenId } from "./navigation";
-import { FooterVideo, NavMenuPanel, ThemeToggle, TemaColorBoton, SKY_VIDEO_SRC } from "./components/chrome";
-
-// ==========================================================================
-// COMPONENTE: PANTALLA 5 - ROLES DEFINIDOS (Nueva pantalla de Stitch)
-// ==========================================================================
-
-
-
+import { SCREEN_PATHS, screenFromPath, ROUTER_BASENAME } from "./navigation";import { FooterVideo, NavMenuPanel, ThemeToggle, TemaColorBoton, SKY_VIDEO_SRC } from "./components/chrome";
 
 // ==========================================================================
 // COMPONENTE PRINCIPAL (MAIN WRAPPER & STATE MANAGER)
 // ==========================================================================
-export default function App() {
+// Shell vive DENTRO del BrowserRouter (usa useLocation/useNavigate para
+// sincronizar pantalla<->URL: recargar no pierde la pantalla, el botón
+// atrás funciona y los enlaces se comparten). Todo lo que antes llamaba a
+// setActiveScreen sigue igual: el wrapper también navega a la ruta.
+// ==========================================================================
+function Shell() {
   // Detección automática de vista (acordada en PENDIENTES.md): <768px → móvil, ≥768px → escritorio.
   const [viewMode] = useState<"mobile" | "desktop">(() =>
     typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches ? "mobile" : "desktop"
   );
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeScreen, setActiveScreen] = useState<ScreenId>("inicio");
+  // Pantalla sincronizada con la URL (Fase 2): la URL manda al cargar y con
+  // el botón atrás/adelante; navegar por la app actualiza la URL.
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [activeScreen, setActiveScreenState] = useState<ScreenId>(
+    () => screenFromPath(location.pathname) ?? "inicio"
+  );
+  const setActiveScreen = (s: ScreenId) => {
+    setActiveScreenState(s);
+    // Sin push duplicado: si la URL ya es la de s, no se navega.
+    if (screenFromPath(location.pathname) !== s) navigate(SCREEN_PATHS[s]);
+  };
+  useEffect(() => {
+    const fromUrl = screenFromPath(location.pathname);
+    if (fromUrl && fromUrl !== activeScreen) setActiveScreenState(fromUrl);
+    else if (!fromUrl && location.pathname !== "/") navigate("/", { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
   const { theme, toggleTheme } = useTheme();
   const { temaColor, cambiarTemaColor } = useTemaColor();
 
@@ -1484,5 +1500,15 @@ export default function App() {
       </div>
 
     </div>
+  );
+}
+
+// Raíz exportada: el Router envuelve al Shell para que useLocation y
+// useNavigate funcionen. basename sale de Vite (dev "/" / Pages "/IglesiaOS").
+export default function App() {
+  return (
+    <BrowserRouter basename={ROUTER_BASENAME}>
+      <Shell />
+    </BrowserRouter>
   );
 }
