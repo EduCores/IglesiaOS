@@ -1,4 +1,6 @@
 import React, { useState, useRef } from "react";
+import { supabase } from "./lib/supabase";
+import { useAuth } from "./lib/auth";
 
 interface AudienceOption {
   id: string;
@@ -20,6 +22,7 @@ interface TemplateOption {
 }
 
 export default function DifusionWhatsappScreen({ onBack }: { onBack?: () => void }) {
+  const nube = useAuth();
   const [selectedAudience, setSelectedAudience] = useState<AudienceOption>({
     id: "congregacion",
     label: "Toda la Congregación",
@@ -133,6 +136,23 @@ export default function DifusionWhatsappScreen({ onBack }: { onBack?: () => void
   };
 
   const handleConfirmSend = () => {
+    // Con nube: la difusión confirmada queda en `broadcasts` como enviada
+    // (requiere `gestionar_roles`; si RLS lo niega, queda local con aviso).
+    if (supabase && nube.user) {
+      void supabase
+        .from("broadcasts")
+        .insert({
+          title: `WhatsApp · ${selectedAudience.label}`,
+          channel: "whatsapp",
+          body: messageText,
+          status: "enviado",
+          sent_at: new Date().toISOString(),
+          recipients: selectedAudience.count,
+        })
+        .then(({ error }) => {
+          if (error) triggerToast("Sin permiso en la nube: difusión solo local.");
+        });
+    }
     setShowConfirmationModal(false);
     triggerToast(`Transmitiendo difusión a ${selectedAudience.count.toLocaleString()} teléfonos WhatsApp...`);
   };

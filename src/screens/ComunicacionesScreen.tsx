@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { supabase } from "../lib/supabase";
+import { HISTORIAL_INICIAL, type ComunicacionUI } from "../data/comunicaciones";
+import { mapDifusionToUI, useDifusionNube } from "../lib/useDifusion";
 
 // ==========================================================================
 // COMPONENTE: PANTALLA 3 - COMUNICACIONES (Stitch)
@@ -17,17 +20,40 @@ export default function ComunicacionesScreen({
   const [broadcastMessage, setBroadcastMessage] = useState("");
   const [successToast, setSuccessToast] = useState<string | null>(null);
 
-  const historyItems = [
-    { title: "Vigilia de Oración de Primavera", channel: "WhatsApp • 1,420 contactos", date: "Ayer, 19:40", status: "Enviado", badgeColor: "bg-[#bdeddd] text-[#214e43]", dotColor: "bg-[#386458]", bgIconColor: "bg-[#bdeddd]/45", textColor: "text-[#386458]", icon: "mark_chat_read" },
-    { title: "Devocional Semanal - Guía de Oración", channel: "Email • Segmento Devocional", date: "Mañana, 07:00", status: "Programado", badgeColor: "bg-[#cde5ff] text-[#294964]", dotColor: "bg-[#42617d]", bgIconColor: "bg-[#cde5ff]/60", textColor: "text-[#42617d]", icon: "upcoming" },
-    { title: "Volumen 19: Devocional Semanal", channel: "Boletín • Edición imprimible", date: "Editado hace 2h", status: "Borrador", badgeColor: "bg-[#ffd9de] text-[#663a42]", dotColor: "bg-[#7f4e57]", bgIconColor: "bg-[#ffd9de]/80", textColor: "text-[#7f4e57]", icon: "draft" },
-    { title: "Recordatorio: Campanas Matutinas", channel: "WhatsApp • Grupo General", date: "Lun 14, 06:15", status: "Enviado", badgeColor: "bg-[#bdeddd] text-[#214e43]", dotColor: "bg-[#386458]", bgIconColor: "bg-[#bdeddd]/45", textColor: "text-[#386458]", icon: "notifications_active" }
-  ];
+  // Con nube, el historial viene de `broadcasts` (reemplazo); sin nube, local.
+  const [historyItems, setHistoryItems] = useState<ComunicacionUI[]>(HISTORIAL_INICIAL);
+  const nubeDif = useDifusionNube();
+  useEffect(() => {
+    if (!nubeDif.filas) return;
+    setHistoryItems(nubeDif.filas.map((row) => mapDifusionToUI(row)));
+  }, [nubeDif.filas]);
+
+  const avisarNube = (msg: string) => {
+    setSuccessToast(msg);
+    setTimeout(() => setSuccessToast(null), 3500);
+  };
 
   const handleSendBroadcast = (e: React.FormEvent) => {
     e.preventDefault();
     if (!broadcastMessage.trim()) return;
 
+    // Con nube: el mensaje rápido queda en `broadcasts` como enviado
+    // (requiere `gestionar_roles`; si RLS lo niega, queda local con aviso).
+    if (nubeDif.sincronizado && supabase) {
+      const texto = broadcastMessage.trim();
+      void supabase
+        .from("broadcasts")
+        .insert({
+          title: texto.length > 48 ? `${texto.slice(0, 48)}…` : texto,
+          channel: "whatsapp",
+          body: texto,
+          status: "enviado",
+          sent_at: new Date().toISOString(),
+        })
+        .then(({ error }) => {
+          if (error) avisarNube("Sin permiso en la nube: mensaje solo local.");
+        });
+    }
     setIsDraftModalOpen(false);
     setSuccessToast("¡Mensaje enviado con intención y paz a toda la comunidad!");
     setBroadcastMessage("");
