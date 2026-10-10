@@ -1,6 +1,6 @@
 -- ==========================================================================
 -- IglesiaOS — Verificación del esquema (ejecutar DESPUÉS de schema.sql).
--- No modifica nada: solo consulta. Debe devolver 14 / 14 / 28 / 9.
+-- No modifica nada: solo consulta. Debe devolver 14 / 14 / 30 / 17.
 -- ==========================================================================
 
 -- 1) Tablas creadas (esperado: 14)
@@ -18,12 +18,12 @@ from pg_class c
 join pg_namespace n on n.oid = c.relnamespace
 where n.nspname = 'public' and c.relkind = 'r';
 
--- 3) Políticas creadas (esperado: 28)
+-- 3) Políticas creadas (esperado: 30: 28 base + insert/update propios)
 select count(*) as politicas
 from pg_policies
 where schemaname = 'public';
 
--- 4) Roles sembrados (esperado: 9, con Voluntario inactivo)
+-- 4) Roles sembrados (esperado: 17, con Voluntario inactivo)
 select title, type, is_active
 from public.roles
 order by is_active desc, title;
@@ -47,6 +47,6 @@ where schemaname = 'public'
 
 -- ==========================================================================
 -- RESULTADO ESPERADO EN UNA TABLA RESUMEN:
---   tablas_creadas 14 · con_rls 14 · sin_rls 0 · politicas 28 · roles 9
+--   tablas_creadas 14 · con_rls 14 · sin_rls 0 · politicas 30 · roles 17
 -- Si sin_rls > 0 o la consulta 6 devuelve tablas, NO sigas: corrige primero.
 -- ==========================================================================
