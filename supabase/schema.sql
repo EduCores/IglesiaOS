@@ -336,12 +336,14 @@ create policy "profiles_select" on public.profiles for select using (
 -- Roles/permisos: lectura para todos autenticados; escritura solo liderazgo.
 drop policy if exists "roles_select" on public.roles;
 create policy "roles_select" on public.roles for select using (auth.role() = 'authenticated');
+drop policy if exists "roles_write" on public.roles;
 create policy "roles_write"  on public.roles for all
   using (public.has_permission('gestionar_roles'))
   with check (public.has_permission('gestionar_roles'));
 
 drop policy if exists "role_permissions_select" on public.role_permissions;
 create policy "role_permissions_select" on public.role_permissions for select using (auth.role() = 'authenticated');
+drop policy if exists "role_permissions_write" on public.role_permissions;
 create policy "role_permissions_write"  on public.role_permissions for all
   using (public.has_permission('gestionar_roles'))
   with check (public.has_permission('gestionar_roles'));
@@ -349,6 +351,7 @@ create policy "role_permissions_write"  on public.role_permissions for all
 -- Miembros: lectura con permiso 'ver_directorio'; escritura con 'gestionar_roles'.
 drop policy if exists "members_select" on public.members;
 create policy "members_select" on public.members for select using (public.has_permission('ver_directorio'));
+drop policy if exists "members_write" on public.members;
 create policy "members_write"  on public.members for all
   using (public.has_permission('gestionar_roles'))
   with check (public.has_permission('gestionar_roles'));
@@ -356,6 +359,7 @@ create policy "members_write"  on public.members for all
 -- Células: lectura autenticados.
 drop policy if exists "cells_select" on public.cells;
 create policy "cells_select" on public.cells for select using (auth.role() = 'authenticated');
+drop policy if exists "cells_write" on public.cells;
 create policy "cells_write"  on public.cells for all using (public.has_permission('gestionar_roles'))
   with check (public.has_permission('gestionar_roles'));
 drop policy if exists "member_cells_rw" on public.member_cells;
@@ -414,6 +418,7 @@ create policy "sacrament_records_update" on public.sacrament_records for update
 -- Eventos: lectura autenticados; escritura liderazgo.
 drop policy if exists "events_select" on public.events;
 create policy "events_select" on public.events for select using (auth.role() = 'authenticated');
+drop policy if exists "events_write" on public.events;
 create policy "events_write"  on public.events for all using (public.has_permission('gestionar_roles'))
   with check (public.has_permission('gestionar_roles'));
 drop policy if exists "event_attendance_rw" on public.event_attendance;
@@ -430,6 +435,7 @@ create policy "children_checkins_all" on public.children_checkins for all
 -- Difusión: lectura autenticados; escritura con 'gestionar_roles'.
 drop policy if exists "broadcasts_select" on public.broadcasts;
 create policy "broadcasts_select" on public.broadcasts for select using (auth.role() = 'authenticated');
+drop policy if exists "broadcasts_write" on public.broadcasts;
 create policy "broadcasts_write"  on public.broadcasts for all
   using (public.has_permission('gestionar_roles')) with check (public.has_permission('gestionar_roles'));
 
