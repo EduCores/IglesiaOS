@@ -128,9 +128,10 @@ base) + Realtime. Los roles agregados (Portero/Ujieres/Aseo/Cocina) dejan
 de ser texto: `role_permissions` los vuelve comprobables.
 
 **Entregado:**
-- `supabase/schema.sql` — 14 tablas (perfiles, roles, role_permissions,
-  miembros, células, transacciones, bitácora pastoral, motivos de oración,
-  sacramentos, eventos, asistencia, check-in niños, difusión) + RLS con
+- `supabase/schema.sql` — 14 tablas (`profiles`, `roles`,
+  `role_permissions`, `members`, `cells`, `member_cells`, `transactions`,
+  `pastoral_logs`, `prayer_requests`, `sacrament_records`, `events`,
+  `event_attendance`, `children_checkins`, `broadcasts`) + RLS con
   políticas por permiso + bucket privado `avatars` + **seed de los 9 roles**
   actuales (coinciden con `ROLES_INICIALES`, así el selector de rol del
   login los puede leer tal cual).

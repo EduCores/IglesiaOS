@@ -80,7 +80,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!supabase) return;
     // Perfil propio (profiles_select lo permite) + título del rol.
     const { data, error: e } = await supabase
-      .from("perfiles")
+      .from("profiles")
       .select("id, full_name, email, phone, rol_id, congregation, is_active, created_at, updated_at, roles ( title )")
       .eq("id", uid)
       .maybeSingle();
@@ -103,13 +103,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await cargarPerfil(u.id);
       // Si no hay fila (signup sin sesión previa o login antiguo), crearla
       // como Miembro. Requiere la policy profiles_insert_own (schema.sql).
-      const { data } = await supabase.from("perfiles").select("id").eq("id", u.id).maybeSingle();
+      const { data } = await supabase.from("profiles").select("id").eq("id", u.id).maybeSingle();
       if (!data) {
         const { data: rol } = await supabase.from("roles").select("id").eq("title", "Miembro").maybeSingle();
         const nombre =
           nombreSugerido.trim() ||
           (u.email ? u.email.split("@")[0] : "Miembro");
-        await supabase.from("perfiles").insert({
+        await supabase.from("profiles").insert({
           id: u.id,
           full_name: nombre,
           email: u.email ?? "",
