@@ -24,6 +24,7 @@ import RolesScreen from "./screens/RolesScreen";
 import { ROLES_INICIALES } from "./data/roles";
 import type { ScreenId } from "./navigation";
 import { SCREEN_PATHS, screenFromPath, ROUTER_BASENAME } from "./navigation";import { FooterVideo, NavMenuPanel, ThemeToggle, TemaColorBoton, SKY_VIDEO_SRC } from "./components/chrome";
+import { AuthProvider, useAuth } from "./lib/auth";
 
 // ==========================================================================
 // COMPONENTE PRINCIPAL (MAIN WRAPPER & STATE MANAGER)
@@ -43,6 +44,9 @@ function Shell() {
   // el botón atrás/adelante; navegar por la app actualiza la URL.
   const location = useLocation();
   const navigate = useNavigate();
+  // Identidad en la nube (Supabase). Si hay sesión cloud, manda sobre la
+  // local en insignia y ficha; si no, todo sigue igual que antes.
+  const nube = useAuth();
   const [activeScreen, setActiveScreenState] = useState<ScreenId>(
     () => screenFromPath(location.pathname) ?? "inicio"
   );
@@ -887,8 +891,8 @@ function Shell() {
 
                 <div className="flex items-center gap-4">
                   <div className="text-right hidden sm:block">
-                    <p className="text-sm font-bold text-slate-800 dark:text-slate-100">{sesion ? sesion.nombre : "Pastor Samuel"}</p>
-                    <p className="text-[11px] text-emerald-600 dark:text-emerald-300 font-bold uppercase tracking-wider">{sesion ? sesion.rol : "Pastor"}</p>
+                    <p className="text-sm font-bold text-slate-800 dark:text-slate-100">{nube.perfil?.full_name ?? sesion?.nombre ?? "Pastor Samuel"}</p>
+                    <p className="text-[11px] text-emerald-600 dark:text-emerald-300 font-bold uppercase tracking-wider">{nube.rolTitulo ?? sesion?.rol ?? "Pastor"}</p>
                   </div>
                   <button
                     type="button"
@@ -1436,6 +1440,7 @@ function Shell() {
                       Editar perfil
                     </button>
                   </div>
+                  <CuentaNube nombreSugerido={sesion.nombre} />
                 </div>
                 )
               ) : (
@@ -1486,6 +1491,7 @@ function Shell() {
                     <span className="material-symbols-outlined text-[18px]">login</span>
                     Ingresar
                   </button>
+                  <CuentaNube nombreSugerido={nombreInput} />
                 </form>
               )}
             </div>
@@ -1503,12 +1509,102 @@ function Shell() {
   );
 }
 
+// Cuenta en la nube (Fase 3): entrar / crear cuenta Supabase / desconectar.
+// No se renderiza sin backend configurado (nube.lista === false), así la
+// UI queda idéntica hasta conectar la base.
+function CuentaNube({ nombreSugerido }: { nombreSugerido: string }) {
+  const nube = useAuth();
+  const [email, setEmail] = useState("");
+  const [clave, setClave] = useState("");
+  const [ocupado, setOcupado] = useState(false);
+  if (!nube.lista) return null;
+  const correr = async (fn: () => Promise<unknown>) => {
+    setOcupado(true);
+    try {
+      await fn();
+    } finally {
+      setOcupado(false);
+    }
+  };
+  return (
+    <div className="pt-3 mt-1 border-t border-slate-100 space-y-2">
+      <p className="text-[11px] text-slate-500 font-bold uppercase">Cuenta en la nube</p>
+      {nube.cargando ? (
+        <p className="text-[11px] text-slate-400 font-medium">Conectando…</p>
+      ) : nube.user ? (
+        <>
+          <p className="text-[11px] text-slate-600 font-medium">
+            {nube.perfil?.full_name ?? nube.user.email}
+            {nube.rolTitulo ? ` · ${nube.rolTitulo}` : ""}
+          </p>
+          <button
+            type="button"
+            onClick={() => void correr(nube.salir)}
+            disabled={ocupado}
+            className="w-full py-3 px-6 bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+            style={{ borderRadius: "4px" }}
+          >
+            <span className="material-symbols-outlined text-[18px]">cloud_off</span>
+            Desconectar nube
+          </button>
+        </>
+      ) : (
+        <>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="correo@ejemplo.com"
+            aria-label="Correo de la cuenta en la nube"
+            className="w-full px-4 py-3 text-xs border border-slate-200 rounded-xl focus:border-[#386458] focus:outline-none"
+          />
+          <input
+            type="password"
+            value={clave}
+            onChange={(e) => setClave(e.target.value)}
+            placeholder="Clave (mínimo 6 caracteres)"
+            aria-label="Clave de la cuenta en la nube"
+            className="w-full px-4 py-3 text-xs border border-slate-200 rounded-xl focus:border-[#386458] focus:outline-none"
+          />
+          {nube.error && (
+            <p className="text-[10px] text-rose-500 font-medium animate-[fadeIn_0.2s_ease-out]">{nube.error}</p>
+          )}
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => void correr(() => nube.entrar(email, clave))}
+              disabled={ocupado || !email.trim() || !clave}
+              className="flex-1 py-3 px-4 bg-[#386458] hover:bg-[#2c4e45] text-white text-xs font-bold transition-all shadow-md cursor-pointer disabled:opacity-50"
+              style={{ borderRadius: "4px" }}
+            >
+              Entrar
+            </button>
+            <button
+              type="button"
+              onClick={() => void correr(() => nube.crearCuenta(nombreSugerido, email, clave))}
+              disabled={ocupado || !email.trim() || !clave}
+              className="flex-1 py-3 px-4 bg-white hover:bg-slate-50 text-[#386458] border border-slate-200 text-xs font-bold transition-all cursor-pointer disabled:opacity-50"
+              style={{ borderRadius: "4px" }}
+            >
+              Crear cuenta
+            </button>
+          </div>
+          <p className="text-[10px] text-slate-400 font-medium">La cuenta nueva nace como Miembro.</p>
+        </>
+      )}
+    </div>
+  );
+}
+
 // Raíz exportada: el Router envuelve al Shell para que useLocation y
 // useNavigate funcionen. basename sale de Vite (dev "/" / Pages "/IglesiaOS").
+// AuthProvider adentro para que la insignia y el perfil lean la nube.
 export default function App() {
   return (
     <BrowserRouter basename={ROUTER_BASENAME}>
-      <Shell />
+      <AuthProvider>
+        <Shell />
+      </AuthProvider>
     </BrowserRouter>
   );
 }

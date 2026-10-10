@@ -3,7 +3,21 @@
 // Lista inicial compartida: la usa RolesScreen como estado inicial y el
 // modal de Acceso/Perfil como opciones del selector de rol. Los roles
 // creados con "Crear Nuevo Rol" viven solo en el estado de la pantalla.
-export const ROLES_INICIALES = [
+export interface RolLocal {
+  id: number;
+  title: string;
+  tag: string;
+  type: "liderazgo" | "ministerios" | "apoyo";
+  desc: string;
+  badgeColor: string;
+  checked: boolean;
+  icon: string;
+  bgIconColor: string;
+  iconColor: string;
+  detailText: string;
+  members: number;
+}
+export const ROLES_INICIALES: RolLocal[] = [
   { id: 1, title: "Pastor Principal", tag: "Total", type: "liderazgo", desc: "Acceso completo", badgeColor: "bg-[#386458]/10 text-[#386458]", checked: true, icon: "church", bgIconColor: "bg-[#bdeddd]", iconColor: "text-[#386458]", detailText: "Todas las funciones activas", members: 2 },
   { id: 2, title: "Director Alabanza", tag: "Multimedia", type: "ministerios", desc: "Editor en Multimedia, Solo Lectura en Pastoral", badgeColor: "bg-[#cde5ff] text-[#294964]", checked: true, icon: "graphic_eq", bgIconColor: "bg-[#cde5ff]", iconColor: "text-[#42617d]", detailText: "Audio & Video • Eventos", members: 4 },
   { id: 3, title: "Tesorero", tag: "Finanzas", type: "liderazgo", desc: "Editor en Finanzas, Solo Lectura", badgeColor: "bg-[#ffd9de] text-[#663a42]", checked: true, icon: "payments", bgIconColor: "bg-[#ffd9de]", iconColor: "text-[#7f4e57]", detailText: "Ofrendas • Balances", members: 1 },

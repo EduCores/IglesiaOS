@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ROLES_INICIALES } from "../data/roles";
+import { supabase } from "../lib/supabase";
+import { mapRowToUI, useRolesNube, type RolUI } from "../lib/useRoles";
 // Pantalla Roles Definidos (extraída de App.tsx, Fase 1: sin cambios).
 export default function RolesScreen() {
   const [selectedFilter, setSelectedFilter] = useState<"todos" | "liderazgo" | "ministerios" | "apoyo">("todos");
@@ -11,20 +13,48 @@ export default function RolesScreen() {
   const [successToast, setSuccessToast] = useState<string | null>(null);
 
   // Lista dinámica de roles iniciales
-  const [roles, setRoles] = useState(ROLES_INICIALES);
+  const [roles, setRoles] = useState<RolUI[]>(ROLES_INICIALES);
 
-  const handleToggleSwitch = (id: number) => {
-    setRoles(prev => 
+  // Fase 4 (piloto): si hay sesión en la nube, los roles vienen de la BD
+  // (merge por título, `checked` desde la nube). Sin nube, todo local.
+  const nubeRoles = useRolesNube();
+  useEffect(() => {
+    if (!nubeRoles.filas) return;
+    setRoles(nubeRoles.filas.map((row) => mapRowToUI(row)));
+  }, [nubeRoles.filas]);
+
+  const avisarNube = (msg: string) => {
+    setSuccessToast(msg);
+    setTimeout(() => setSuccessToast(null), 3500);
+  };
+
+  const handleToggleSwitch = (id: number | string) => {
+    const actual = roles.find((r) => r.id === id);
+    setRoles(prev =>
       prev.map(r => r.id === id ? { ...r, checked: !r.checked } : r)
     );
+    // Escritura optimista en la nube (solo filas con uuid). Si RLS lo
+    // niega, el cambio queda local y se avisa con honestidad.
+    if (nubeRoles.sincronizado && supabase && typeof id === "string" && actual) {
+      void supabase
+        .from("roles")
+        .update({ is_active: !actual.checked })
+        .eq("id", id)
+        .then(({ error }) => {
+          if (error) avisarNube("Sin permiso en la nube: cambio solo local.");
+        });
+    }
   };
 
   const handleCreateRole = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newRoleName.trim()) return;
 
-    const newRole = {
-      id: roles.length + 1,
+    // Con nube: uuid propio (evita leer el id de vuelta); sin nube: entero.
+    const idNuevo: number | string =
+      nubeRoles.sincronizado && supabase ? crypto.randomUUID() : roles.length + 1;
+    const newRole: RolUI = {
+      id: idNuevo,
       title: newRoleName,
       tag: newRoleCategory.charAt(0).toUpperCase() + newRoleCategory.slice(1),
       type: newRoleCategory,
@@ -39,6 +69,21 @@ export default function RolesScreen() {
     };
 
     setRoles([...roles, newRole]);
+    if (nubeRoles.sincronizado && supabase && typeof idNuevo === "string") {
+      void supabase
+        .from("roles")
+        .insert({
+          id: idNuevo,
+          title: newRole.title,
+          tag: newRole.tag,
+          type: newRole.type,
+          description: newRole.desc,
+          icon: newRole.icon,
+        })
+        .then(({ error }) => {
+          if (error) avisarNube("Sin permiso en la nube: rol solo local.");
+        });
+    }
     setShowAddRoleModal(false);
     setNewRoleName("");
     setNewRoleNameDesc("");

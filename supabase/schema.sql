@@ -369,6 +369,14 @@ drop policy if exists "profiles_select" on public.profiles;
 create policy "profiles_select" on public.profiles for select using (
   id = auth.uid() or public.has_permission('gestionar_roles')
 );
+-- Cada usuario crea y edita SOLO su propia fila (alta de cuenta y Mi perfil).
+-- Sin esto, crear cuenta fallaría: RLS sin policy = todo denegado.
+drop policy if exists "profiles_insert_own" on public.profiles;
+create policy "profiles_insert_own" on public.profiles for insert
+  with check (id = auth.uid());
+drop policy if exists "profiles_update_own" on public.profiles;
+create policy "profiles_update_own" on public.profiles for update
+  using (id = auth.uid()) with check (id = auth.uid());
 
 -- Roles/permisos: lectura para todos autenticados; escritura solo liderazgo.
 drop policy if exists "roles_select" on public.roles;

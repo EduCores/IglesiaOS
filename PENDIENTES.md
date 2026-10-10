@@ -155,6 +155,41 @@ en módulos **antes** de reemplazar los arrays por queries, y agregar router
 
 ---
 
+## ✅ APLICADO — Fases 1-4: refactor modular, router, Auth nube y Roles piloto
+
+**Estado:** ✅ Aplicado el 10-oct-2026. Stack intacto (React + Vite).
+
+**Fase 1 — App.tsx partida (2.760 → ~1.500 líneas):** `src/screens/`
+(4 pantallas), `src/components/chrome.tsx` (FooterVideo, NavMenuPanel,
+ThemeToggle, TemaColorBoton), `src/navigation.ts` (ScreenId + NAV_GROUPS),
+`src/data/roles.ts` (ROLES_INICIALES + tipo RolLocal). Sin cambios
+visuales (verificado por captura).
+
+**Fase 2 — react-router:** cada pantalla tiene URL (`/`, `/finanzas`,
+`/roles`, `/hermanos`, …; ver `SCREEN_PATHS`). Recargar no pierde la
+pantalla, el botón atrás funciona, rutas falsas van a inicio. `basename`
+desde Vite (dev `/`, Pages `/IglesiaOS`) + `public/404.html` y script en
+`index.html` para recargas y enlaces profundos en GitHub Pages.
+
+**Fase 3 — Auth en la nube (`src/lib/auth.tsx`, aditiva):** sin backend no
+muestra nada y todo sigue igual (verificado por captura). Con backend, el
+modal Perfil ofrece Entrar / Crear cuenta (las nuevas nacen como Miembro);
+la insignia y la ficha usan nombre/rol de la BD cuando hay sesión cloud.
+Requiere las policies `profiles_insert_own` / `profiles_update_own`
+(agregadas a `schema.sql` — **re-ejecutarlo**). Bootstrap: el primer
+usuario nace Miembro; un SQL del dashboard le da Pastor Principal (ver
+`auth.tsx`).
+
+**Fase 4 — Roles piloto (`src/lib/useRoles.ts`):** con sesión cloud lee
+`roles` y mezcla por título (estilo local + `checked` de la BD); toggle y
+crear escriben optimista + intento en nube (si RLS niega: toast honesto,
+cambio local). Sin nube: idéntico a antes (verificado por captura).
+
+**Pendiente:** `.env` real con URL + anon key, probar login cloud contra
+la base creada, y conectar el resto de pantallas una por vez.
+
+---
+
 ## ✅ APLICADO — 17 roles: Miembro general, Pastor 1/2, equipo de alabanza y Portero sin ofrendas
 
 **Estado:** ✅ Aplicado el 06-oct-2026, a pedido del usuario.
