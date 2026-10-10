@@ -197,6 +197,56 @@ la base creada, y conectar el resto de pantallas una por vez.
 
 ---
 
+## ✅ APLICADO — Todas las pantallas con contraparte conectadas a Supabase
+
+**Estado:** ✅ Aplicado el 10-oct-2026. Patrón único en toda la app
+(igual que los pilotos): hook `use*Nube` + datos en `src/data/*` como
+fallback + reemplazo con nube + escrituras optimistas con toast honesto
+si RLS niega. Sin nube, todo idéntico a antes (verificado por captura
+pantalla por pantalla).
+
+**Conectadas (lectura + escritura):**
+- **Roles** (`roles`): lista, toggle activo, crear. (`src/lib/useRoles.ts`)
+- **Finanzas** (`transactions`): lista + reportes calculados; el formulario
+  Consagración inserta (diezmo/ofrenda; RLS `registrar_ofrendas`).
+  (`src/lib/useTransacciones.ts`, `src/data/transacciones.ts`)
+- **Directorio + Censo** (`members`): lista (columnas de directorio, sin
+  RUT/nacimiento); registro rápido y censo completo insertan (requiere
+  `gestionar_roles`); fecha `dd/mm/aaaa`→ISO defensivo; foto solo si es
+  URL http(s) (dataURL local no se sube: eso es Storage, pendiente);
+  vínculo a célula por nombre si existe. (`src/lib/useMiembros.ts`,
+  `src/data/miembros.ts`)
+- **Células** (`cells`, solo activas): lista + crear con zona/líder/horario.
+  (`src/lib/useCelulas.ts`, `src/data/celulas.ts`)
+- **Bitácora** (`pastoral_logs` + `prayer_requests`, solo escritura: la
+  pantalla es formulario sin lista): visita con fecha de hoy, minutos
+  parseados, privacidad tal cual, autor = usuario cloud; motivos como
+  filas hijas. Familia y seguimiento quedan null (ver pendientes).
+- **Difusión + Comunicaciones** (`broadcasts`): confirmar envío y mensaje
+  rápido insertan como `enviado`; el historial lee la tabla (reemplazo).
+
+**Intencionalmente locales (sin contraparte en el esquema — no se
+inventaron tablas para no obligar a re-ejecutar SQL ni abrir superficie
+RLS sin diseño):**
+- **Eventos** (repertorio musical + confirmación de ensayos),
+  **CultoVivo** (checklist pre-culto + voluntarios), **Sacramentos**
+  (candidato demo: cablearlo escribiría filas falsas),
+  **Pastoral** (citas sin tabla + notas demo),
+  **Multimedia** (clips demo, sin tabla), **OnboardingSetup** (checklist
+  de configuración, sin tabla), **ConfirmacionRegistro** (pantalla
+  estática de éxito), **OfflineSync** (estado, sin datos),
+  **InicioScreen** (agregados demo: contadores, gráfico, módulos),
+  **Biblia** (ya es en vivo vía API Midvash).
+- Balance "CLP $1.500.000" de Finanzas: fondo total (concepto distinto a
+  la suma de movimientos), queda fijo a propósito.
+
+**Pendientes sinceros para después:** selector de miembro en Bitácora
+(`member_id`), subida de fotos a Storage (`avatars`), tablas futuras
+(citas, repertorio, checklist) con su migración, y contadores del
+Directorio/Inicio calculados desde la BD.
+
+---
+
 ## ✅ APLICADO — Finanzas conectada (lectura + escritura, piloto 2)
 
 **Estado:** ✅ Aplicado el 10-oct-2026, mismo patrón que Roles.
