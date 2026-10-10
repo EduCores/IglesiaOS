@@ -250,34 +250,71 @@ create table if not exists public.broadcasts (
 );
 
 -- --------------------------------------------------------------------------
--- 10. Roles seed: los 9 roles actuales de la pantalla Roles.
+-- 10. Roles seed: los 17 roles de la pantalla Roles.
 --     Coinciden con ROLES_INICIALES (App.tsx) para que al migrar no cambie
 --     nada visible. `is_active=false` para Voluntario (switch apagado).
+--     Renombre: 'Dir. Alabanza' -> 'Director Alabanza' (vocabulario pedido);
+--     el UPDATE es idempotente (0 filas si ya se aplicó o si es base nueva).
 -- --------------------------------------------------------------------------
+update public.roles set title = 'Director Alabanza' where title = 'Dir. Alabanza';
+
 insert into public.roles (title, tag, type, description, icon, is_active) values
   ('Pastor Principal',        'Total',      'liderazgo',  'Acceso completo',                        'church',              true),
-  ('Dir. Alabanza',           'Multimedia', 'ministerios','Editor en Multimedia, Solo Lectura en Pastoral', 'graphic_eq',         true),
+  ('Director Alabanza',       'Multimedia', 'ministerios','Editor en Multimedia, Solo Lectura en Pastoral', 'graphic_eq', true),
   ('Tesorero',                'Finanzas',   'liderazgo',  'Editor en Finanzas, Solo Lectura',       'payments',            true),
   ('Líder de Célula',         'Grupos',     'apoyo',      'Solo Lectura',                           'groups_3',            true),
   ('Voluntario',              'Básico',     'apoyo',      'Acceso limitado',                        'volunteer_activism',  false),
-  ('Portero',                 'Servicio',   'apoyo',      'Registra ofrendas · Control de acceso', 'door_open',           true),
+  ('Portero',                 'Servicio',   'apoyo',      'Control de acceso',                      'door_open',           true),
   ('Ujieres',                 'Servicio',   'apoyo',      'Registra ofrendas · Orden y acomodo',    'hail',                true),
   ('Servicio de Aseo',        'Servicio',   'apoyo',      'Solicita gastos · Limpieza del templo',  'cleaning_services',   true),
-  ('Cocina + Ayudantes',      'Servicio',   'apoyo',      'Solicita gastos · Alimentación y convivios', 'soup_kitchen',   true)
+  ('Cocina + Ayudantes',      'Servicio',   'apoyo',      'Solicita gastos · Alimentación y convivios', 'soup_kitchen',   true),
+  ('Miembro',                 'General',    'apoyo',      'Navega con su cuenta · Sin cargo asignado', 'person',           true),
+  ('Pastor 1',                'Pastoral',   'liderazgo',  'Acceso pastoral · Sin gestión de roles', 'supervisor_account',  true),
+  ('Pastor 2',                'Pastoral',   'liderazgo',  'Acceso pastoral · Sin gestión de roles', 'diversity_1',         true),
+  ('Sonido',                  'Multimedia', 'ministerios','Opera el sonido · Cultos y eventos',     'speaker',             true),
+  ('Técnico Sonido',          'Multimedia', 'ministerios','Mezcla y equipos · Apoyo técnico',       'tune',                true),
+  ('Multimedia',              'Multimedia', 'ministerios','Proyección y transmisión · Pantallas y streaming', 'videocam',  true),
+  ('Músicos',                 'Alabanza',   'ministerios','Banda tradicional de iglesia · Instrumentos', 'music_note',     true),
+  ('Voces',                   'Alabanza',   'ministerios','Voces y coro · Alabanza congregacional', 'mic',                 true)
 on conflict (title) do nothing;
 
--- Permisos iniciales de los equipos de servicio (lo pedido):
--- Ujieres/Portero registran ofrendas; Aseo/Cocina solicitan gastos.
+-- Permisos iniciales.
+-- * Portero NO registra ofrendas (pedido explícito): es asignación solo de
+--   Ujieres (+ Tesorero y pastores). El UPDATE siguiente revoca el permiso
+--   en bases que ya corrieron el seed anterior; es idempotente.
+-- * `ver_directorio` se otorga a los roles operativos porque sin él NADIE
+--   podría leer miembros (members_select lo exige): al migrar, el Directorio
+--   quedaría vacío para todos. Aseo/Cocina/Miembro/equipos de música no lo
+--   tienen (una línea SQL los agrega si se necesita).
+-- * `checkin_ninos` para quienes atienden puerta e ingreso + pastores.
+-- * Miembro (usuario general sin cargo): solo lo que `authenticated` ya ve
+--   (células, eventos, sacramentos, difusión, asistencia). Sin directorio,
+--   sin finanzas, sin pastoral: "solo navega".
+update public.role_permissions rp set allowed = false
+from public.roles r
+where r.id = rp.rol_id and r.title = 'Portero' and rp.permission = 'registrar_ofrendas';
+
 insert into public.role_permissions (rol_id, permission, allowed)
 select r.id, p.permission, p.allowed
 from public.roles r
 cross join (values
   ('Pastor Principal', 'gestionar_roles', true), ('Pastor Principal', 'registrar_ofrendas', true),
   ('Pastor Principal', 'solicitar_gastos', true), ('Pastor Principal', 'ver_finanzas', true),
-  ('Pastor Principal', 'ver_todos_pastoral', true),
+  ('Pastor Principal', 'ver_todos_pastoral', true), ('Pastor Principal', 'ver_directorio', true),
+  ('Pastor Principal', 'checkin_ninos', true),
+  ('Pastor 1', 'ver_directorio', true), ('Pastor 1', 'ver_todos_pastoral', true),
+  ('Pastor 1', 'registrar_ofrendas', true), ('Pastor 1', 'solicitar_gastos', true),
+  ('Pastor 1', 'ver_finanzas', true), ('Pastor 1', 'checkin_ninos', true),
+  ('Pastor 2', 'ver_directorio', true), ('Pastor 2', 'ver_todos_pastoral', true),
+  ('Pastor 2', 'registrar_ofrendas', true), ('Pastor 2', 'solicitar_gastos', true),
+  ('Pastor 2', 'ver_finanzas', true), ('Pastor 2', 'checkin_ninos', true),
   ('Tesorero', 'ver_finanzas', true), ('Tesorero', 'registrar_ofrendas', true),
-  ('Portero', 'registrar_ofrendas', true),
+  ('Tesorero', 'ver_directorio', true),
+  ('Director Alabanza', 'ver_directorio', true),
+  ('Líder de Célula', 'ver_directorio', true), ('Líder de Célula', 'checkin_ninos', true),
+  ('Portero', 'ver_directorio', true), ('Portero', 'checkin_ninos', true),
   ('Ujieres', 'registrar_ofrendas', true),
+  ('Ujieres', 'ver_directorio', true), ('Ujieres', 'checkin_ninos', true),
   ('Servicio de Aseo', 'solicitar_gastos', true),
   ('Cocina + Ayudantes', 'solicitar_gastos', true)
 ) as p(title, permission, allowed)

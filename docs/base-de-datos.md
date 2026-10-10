@@ -19,7 +19,8 @@ proyecto, con su propio backend (mismos datos sensibles).
 
 - **Base de datos:** todavía NO creada. Los datos siguen hardcodeados en los
   componentes (`App.tsx` y módulos) para que la app funcione sin backend.
-- **Esquema listo:** `supabase/schema.sql` (14 tablas + RLS + roles seed).
+- **Esquema listo:** `supabase/schema.sql` (14 tablas + RLS + seed de los
+  **17 roles** con sus permisos: coinciden con `ROLES_INICIALES` de la app).
 - **Cliente listo:** `src/lib/supabase.ts` (`supabase` = null si no hay env).
 - **Tipos listos:** `src/lib/tipos.ts` (espejo del esquema).
 

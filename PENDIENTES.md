@@ -155,6 +155,41 @@ en módulos **antes** de reemplazar los arrays por queries, y agregar router
 
 ---
 
+## ✅ APLICADO — 17 roles: Miembro general, Pastor 1/2, equipo de alabanza y Portero sin ofrendas
+
+**Estado:** ✅ Aplicado el 06-oct-2026, a pedido del usuario.
+
+**Nuevos (app + seed, con iconos verificados `200` en el CDN):**
+- **Miembro** (apoyo, tag General): usuario general sin cargo; solo navega
+  (sin directorio, finanzas ni pastoral — coincide con el fallback
+  `"Miembro"` de sesiones migradas).
+- **Pastor 1 / Pastor 2** (liderazgo): como Pastor Principal pero sin
+  `gestionar_roles`; con directorio, pastoral, ofrendas, gastos, finanzas
+  y check-in. (Ojo: "Pastor Principal" **ya existía**, no se duplicó.)
+- **Sonido** (`speaker`), **Técnico Sonido** (`tune`), **Multimedia**
+  (`videocam`), **Músicos** (`music_note`, banda tradicional),
+  **Voces** (`mic`) — ministerios, sin permisos financieros.
+- Renombre pedido: **"Dir. Alabanza" → "Director Alabanza"** (app + base
+  con `UPDATE` idempotente; el Ángel también entiende "sonido, músico,
+  voces, coro, banda, aseo, cocina, pastor 1/2").
+
+**Portero sin `registrar_ofrendas` (pedido explícito):** queda solo para
+Ujieres (+ Tesorero y pastores). En la app su tarjeta pasa a "Control de
+acceso" con tinte gris; en la base, un `UPDATE allowed=false` idempotente
+revoca el permiso en instalaciones que ya corrieron el seed anterior.
+
+**`ver_directorio` otorgado a roles operativos** (era necesario: sin él,
+`members_select` bloqueaba el Directorio para *todos* al migrar):
+Pastor Principal, Pastores 1/2, Tesorero, Director Alabanza, Líder de
+Célula, Portero, Ujieres. `checkin_ninos` para pastores, Líder, Ujieres y
+Portero. Aseo/Cocina/Miembro/música quedan con lo básico de `authenticated`
+(una línea SQL los amplía si se necesita).
+
+**Verificado:** `lint` en verde, probe DOM `ROLES17 total=17
+faltan=[ninguno]`, SQL sin cirílicos y 28/28 policies con `drop` previo.
+
+---
+
 ## ✅ APLICADO — Insignia con nombre y rol de quien se loguea
 
 **Estado:** ✅ Aplicado el 06-oct-2026, a pedido del usuario.

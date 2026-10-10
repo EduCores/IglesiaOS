@@ -186,7 +186,7 @@ const INTENCIONES_B: IntencionAngel[] = [
     accion: DESTINOS.multimedia,
   },
   {
-    claves: ["rol", "permiso", "acceso", "voluntario", "portero", "ujier", "tesorero", "lider"],
+    claves: ["rol", "permiso", "acceso", "voluntario", "portero", "ujier", "tesorero", "lider", "miembro", "pastor 1", "pastor 2", "sonido", "tecnico sonido", "musico", "banda", "voces", "coro", "aseo", "cocina"],
     texto:
       "Roles define quién puede hacer qué: liderazgo, ministerios y servicio. Cada rol dice su acceso y cuántos miembros lo tienen.",
     accion: DESTINOS.roles,
