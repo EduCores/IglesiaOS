@@ -32,6 +32,12 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          # Si existen los Secrets, la web publicada se conecta a Supabase.
+          # Si no existen, el build usa valores vacíos y la app funciona
+          # igual con los datos locales (ver src/lib/supabase.ts).
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
