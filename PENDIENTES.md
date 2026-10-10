@@ -186,6 +186,12 @@ usuario nace Miembro; un SQL del dashboard le da Pastor Principal (ver
 crear escriben optimista + intento en nube (si RLS niega: toast honesto,
 cambio local). Sin nube: idéntico a antes (verificado por captura).
 
+**Verificado punta a punta el 10-oct-2026:** cuenta creada desde la app →
+ficha auto-creada como Miembro → `UPDATE` a Pastor Principal → insignia
+muestra nombre + PASTOR PRINCIPAL. Incidente en el camino: la tabla es
+`profiles` (no `perfiles`); se unificó código + helpers a `profiles`
+(commit `4b7efad`).
+
 **Pendiente:** `.env` real con URL + anon key, probar login cloud contra
 la base creada, y conectar el resto de pantallas una por vez.
 
