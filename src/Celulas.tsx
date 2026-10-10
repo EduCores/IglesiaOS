@@ -1,21 +1,7 @@
-import React, { useState } from "react";
-
-interface CellGroup {
-  id: number;
-  name: string;
-  zone: string;
-  type: string;
-  category: "norte" | "centro" | "sur" | "jovenes" | "matrimonios";
-  leaders: string;
-  timeAndPlace: string;
-  icon: string;
-  badgeBg: string;
-  badgeText: string;
-  capacity?: number;
-  averageAttendance?: number;
-  subDetail?: string;
-  connectedCountText: string;
-}
+import React, { useState, useEffect } from "react";
+import { supabase } from "./lib/supabase";
+import { CELULAS_INICIALES, type CelulaUI } from "./data/celulas";
+import { mapCelulaToUI, useCelulasNube } from "./lib/useCelulas";
 
 export default function CelulasScreen() {
   const [selectedZone, setSelectedFilterZone] = useState<"todas" | "norte" | "centro" | "sur" | "jovenes" | "matrimonios">("todas");
@@ -29,57 +15,25 @@ export default function CelulasScreen() {
   const [newCellZone, setNewCellZone] = useState<"norte" | "centro" | "sur" | "jovenes" | "matrimonios">("norte");
   const [newCellSchedule, setNewCellSchedule] = useState("");
 
-  const [cells, setCells] = useState<CellGroup[]>([
-    {
-      id: 1,
-      name: "Célula Gracia & Verdad",
-      zone: "Zona Norte",
-      type: "Familiar",
-      category: "norte",
-      leaders: "Carlos & Patricia Méndez",
-      timeAndPlace: "Miércoles 20:00 hrs · Casa Flia. Rojas",
-      icon: "church",
-      badgeBg: "bg-[#bdeddd] text-[#214e43]",
-      badgeText: "Zona Norte",
-      capacity: 88,
-      averageAttendance: 14,
-      connectedCountText: "14 hermanos"
-    },
-    {
-      id: 2,
-      name: "Célula Semillas de Fe",
-      zone: "Zona Campus",
-      type: "Jóvenes Univ.",
-      category: "jovenes",
-      leaders: "Andrea Morales",
-      timeAndPlace: "Jueves 19:30 hrs",
-      subDetail: "Evangelio de Juan",
-      icon: "school",
-      badgeBg: "bg-[#bddefe] text-[#43627e]",
-      badgeText: "Jóvenes Univ.",
-      connectedCountText: "18 jóvenes conectados"
-    },
-    {
-      id: 3,
-      name: "Célula Matrimonios en Roca",
-      zone: "Zona Oriente",
-      type: "Matrimonios",
-      category: "matrimonios",
-      leaders: "Marcos & Elena Silva",
-      timeAndPlace: "Viernes 20:30 hrs · Hogar Silva",
-      icon: "favorite",
-      badgeBg: "bg-[#ffd9de] text-[#663a42]",
-      badgeText: "Matrimonios",
-      connectedCountText: "8 parejas inscritas"
-    }
-  ]);
+  // Lista de células: con nube viene de la BD (reemplazo); sin nube, local.
+  const [cells, setCells] = useState<CelulaUI[]>(CELULAS_INICIALES);
+  const nubeCelulas = useCelulasNube();
+  useEffect(() => {
+    if (!nubeCelulas.filas) return;
+    setCells(nubeCelulas.filas.map((row) => mapCelulaToUI(row)));
+  }, [nubeCelulas.filas]);
+
+  const avisarNube = (msg: string) => {
+    setSuccessToast(msg);
+    setTimeout(() => setSuccessToast(null), 3500);
+  };
 
   const handleAddCell = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newCellName.trim()) return;
 
-    const newGroup: CellGroup = {
-      id: cells.length + 1,
+    const newGroup: CelulaUI = {
+      id: nubeCelulas.sincronizado && supabase ? crypto.randomUUID() : cells.length + 1,
       name: newCellName,
       zone: newCellZone === "norte" ? "Zona Norte" : newCellZone === "centro" ? "Zona Centro" : newCellZone === "sur" ? "Zona Sur" : newCellZone === "jovenes" ? "Zona Campus" : "Zona Oriente",
       type: newCellZone === "jovenes" ? "Jóvenes Univ." : newCellZone === "matrimonios" ? "Matrimonios" : "Familiar",
@@ -93,6 +47,22 @@ export default function CelulasScreen() {
     };
 
     setCells([...cells, newGroup]);
+    // Con nube: guarda nombre, zona, líder y horario (requiere
+    // `gestionar_roles`; si RLS lo niega, queda local con aviso honesto).
+    if (nubeCelulas.sincronizado && supabase && typeof newGroup.id === "string") {
+      void supabase
+        .from("cells")
+        .insert({
+          id: newGroup.id,
+          name: newGroup.name,
+          zone: newCellZone,
+          leader_name: newCellLeaders.trim() || null,
+          schedule: newCellSchedule.trim() || null,
+        })
+        .then(({ error }) => {
+          if (error) avisarNube("Sin permiso en la nube: célula solo local.");
+        });
+    }
     setShowAddCellModal(false);
     setNewCellName("");
     setNewCellLeaders("");
