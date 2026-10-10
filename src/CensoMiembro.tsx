@@ -1,4 +1,7 @@
 import React, { useState, useRef } from "react";
+import { supabase } from "./lib/supabase";
+import { useAuth } from "./lib/auth";
+import { parseFechaDMY } from "./lib/useMiembros";
 
 interface CensoMiembroProps {
   onBack?: () => void;
@@ -6,6 +9,7 @@ interface CensoMiembroProps {
 }
 
 export default function CensoMiembroScreen({ onBack, onSuccess }: CensoMiembroProps) {
+  const nube = useAuth();
   const [avatarSrc, setAvatarSrc] = useState<string>("https://lh3.googleusercontent.com/aida-public/AB6AXuDXH3aIuaxXQNR_nfMvj8DHBsTnzRinJ942CK54Ti8ltX0hQtiN4XN1QjtKHb5RIDitkL6Wc0vFJtMjspntdCis_4uDV-_LwvuPcSRu6ghI1XnpX5Ujn0YO4-hvF3E5M1K0IwHDxIwK4NIG4Ia2bA_UN98WWHfrppHMWaxwGQf2uz7uwmznZ9ZKbNGWYwcr9F8mHoS24vKFkt1058cJaqikJckQHnQ_V4mmYc2qMWG8v2sW-rZFOQJ4");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -62,6 +66,48 @@ export default function CensoMiembroScreen({ onBack, onSuccess }: CensoMiembroPr
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!fullName.trim()) return;
+
+    // Con sesión en la nube, el censo queda guardado en `members`
+    // (requiere `gestionar_roles`). Foto: solo URL http(s); un dataURL
+    // local no se sube (eso es Storage, pendiente). Fecha: solo si parsea.
+    if (supabase && nube.user) {
+      const idNuevo = crypto.randomUUID();
+      const foto = avatarSrc.startsWith("http") ? avatarSrc : null;
+      const vacio = (s: string) => (s.trim() ? s.trim() : null);
+      void supabase
+        .from("members")
+        .insert({
+          id: idNuevo,
+          full_name: fullName.trim(),
+          doc_id: vacio(docId),
+          birth_date: parseFechaDMY(birthDate),
+          phone: vacio(phone),
+          email: vacio(email),
+          address: vacio(address),
+          photo_url: foto,
+          spiritual_stage: spiritualStage,
+          is_family_head: isFamilyHead,
+          family_members: vacio(familyMembers),
+        })
+        .then(async ({ error }) => {
+          if (error) {
+            showToast("Sin permiso en la nube: registro solo local.", "cloud_off");
+            return;
+          }
+          // Vincula a la célula si existe una con ese nombre (silencioso).
+          if (cellGroup.trim() && supabase) {
+            const { data: cel } = await supabase
+              .from("cells")
+              .select("id")
+              .ilike("name", cellGroup.trim())
+              .maybeSingle();
+            const cid = (cel as { id: string } | null)?.id;
+            if (cid) {
+              await supabase.from("member_cells").insert({ member_id: idNuevo, cell_id: cid });
+            }
+          }
+        });
+    }
 
     showToast("¡Registro completado e integrado con éxito al CRM ministerial!");
     
