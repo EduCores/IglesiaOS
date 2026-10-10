@@ -328,85 +328,107 @@ begin
 end $$;
 
 -- Perfiles: cada uno ve el suyo; liderazgo ve todos.
+drop policy if exists "profiles_select" on public.profiles;
 create policy "profiles_select" on public.profiles for select using (
   id = auth.uid() or public.has_permission('gestionar_roles')
 );
 
 -- Roles/permisos: lectura para todos autenticados; escritura solo liderazgo.
+drop policy if exists "roles_select" on public.roles;
 create policy "roles_select" on public.roles for select using (auth.role() = 'authenticated');
 create policy "roles_write"  on public.roles for all
   using (public.has_permission('gestionar_roles'))
   with check (public.has_permission('gestionar_roles'));
 
+drop policy if exists "role_permissions_select" on public.role_permissions;
 create policy "role_permissions_select" on public.role_permissions for select using (auth.role() = 'authenticated');
 create policy "role_permissions_write"  on public.role_permissions for all
   using (public.has_permission('gestionar_roles'))
   with check (public.has_permission('gestionar_roles'));
 
 -- Miembros: lectura con permiso 'ver_directorio'; escritura con 'gestionar_roles'.
+drop policy if exists "members_select" on public.members;
 create policy "members_select" on public.members for select using (public.has_permission('ver_directorio'));
 create policy "members_write"  on public.members for all
   using (public.has_permission('gestionar_roles'))
   with check (public.has_permission('gestionar_roles'));
 
 -- Células: lectura autenticados.
+drop policy if exists "cells_select" on public.cells;
 create policy "cells_select" on public.cells for select using (auth.role() = 'authenticated');
 create policy "cells_write"  on public.cells for all using (public.has_permission('gestionar_roles'))
   with check (public.has_permission('gestionar_roles'));
+drop policy if exists "member_cells_rw" on public.member_cells;
 create policy "member_cells_rw" on public.member_cells for all
   using (public.has_permission('ver_directorio'))
   with check (public.has_permission('gestionar_roles'));
 
 -- Finanzas: leer con 'ver_finanzas'; registrar ofertas/diezmos con su permiso;
 -- registrar gastos con 'solicitar_gastos'. NUNCA 'gestionar_roles' solo para esto.
+drop policy if exists "transactions_select" on public.transactions;
 create policy "transactions_select" on public.transactions for select using (public.has_permission('ver_finanzas'));
+drop policy if exists "transactions_insert_oferta" on public.transactions;
 create policy "transactions_insert_oferta" on public.transactions for insert
   with check (public.has_permission('registrar_ofrendas') and kind in ('oferta','diezmo'));
+drop policy if exists "transactions_insert_gasto" on public.transactions;
 create policy "transactions_insert_gasto" on public.transactions for insert
   with check (public.has_permission('solicitar_gastos') and kind = 'gasto');
 -- Quien registró su gasto puede actualizarlo; borrar solo liderazgo.
+drop policy if exists "transactions_update" on public.transactions;
 create policy "transactions_update" on public.transactions for update using (
   public.has_permission('gestionar_roles') or public.has_permission('solicitar_gastos')
 );
+drop policy if exists "transactions_delete" on public.transactions;
 create policy "transactions_delete" on public.transactions for delete using (public.has_permission('gestionar_roles'));
 
 -- ⚠️ Pastoral: la nota 'solo_pastor' SOLO la ve quien puede 'ver_todos_pastoral';
 --    con 'equipo' la puede ver el equipo pastoral. Un ujier/portero NO entra.
+drop policy if exists "pastoral_logs_select" on public.pastoral_logs;
 create policy "pastoral_logs_select" on public.pastoral_logs for select using (
   public.has_permission('ver_todos_pastoral')
   or (privacy = 'equipo' and public.has_permission('ver_directorio'))
 );
+drop policy if exists "pastoral_logs_insert" on public.pastoral_logs;
 create policy "pastoral_logs_insert" on public.pastoral_logs for insert
   with check (public.has_permission('ver_todos_pastoral') or public.has_permission('ver_directorio'));
+drop policy if exists "pastoral_logs_update" on public.pastoral_logs;
 create policy "pastoral_logs_update" on public.pastoral_logs for update
   using (public.has_permission('ver_todos_pastoral'))
   with check (public.has_permission('ver_todos_pastoral'));
+drop policy if exists "prayer_requests_all" on public.prayer_requests;
 create policy "prayer_requests_all" on public.prayer_requests for all
   using (public.has_permission('ver_todos_pastoral') or public.has_permission('ver_directorio'))
   with check (public.has_permission('ver_todos_pastoral') or public.has_permission('ver_directorio'));
 
 -- Sacramentos: lectura autenticados; escritura con 'gestionar_roles' o registro propio.
+drop policy if exists "sacrament_records_select" on public.sacrament_records;
 create policy "sacrament_records_select" on public.sacrament_records for select
   using (auth.role() = 'authenticated');
+drop policy if exists "sacrament_records_insert" on public.sacrament_records;
 create policy "sacrament_records_insert" on public.sacrament_records for insert
   with check (public.has_permission('registrar_ofrendas') or public.has_permission('gestionar_roles'));
+drop policy if exists "sacrament_records_update" on public.sacrament_records;
 create policy "sacrament_records_update" on public.sacrament_records for update
   using (public.has_permission('gestionar_roles')) with check (public.has_permission('gestionar_roles'));
 
 -- Eventos: lectura autenticados; escritura liderazgo.
+drop policy if exists "events_select" on public.events;
 create policy "events_select" on public.events for select using (auth.role() = 'authenticated');
 create policy "events_write"  on public.events for all using (public.has_permission('gestionar_roles'))
   with check (public.has_permission('gestionar_roles'));
+drop policy if exists "event_attendance_rw" on public.event_attendance;
 create policy "event_attendance_rw" on public.event_attendance for all
   using (auth.role() = 'authenticated')
   with check (auth.role() = 'authenticated');
 
 -- ⚠️ Check-in de niños: solo quien puede 'checkin_ninos' ve nombres y SALUD.
+drop policy if exists "children_checkins_all" on public.children_checkins;
 create policy "children_checkins_all" on public.children_checkins for all
   using (public.has_permission('checkin_ninos'))
   with check (public.has_permission('checkin_ninos'));
 
 -- Difusión: lectura autenticados; escritura con 'gestionar_roles'.
+drop policy if exists "broadcasts_select" on public.broadcasts;
 create policy "broadcasts_select" on public.broadcasts for select using (auth.role() = 'authenticated');
 create policy "broadcasts_write"  on public.broadcasts for all
   using (public.has_permission('gestionar_roles')) with check (public.has_permission('gestionar_roles'));
