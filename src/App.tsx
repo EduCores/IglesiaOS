@@ -25,6 +25,7 @@ import { ROLES_INICIALES } from "./data/roles";
 import type { ScreenId } from "./navigation";
 import { SCREEN_PATHS, screenFromPath, ROUTER_BASENAME } from "./navigation";import { FooterVideo, NavMenuPanel, ThemeToggle, TemaColorBoton, SKY_VIDEO_SRC } from "./components/chrome";
 import { AuthProvider, useAuth } from "./lib/auth";
+import { supabase } from "./lib/supabase";
 
 // ==========================================================================
 // COMPONENTE PRINCIPAL (MAIN WRAPPER & STATE MANAGER)
@@ -288,6 +289,30 @@ function Shell() {
     }
 
     if (hasError) return;
+
+    // Con sesión en la nube, el registro queda guardado en la BD
+    // (RLS: requiere `registrar_ofrendas`; si lo niega, toast honesto y
+    // el flujo local sigue igual). Sin nube, todo local como siempre.
+    if (supabase && nube.user) {
+      const kind = selectedPurpose === "diezmo" ? "diezmo" : "oferta";
+      const category = selectedPurpose === "misionera" ? "misiones" : "ministerios";
+      const nombre = isAnonymous
+        ? "Anónima"
+        : (nube.perfil?.full_name ?? sesion?.nombre ?? "Miembro");
+      const etiqueta = purposes.find((p) => p.id === selectedPurpose)?.label ?? "Ofrenda";
+      void supabase
+        .from("transactions")
+        .insert({
+          title: `${etiqueta} · ${nombre}`,
+          amount,
+          kind,
+          category,
+          note: `Método: ${selectedMethod}`,
+        })
+        .then(({ error }) => {
+          if (error) avisarSesion("Sin permiso en la nube: registro solo local.");
+        });
+    }
 
     setIsSubmitting(true);
     setTimeout(() => {

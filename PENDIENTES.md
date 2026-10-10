@@ -197,6 +197,27 @@ la base creada, y conectar el resto de pantallas una por vez.
 
 ---
 
+## ✅ APLICADO — Finanzas conectada (lectura + escritura, piloto 2)
+
+**Estado:** ✅ Aplicado el 10-oct-2026, mismo patrón que Roles.
+
+**Lectura (`src/lib/useTransacciones.ts` + `src/data/transacciones.ts`):**
+los 7 movimientos salen de la pantalla a `TRANSACCIONES_INICIALES`; con
+sesión cloud la lista viene de `transactions` (últimos 50, ordenados) y
+se mapea al mismo formato (badge/icono/colores por `kind`+`category`,
+fecha tipo "Ayer, 18:30"). El modal de reportes calcula sobre la misma
+lista, así funciona con datos reales sin tocarlo.
+
+**Escritura (`triggerSubmit` en `App.tsx`):** al confirmar, además del
+flujo local de siempre, inserta en `transactions` (`kind` desde el
+propósito, `category` misionera→misiones, título con nombre o "Anónima",
+nota con el método). RLS exige `registrar_ofrendas` (Pastor Principal,
+Ujieres, Tesorero, Pastores 1/2 la tienen); si la niega, toast honesto y
+el registro queda local. Al volver a Finanzas la lista se recarga sola
+(remount). Sin nube: idéntico a antes (verificado por captura).
+
+---
+
 ## ✅ APLICADO — 17 roles: Miembro general, Pastor 1/2, equipo de alabanza y Portero sin ofrendas
 
 **Estado:** ✅ Aplicado el 06-oct-2026, a pedido del usuario.
