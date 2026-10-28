@@ -4,6 +4,36 @@
 
 ---
 
+## ✅ CORREGIDO — Select de Rol (Perfil/Acceso) sin estilo de campo en claro
+
+**Estado:** ✅ Corregido el 28-oct-2026, detectado por el usuario en el modal
+"Mi perfil"/"Acceso" (`App.tsx` selects :1382 y :1498).
+
+**Síntoma:** en modo claro, Nombre y Correo se ven como campos translúcidos
+(siguen al vidrio del modal), pero el `<select>` de Rol quedó **blanco sólido**:
+era el único campo del formulario con `bg-white` en su clase y el remapeo
+"PANELES EN CLARO" de `index.css` solo alcanza `div`/`section`. En oscuro no
+se notaba: `.dark [class*="bg-white"]` lo lleva a vidrio `#15283430`.
+
+**Solución (`src/index.css`, toque único global):** nueva regla
+`select[class*="bg-white"] { background-color: transparent; }` junto al
+bloque PANELES EN CLARO — la superficie del select pasa a **transparente**
+(como los inputs de texto); el tono lo aporta su contenedor, igual que
+al resto de campos. Cubre de paso los selects con la misma clase en
+BitacoraPastoral, Celulas, Censo, Directorio, Pastoral y RolesScreen.
+
+**Verificado:** estilos computados en ambos modos — claro:
+select `rgba(0,0,0,0)` = input `rgba(0,0,0,0)`; oscuro:
+select `rgba(21,40,52,0.19)` con texto claro `rgb(226,235,240)`.
+El desplegable nativo abierto sigue el `color-scheme` del tema
+(`useTheme` ya lo setea), sin cambio de código.
+
+**Regla permanente:** un `<select>` nunca debe llevar `bg-white` explicito
+sin contar con su remapeo claro (los valores de formulario conviven mejor
+transparentes: el vidrio lo pone el contenedor).
+
+---
+
 ## ✅ APLICADO — Lote E: Repertorio, Ensayos, Checklist Pre-Culto y Citas en Supabase
 
 **Estado:** ✅ Aplicado el 28-oct-2026. Las 3 pantallas que quedaban 100 % locales

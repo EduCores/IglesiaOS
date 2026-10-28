@@ -373,6 +373,23 @@ div[class*="bg-white"]:not([class*="rounded-full"]):not([class*="max-w-sm"]):not
 section[class*="bg-white"]:not([class*="rounded-full"]):not([class*="max-w-sm"]):not([class*="bg-white/"]):not([class*="hover:bg-"]):not([class*="dark:bg-"]):not([class*="dark:border-"])[class*="border-slate-100"] {
   border-color: oklch(0.97 0.01 0 / 0);
 }
+
+/* SELECT NATIVO con bg-white en claro (28-oct-2026).
+   --------------------------------------------------------------
+   En el modal Perfil/Acceso (App.tsx:1382 y :1498) los inputs Nombre
+   y Correo quedan transparentes dentro del vidrio, pero el <select>
+   de Rol se quedaba BLANCO SÓLIDO (era el único campo con clase
+   bg-white y la regla de paneles de arriba solo cubre div/section).
+   Misma decisión: superficie del select = transparente, como los
+   otros campos del formulario; la franja "vidrio" la da su contenedor.
+   En oscuro no hace falta: `.dark [class*="bg-white"]` ya lo lleva a
+   vidrio (#15283430, verificado por estilos computados).
+   Cubre también los selects de BitacoraPastoral, Celulas, Censo,
+   Directorio, Pastoral y RolesScreen que comparten la clase.
+   -------------------------------------------------------------- */
+select[class*="bg-white"] {
+  background-color: transparent;
+}
 @layer utilities {
   /* Bordes blancos de iconos (anillos de avatar/círculos).
      Tu regla `.border-white { border-color: #ffffff00; }` es correcta,
