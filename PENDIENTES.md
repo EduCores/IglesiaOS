@@ -40,6 +40,17 @@ transparentes: el vidrio lo pone el contenedor).
 (Eventos repertorio/ensayos, CultoVivo checklist, Pastoral citas) ahora tienen
 tabla propia + hook `use*Nube` + escritura optimista. `lint` y `build` en verde.
 
+**Verificación E2E (28-oct-2026, cuenta Pastor Principal real):** Eventos lee
+canciones/ensayos desde la nube; confirmar/desconfirmar ensayo persiste
+(POST 201 / DELETE) con `user_id` correcto; CultoVivo marca y desmarca el
+checklist persistiendo `is_checked`/`checked_by`/`checked_at`; Pastoral crea
+una cita (POST 201) y aparece en la lista leída desde la BD. Correcciones del
+mismo día: (1) el insert de `rehearsal_confirmations` ahora lleva `user_id`
+explícito (la policy `rehearsal_confirmations_own` exige `auth.uid() = user_id`
+y sin la columna devolvía 403); (2) los seeds de `rehearsals` se guardan en
+`America/Santiago` (antes 19:00 se grababa como 19:00 UTC y se mostraba 16:00),
+con UPDATE idempotente corrector para bases que ya corrieron el seed.
+
 **Base (`supabase/schema.sql` §9b + migración incremental
 `supabase/migraciones/lote-e-repertorio-citas-checklist.sql`):** 5 tablas nuevas
 (`songs`, `rehearsals`, `rehearsal_confirmations`, `worship_checklist`,

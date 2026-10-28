@@ -346,17 +346,27 @@ from (values
 where not exists (select 1 from public.songs);
 
 -- Ensayos: próximo jueves 19:00 y próximo sábado 10:00 (relativos a hoy).
+-- ⚠️ TZ: el servidor Postgres corre en UTC, así que '19:00' crudo se
+-- grababa como 19:00 UTC y en Chile se mostraba 16:00. Se marca la hora
+-- en America/Santiago para que la app la muestre como 19:00 local.
 insert into public.rehearsals (title, starts_at, location, location_icon)
 select v.title, v.starts_at, v.location, v.location_icon
 from (values
   ('Ensayo General',
-   ((current_date + ((4 - extract(isodow from current_date)::int + 7) % 7))::date + time '19:00')::timestamptz,
+   ((current_date + ((4 - extract(isodow from current_date)::int + 7) % 7))::date + time '19:00') at time zone 'America/Santiago',
    'Santuario Principal', 'church'),
   ('Ensayo Banda & Voces',
-   ((current_date + ((6 - extract(isodow from current_date)::int + 7) % 7))::date + time '10:00')::timestamptz,
+   ((current_date + ((6 - extract(isodow from current_date)::int + 7) % 7))::date + time '10:00') at time zone 'America/Santiago',
    'Sala de Ensayos A', 'mic')
 ) as v(title, starts_at, location, location_icon)
 where not exists (select 1 from public.rehearsals);
+
+-- Corrige instalaciones que ya corrieron el seed con hora en UTC fijo
+-- (idempotente: solo afecta las 2 filas sembradas, no ensayos nuevos).
+update public.rehearsals
+set starts_at = starts_at at time zone 'UTC' at time zone 'America/Santiago'
+where title in ('Ensayo General', 'Ensayo Banda & Voces')
+  and extract(hour from starts_at at time zone 'UTC') in (19, 10);
 
 -- Checklist: los 4 ítems de la pantalla (con los 3 primeros marcados).
 insert into public.worship_checklist (item_text, is_checked, sort)

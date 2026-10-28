@@ -108,13 +108,20 @@ insert into public.rehearsals (title, starts_at, location, location_icon)
 select v.title, v.starts_at, v.location, v.location_icon
 from (values
   ('Ensayo General',
-   ((current_date + ((4 - extract(isodow from current_date)::int + 7) % 7))::date + time '19:00')::timestamptz,
+   ((current_date + ((4 - extract(isodow from current_date)::int + 7) % 7))::date + time '19:00') at time zone 'America/Santiago',
    'Santuario Principal', 'church'),
   ('Ensayo Banda & Voces',
-   ((current_date + ((6 - extract(isodow from current_date)::int + 7) % 7))::date + time '10:00')::timestamptz,
+   ((current_date + ((6 - extract(isodow from current_date)::int + 7) % 7))::date + time '10:00') at time zone 'America/Santiago',
    'Sala de Ensayos A', 'mic')
 ) as v(title, starts_at, location, location_icon)
 where not exists (select 1 from public.rehearsals);
+
+-- Corrige bases que ya corrieron el seed anterior con hora grabada en UTC
+-- (idempotente: solo toca las 2 filas sembradas).
+update public.rehearsals
+set starts_at = starts_at at time zone 'UTC' at time zone 'America/Santiago'
+where title in ('Ensayo General', 'Ensayo Banda & Voces')
+  and extract(hour from starts_at at time zone 'UTC') in (19, 10);
 
 insert into public.worship_checklist (item_text, is_checked, sort)
 select v.item_text, v.is_checked, v.sort

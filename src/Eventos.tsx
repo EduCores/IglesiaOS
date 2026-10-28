@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "./lib/supabase";
+import { useAuth } from "./lib/auth";
 import {
   CANCIONES_INICIALES,
   ENSAYOS_INICIALES,
@@ -26,6 +27,7 @@ export default function EventosScreen({ onNavigateToLive, onNavigateToCheckin }:
   const [rehearsals, setRehearsals] = useState<EnsayoUI[]>(ENSAYOS_INICIALES);
   const nubeCanciones = useCancionesNube();
   const nubeEnsayos = useEnsayosNube();
+  const nubeSesion = useAuth();
   useEffect(() => {
     if (!nubeCanciones.filas) return;
     setSongs(nubeCanciones.filas.map((row) => mapCancionToUI(row)));
@@ -60,8 +62,12 @@ export default function EventosScreen({ onNavigateToLive, onNavigateToCheckin }:
     // estado vuelve en la próxima carga y avisamos).
     if (nubeEnsayos.sincronizado && supabase) {
       const confirmar = !item?.confirmed;
+      // user_id explícito: la policy rehearsal_confirmations_own exige
+      // auth.uid() = user_id y con la columna omitida fallaría (NULL).
       const consulta = confirmar
-        ? supabase.from("rehearsal_confirmations").insert({ rehearsal_id: id })
+        ? supabase
+            .from("rehearsal_confirmations")
+            .insert({ rehearsal_id: id, user_id: nubeSesion.user?.id })
         : supabase.from("rehearsal_confirmations").delete().eq("rehearsal_id", id);
       void consulta.then(({ error }) => {
         if (error) {
