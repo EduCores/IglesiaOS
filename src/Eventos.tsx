@@ -1,108 +1,41 @@
-import React, { useState } from "react";
-
-interface Song {
-  id: number;
-  numberTag: string;
-  title: string;
-  artist: string;
-  key: string;
-  bpm: number;
-  timeSignature: string;
-  comment: string;
-  atmosphere: "calma" | "intima" | "contemporaneo" | "agradecimiento";
-}
-
-interface Rehearsal {
-  id: number;
-  dayName: string;
-  dayNumber: number;
-  title: string;
-  time: string;
-  location: string;
-  locationIcon: string;
-  confirmed: boolean;
-}
+import React, { useEffect, useState } from "react";
+import { supabase } from "./lib/supabase";
+import {
+  CANCIONES_INICIALES,
+  ENSAYOS_INICIALES,
+  type CancionUI,
+  type EnsayoUI,
+} from "./data/repertorio";
+import {
+  mapCancionToUI,
+  mapEnsayoToUI,
+  useCancionesNube,
+  useEnsayosNube,
+} from "./lib/useRepertorio";
 
 export default function EventosScreen({ onNavigateToLive, onNavigateToCheckin }: { onNavigateToLive?: () => void; onNavigateToCheckin?: () => void }) {
   const [selectedTab, setSelectedTab] = useState<"domingo" | "repertorio">("domingo");
   const [selectedAtmosphere, setSelectedAtmosphere] = useState<"todos" | "calma" | "intima" | "contemporaneo" | "agradecimiento">("todos");
-  const [playingSongId, setPlayingSongId] = useState<number | null>(null);
+  const [playingSongId, setPlayingSongId] = useState<string | null>(null);
   const [successToast, setSuccessToast] = useState<string | null>(null);
   const notify = (message: string) => { setSuccessToast(message); setTimeout(() => setSuccessToast(null), 3000); };
 
-  // Rehearsals state to allow live confirmation!
-  const [rehearsals, setRehearsals] = useState<Rehearsal[]>([
-    {
-      id: 1,
-      dayName: "Jue",
-      dayNumber: 16,
-      title: "Ensayo General",
-      time: "7:00 PM",
-      location: "Santuario Principal",
-      locationIcon: "church",
-      confirmed: false
-    },
-    {
-      id: 2,
-      dayName: "Sáb",
-      dayNumber: 18,
-      title: "Ensayo Banda & Voces",
-      time: "10:00 AM",
-      location: "Sala de Ensayos A",
-      locationIcon: "mic",
-      confirmed: false
-    }
-  ]);
+  // Repertorio + ensayos: con nube salen de `songs`/`rehearsals` (reemplazo);
+  // sin nube, los datos iniciales de siempre.
+  const [songs, setSongs] = useState<CancionUI[]>(CANCIONES_INICIALES);
+  const [rehearsals, setRehearsals] = useState<EnsayoUI[]>(ENSAYOS_INICIALES);
+  const nubeCanciones = useCancionesNube();
+  const nubeEnsayos = useEnsayosNube();
+  useEffect(() => {
+    if (!nubeCanciones.filas) return;
+    setSongs(nubeCanciones.filas.map((row) => mapCancionToUI(row)));
+  }, [nubeCanciones.filas]);
+  useEffect(() => {
+    if (!nubeEnsayos.filas) return;
+    setRehearsals(nubeEnsayos.filas.map((row) => mapEnsayoToUI(row)));
+  }, [nubeEnsayos.filas]);
 
-  // Songs Setlist
-  const songs: Song[] = [
-    {
-      id: 1,
-      numberTag: "01",
-      title: "Worthy of It All",
-      artist: "David Brymer • Versión Acústica",
-      key: "Bb",
-      bpm: 72,
-      timeSignature: "4/4",
-      comment: "Intro: Piano pad suave (4 compases)",
-      atmosphere: "intima"
-    },
-    {
-      id: 2,
-      numberTag: "02",
-      title: "King of Kings",
-      artist: "Hillsong Worship • Arreglo Cuerdas",
-      key: "D",
-      bpm: 68,
-      timeSignature: "4/4",
-      comment: "Entrada de voces femeninas en Coro",
-      atmosphere: "calma"
-    },
-    {
-      id: 3,
-      numberTag: "03",
-      title: "Build My Life",
-      artist: "Housefires • Comunión y Adoración",
-      key: "G",
-      bpm: 70,
-      timeSignature: "4/4",
-      comment: "Momento de oración reflexiva",
-      atmosphere: "contemporaneo"
-    },
-    {
-      id: 4,
-      numberTag: "04",
-      title: "Agnus Dei",
-      artist: "Michael W. Smith • Oración Final",
-      key: "A",
-      bpm: 64,
-      timeSignature: "4/4",
-      comment: "Cierre congregacional a capella",
-      atmosphere: "agradecimiento"
-    }
-  ];
-
-  const handleTogglePlay = (id: number) => {
+  const handleTogglePlay = (id: string) => {
     if (playingSongId === id) {
       setPlayingSongId(null);
       setSuccessToast("Reproducción pausada.");
@@ -114,13 +47,31 @@ export default function EventosScreen({ onNavigateToLive, onNavigateToCheckin }:
     setTimeout(() => setSuccessToast(null), 2500);
   };
 
-  const handleConfirmRehearsal = (id: number) => {
-    setRehearsals(prev => 
+  const handleConfirmRehearsal = (id: string) => {
+    const item = rehearsals.find(r => r.id === id);
+    setRehearsals(prev =>
       prev.map(r => r.id === id ? { ...r, confirmed: !r.confirmed } : r)
     );
-    const item = rehearsals.find(r => r.id === id);
     if (item) {
       setSuccessToast(item.confirmed ? "Confirmación cancelada." : "¡Asistencia al ensayo confirmada con éxito!");
+    }
+    // Con nube: guarda la confirmación personal en `rehearsal_confirmations`
+    // (la policy deja ver/marcar solo la propia fila; si algo falla, el
+    // estado vuelve en la próxima carga y avisamos).
+    if (nubeEnsayos.sincronizado && supabase) {
+      const confirmar = !item?.confirmed;
+      const consulta = confirmar
+        ? supabase.from("rehearsal_confirmations").insert({ rehearsal_id: id })
+        : supabase.from("rehearsal_confirmations").delete().eq("rehearsal_id", id);
+      void consulta.then(({ error }) => {
+        if (error) {
+          // Rollback honesto del toggle optimista.
+          setRehearsals(prev =>
+            prev.map(r => r.id === id ? { ...r, confirmed: item?.confirmed ?? r.confirmed } : r)
+          );
+          notify("Sin permiso en la nube: confirmación solo local.");
+        }
+      });
     }
     setTimeout(() => setSuccessToast(null), 2500);
   };
@@ -402,7 +353,7 @@ export default function EventosScreen({ onNavigateToLive, onNavigateToCheckin }:
               >
                 <div className="flex items-center gap-3.5 min-w-0">
                   <div className={`w-12 h-12 rounded-lg flex flex-col items-center justify-center shrink-0 border shadow-inner ${
-                    reh.id === 1 ? "bg-[#cde5ff]/60 border-blue-100/50 text-[#294964]" : "bg-[#ffd9de]/60 border-rose-100/50 text-[#7f4e57]"
+                    reh.locationIcon === "church" ? "bg-[#cde5ff]/60 border-blue-100/50 text-[#294964]" : "bg-[#ffd9de]/60 border-rose-100/50 text-[#7f4e57]"
                   }`}>
                     <span className="text-[9px] font-bold uppercase tracking-wider leading-none">{reh.dayName}</span>
                     <span className="text-base font-bold leading-none mt-1">{reh.dayNumber}</span>

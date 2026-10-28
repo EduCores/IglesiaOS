@@ -26,7 +26,8 @@ export type Permiso =
   | "ver_finanzas"
   | "ver_directorio"
   | "ver_todos_pastoral"
-  | "checkin_ninos";
+  | "checkin_ninos"
+  | "editar_repertorio";
 
 export interface RolPermiso {
   id: string;
@@ -152,4 +153,59 @@ export interface Difusion {
   scheduled_at: string | null;
   sent_at: string | null;
   recipients: number | null;
+}
+
+// ==========================================================================
+// Lote E — Repertorio, Ensayos, Checklist Pre-Culto y Citas Pastorales.
+// ==========================================================================
+
+/** Repertorio musical (pantalla Eventos, tab "Repertorio Completo"). */
+export interface Cancion {
+  id: string;
+  number_tag: string | null;
+  title: string;
+  artist: string | null;
+  /** Tonalidad 'Bb' — en la tabla se llama musical_key ('key' es reservada). */
+  musical_key: string | null;
+  bpm: number | null;
+  time_signature: string | null;
+  comment: string | null;
+  atmosphere: "calma" | "intima" | "contemporaneo" | "agradecimiento" | null;
+}
+
+/** Ensayo (pantalla Eventos, "Ensayos Programados"). */
+export interface Ensayo {
+  id: string;
+  title: string;
+  starts_at: string;
+  location: string | null;
+  location_icon: string | null;
+}
+
+/** Ensayo con la confirmación del usuario autenticado (0 o 1 fila). */
+export interface EnsayoCompleto extends Ensayo {
+  rehearsal_confirmations: { user_id: string }[];
+}
+
+/** Checklist pre-culto (pantalla CultoVivo, tab "Checklist Pre-Culto"). */
+export interface ItemChecklistCulto {
+  id: string;
+  event_id: string | null;
+  item_text: string;
+  is_checked: boolean;
+  checked_by: string | null;
+  checked_at: string | null;
+}
+
+/** Cita pastoral (pantalla Pastoral, "Programar Nueva Cita"). */
+export interface CitaPastoral {
+  id: string;
+  member_id: string | null;
+  person_name: string;
+  purpose: string | null;
+  status: "programado" | "confirmado" | "completado" | "cancelado";
+  date_label: string | null;
+  time_label: string | null;
+  location: "Hogar" | "Presencial" | "Online" | null;
+  author_id: string | null;
 }

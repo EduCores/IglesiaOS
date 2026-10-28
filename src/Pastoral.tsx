@@ -1,17 +1,7 @@
-import React, { useState } from "react";
-
-interface Appointment {
-  id: number;
-  initials: string;
-  name: string;
-  type: string;
-  status: string;
-  date: string;
-  time: string;
-  location: string;
-  icon: string;
-  isCustom?: boolean;
-}
+import React, { useEffect, useState } from "react";
+import { supabase } from "./lib/supabase";
+import { inicialesDe, mapCitaToUI, type CitaUI } from "./lib/useCitas";
+import { useCitasNube } from "./lib/useCitas";
 
 interface ConfidentialNote {
   id: number;
@@ -25,6 +15,32 @@ interface ConfidentialNote {
   btnText: string;
 }
 
+// Citas demo: solo se ven sin nube; con nube vienen de `pastoral_appointments`.
+const CITAS_INICIALES: CitaUI[] = [
+  {
+    id: "1",
+    initials: "JP",
+    name: "Hermano Juan Pérez",
+    type: "Acompañamiento familiar",
+    status: "Programado",
+    date: "Mañana",
+    time: "10:00 AM",
+    location: "Hogar",
+    icon: "calendar_month"
+  },
+  {
+    id: "2",
+    initials: "FG",
+    name: "Familia García",
+    type: "Oración en hogar y gratitud",
+    status: "Confirmado",
+    date: "Jueves",
+    time: "4:30 PM",
+    location: "Presencial",
+    icon: "home"
+  }
+];
+
 export default function PastoralScreen({ onNavigateToSacramentos, onNavigateToBitacora }: { onNavigateToSacramentos?: () => void; onNavigateToBitacora?: () => void }) {
   const [showAddApptModal, setShowAddApptModal] = useState(false);
   const [successToast, setSuccessToast] = useState<string | null>(null);
@@ -37,30 +53,14 @@ export default function PastoralScreen({ onNavigateToSacramentos, onNavigateToBi
   const [newApptTime, setNewApptTime] = useState("10:00 AM");
   const [newApptLocation, setNewApptLocation] = useState("Hogar");
 
-  const [appointments, setAppointments] = useState<Appointment[]>([
-    {
-      id: 1,
-      initials: "JP",
-      name: "Hermano Juan Pérez",
-      type: "Acompañamiento familiar",
-      status: "Programado",
-      date: "Mañana",
-      time: "10:00 AM",
-      location: "Hogar",
-      icon: "calendar_month"
-    },
-    {
-      id: 2,
-      initials: "FG",
-      name: "Familia García",
-      type: "Oración en hogar y gratitud",
-      status: "Confirmado",
-      date: "Jueves",
-      time: "4:30 PM",
-      location: "Presencial",
-      icon: "home"
-    }
-  ]);
+  // Citas: con nube salen de `pastoral_appointments` (reemplazo); sin nube,
+  // las citas iniciales de siempre.
+  const [appointments, setAppointments] = useState<CitaUI[]>(CITAS_INICIALES);
+  const nubeCitas = useCitasNube();
+  useEffect(() => {
+    if (!nubeCitas.filas) return;
+    setAppointments(nubeCitas.filas.map((row) => mapCitaToUI(row)));
+  }, [nubeCitas.filas]);
 
   const [confidentialNotes, setConfidentialNotes] = useState<ConfidentialNote[]>([
     {
@@ -91,32 +91,47 @@ export default function PastoralScreen({ onNavigateToSacramentos, onNavigateToBi
     e.preventDefault();
     if (!newApptName.trim()) return;
 
-    const initials = newApptName
-      .split(" ")
-      .map(n => n[0])
-      .join("")
-      .toUpperCase()
-      .substring(0, 2);
-
-    const newAppt: Appointment = {
-      id: appointments.length + 1,
-      initials: initials || "AP",
+    const nuevaCita: CitaUI = {
+      id: nubeCitas.sincronizado && supabase ? crypto.randomUUID() : String(appointments.length + 1),
+      initials: inicialesDe(newApptName),
       name: newApptName,
       type: newApptType || "Consejería espiritual",
       status: "Programado",
       date: newApptDate,
       time: newApptTime,
       location: newApptLocation,
-      icon: newApptLocation === "Hogar" ? "home" : "calendar_month",
-      isCustom: true
+      icon: newApptLocation === "Hogar" ? "home" : "calendar_month"
     };
 
-    setAppointments([...appointments, newAppt]);
+    setAppointments([...appointments, nuevaCita]);
+    // Con nube: guarda la cita (RLS exige ver_todos_pastoral o
+    // ver_directorio; si lo niega queda local con aviso honesto).
+    if (nubeCitas.sincronizado && supabase && typeof nuevaCita.id === "string") {
+      void supabase
+        .from("pastoral_appointments")
+        .insert({
+          id: nuevaCita.id,
+          person_name: newApptName.trim(),
+          purpose: newApptType.trim() || null,
+          status: "programado",
+          date_label: newApptDate.trim() || null,
+          time_label: newApptTime.trim() || null,
+          location: newApptLocation,
+        })
+        .then(({ error }) => {
+          if (error) avisarNube("Sin permiso en la nube: cita solo local.");
+        });
+    }
     setShowAddApptModal(false);
     setNewApptName("");
     setNewApptType("");
-    setSuccessToast(`¡Cita con "${newApptName}" programada con éxito!`);
+    setSuccessToast(`¡Cita con "${nuevaCita.name}" programada con éxito!`);
     setTimeout(() => setSuccessToast(null), 3000);
+  };
+
+  const avisarNube = (msg: string) => {
+    setSuccessToast(msg);
+    setTimeout(() => setSuccessToast(null), 3500);
   };
 
   return (
@@ -227,7 +242,7 @@ export default function PastoralScreen({ onNavigateToSacramentos, onNavigateToBi
               <div className="flex items-start justify-between gap-2">
                 <div className="flex items-center gap-3">
                   <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-xs shrink-0 shadow-inner ${
-                    appt.id % 2 === 0 ? "bg-[#cde5ff] text-[#294964]" : "bg-slate-100 text-[#386458]"
+                    appt.status === "Confirmado" ? "bg-[#cde5ff] text-[#294964]" : "bg-slate-100 text-[#386458]"
                   }`}>
                     {appt.initials}
                   </div>
@@ -237,7 +252,7 @@ export default function PastoralScreen({ onNavigateToSacramentos, onNavigateToBi
                   </div>
                 </div>
                 <span className={`px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider ${
-                  appt.id % 2 === 0 ? "bg-[#bdeddd] text-[#214e43]" : "bg-slate-200 text-slate-500"
+                  appt.status === "Confirmado" ? "bg-[#bdeddd] text-[#214e43]" : "bg-slate-200 text-slate-500"
                 }`}>
                   {appt.status}
                 </span>

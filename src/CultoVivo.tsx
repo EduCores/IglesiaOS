@@ -1,22 +1,63 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { supabase } from "./lib/supabase";
+import { useAuth } from "./lib/auth";
+import { mapChecklistToUI, useChecklistNube } from "./lib/useChecklist";
+
+interface ChecklistItem {
+  id: string;
+  text: string;
+  checked: boolean;
+}
+
+const CHECKLIST_INICIAL: ChecklistItem[] = [
+  { id: "1", text: "Elementos de Santa Cena preparados en mesa", checked: true },
+  { id: "2", text: "Test de baterías en micrófonos inalámbricos", checked: true },
+  { id: "3", text: "Aromatización y climatización a 21°C", checked: true },
+  { id: "4", text: "Sobres de diezmos reposicionados en bancos", checked: false }
+];
 
 export default function CultoVivoScreen() {
   const [activeTab, setActiveTab] = useState<"cronograma" | "voluntarios" | "checklist">("cronograma");
   const [successToast, setSuccessToast] = useState<string | null>(null);
   const notify = (message: string) => { setSuccessToast(message); setTimeout(() => setSuccessToast(null), 3000); };
-  
-  // Checklist State to make it interactively functional!
-  const [checklist, setChecklist] = useState([
-    { id: 1, text: "Elementos de Santa Cena preparados en mesa", checked: true },
-    { id: 2, text: "Test de baterías en micrófonos inalámbricos", checked: true },
-    { id: 3, text: "Aromatización y climatización a 21°C", checked: true },
-    { id: 4, text: "Sobres de diezmos reposicionados en bancos", checked: false }
-  ]);
+  const nube = useAuth();
 
-  const toggleChecklistItem = (id: number) => {
+  // Checklist Pre-Culto: con nube viene de `worship_checklist` (reemplazo);
+  // sin nube, los ítems iniciales de siempre. Es GLOBAL: se marca una vez
+  // para todo el equipo (la escritura requiere `gestionar_roles`).
+  const [checklist, setChecklist] = useState<ChecklistItem[]>(CHECKLIST_INICIAL);
+  const nubeChecklist = useChecklistNube();
+  useEffect(() => {
+    if (!nubeChecklist.filas) return;
+    setChecklist(nubeChecklist.filas.map((row) => mapChecklistToUI(row)));
+  }, [nubeChecklist.filas]);
+
+  const toggleChecklistItem = (id: string) => {
+    const item = checklist.find(i => i.id === id);
+    const marcado = !(item?.checked ?? false);
     setChecklist(prev =>
-      prev.map(item => item.id === id ? { ...item, checked: !item.checked } : item)
+      prev.map(i => i.id === id ? { ...i, checked: marcado } : i)
     );
+    // Con nube: persiste el check global (checked_by = quién lo marcó).
+    if (nubeChecklist.sincronizado && supabase) {
+      void supabase
+        .from("worship_checklist")
+        .update({
+          is_checked: marcado,
+          checked_by: nube.user?.id ?? null,
+          checked_at: marcado ? new Date().toISOString() : null,
+        })
+        .eq("id", id)
+        .then(({ error }) => {
+          if (error) {
+            // Rollback honesto del toggle optimista.
+            setChecklist(prev =>
+              prev.map(i => (i.id === id ? { ...i, checked: !marcado } : i))
+            );
+            notify("Sin permiso en la nube: cambio solo local.");
+          }
+        });
+    }
   };
 
   return (

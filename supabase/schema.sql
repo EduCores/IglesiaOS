@@ -249,6 +249,126 @@ create table if not exists public.broadcasts (
   created_at  timestamptz not null default now()
 );
 
+-- ==========================================================================
+-- 9b. Repertorio + Ensayos + Checklist Pre-Culto + Citas Pastorales  (Lote E)
+--     Pantallas que antes eran 100% locales: Eventos (repertorio y ensayos),
+--     CultoVivo (checklist pre-culto) y Pastoral (citas). Convecciones
+--     iguales al resto: snake_case, timestamps en UTC, estados como `text`
+--     con check (agregar uno no requiere migración).
+--
+--     Notas de diseño:
+--     * `songs` guarda el REPERTORIO completo ("Repertorio Completo"); el
+--       setlist del domingo sigue siendo una vista de la pantalla (traer
+--       la relación setlist/evento es un paso posterior, no se inventa aquí).
+--     * La confirmación de un ensayo es POR USUARIO (toggle de cada quien),
+--       no un campo global: por eso va en tabla aparte con PK compuesta.
+--     * El checklist pre-culto es GLOBAL (se marca una vez, no por persona):
+--       `is_checked` + quién lo marcó. `event_id` es opcional (null = lista
+--       general); los ítems del cronograma en vivo siguen en la pantalla.
+--     * La cita usa `date_label`/`time_label` (texto, como cells.schedule)
+--       porque el formulario del pastor es de etiqueta ("Mañana"/"10:00 AM"),
+--       no de fecha exacta. Cuando la agenda crezca, se agrega `starts_at`.
+-- ==========================================================================
+create table if not exists public.songs (
+  id              uuid primary key default gen_random_uuid(),
+  number_tag      text,                      -- '01'..'99' de la setlist
+  title           text        not null,
+  artist          text,                      -- 'David Brymer • Versión Acústica'
+  musical_key     text,                      -- 'Bb' ('key' es palabra reservada)
+  bpm             int         check (bpm is null or bpm between 40 and 220),
+  time_signature  text,                      -- '4/4','6/8'
+  comment         text,                      -- 'Intro: Piano pad suave (4 compases)'
+  atmosphere      text        check (atmosphere is null or atmosphere in
+                  ('calma','intima','contemporaneo','agradecimiento')),
+  created_at      timestamptz not null default now()
+);
+create index if not exists songs_number_tag_idx
+  on public.songs (number_tag);
+
+create table if not exists public.rehearsals (
+  id            uuid primary key default gen_random_uuid(),
+  title         text        not null,
+  starts_at     timestamptz not null,
+  location      text,                       -- 'Santuario Principal'
+  location_icon text,                       -- 'church' / 'mic' (Material Symbols)
+  created_at    timestamptz not null default now()
+);
+create index if not exists rehearsals_starts_at_idx
+  on public.rehearsals (starts_at);
+
+-- Confirmación de asistencia al ensayo: una por usuario y ensayo.
+create table if not exists public.rehearsal_confirmations (
+  rehearsal_id uuid not null references public.rehearsals (id) on delete cascade,
+  user_id      uuid not null references auth.users (id) on delete cascade,
+  confirmed_at timestamptz not null default now(),
+  primary key (rehearsal_id, user_id)
+);
+
+-- Checklist pre-culto (pantalla CultoVivo, pestaña "Checklist Pre-Culto").
+create table if not exists public.worship_checklist (
+  id          uuid primary key default gen_random_uuid(),
+  event_id    uuid references public.events (id) on delete cascade,
+  item_text   text        not null,
+  is_checked  boolean     not null default false,
+  checked_by  uuid        references auth.users (id) on delete set null,
+  checked_at  timestamptz,
+  sort        int         not null default 0,   -- orden de la pantalla
+  created_at  timestamptz not null default now()
+);
+
+-- Citas pastorales (pantalla Pastoral: "Programar Nueva Cita").
+create table if not exists public.pastoral_appointments (
+  id           uuid primary key default gen_random_uuid(),
+  member_id    uuid references public.members (id) on delete set null,
+  person_name  text        not null,           -- 'Hermano Juan Pérez'
+  purpose      text,                           -- 'Acompañamiento familiar'
+  status       text        not null default 'programado'
+               check (status in ('programado','confirmado','completado','cancelado')),
+  date_label   text,                           -- 'Mañana' / 'Jueves'
+  time_label   text,                           -- '10:00 AM'
+  location     text        check (location is null or location in
+               ('Hogar','Presencial','Online')),
+  author_id    uuid        references auth.users (id) on delete set null,
+  created_at   timestamptz not null default now()
+);
+create index if not exists pastoral_appointments_created_idx
+  on public.pastoral_appointments (created_at desc);
+
+-- Seeds (solo si la tabla está VACÍA: re-ejecutar no duplica).
+insert into public.songs (number_tag, title, artist, musical_key, bpm, time_signature, comment, atmosphere)
+select v.number_tag, v.title, v.artist, v.musical_key, v.bpm, v.time_signature, v.comment, v.atmosphere
+from (values
+  ('01', 'Worthy of It All', 'David Brymer • Versión Acústica', 'Bb', 72, '4/4', 'Intro: Piano pad suave (4 compases)',  'intima'),
+  ('02', 'King of Kings',    'Hillsong Worship • Arreglo Cuerdas','D', 68, '4/4', 'Entrada de voces femeninas en Coro', 'calma'),
+  ('03', 'Build My Life',    'Housefires • Comunión y Adoración', 'G', 70, '4/4', 'Momento de oración reflexiva',       'contemporaneo'),
+  ('04', 'Agnus Dei',        'Michael W. Smith • Oración Final',  'A', 64, '4/4', 'Cierre congregacional a capella',    'agradecimiento')
+) as v(number_tag, title, artist, musical_key, bpm, time_signature, comment, atmosphere)
+where not exists (select 1 from public.songs);
+
+-- Ensayos: próximo jueves 19:00 y próximo sábado 10:00 (relativos a hoy).
+insert into public.rehearsals (title, starts_at, location, location_icon)
+select v.title, v.starts_at, v.location, v.location_icon
+from (values
+  ('Ensayo General',
+   ((current_date + ((4 - extract(isodow from current_date)::int + 7) % 7))::date + time '19:00')::timestamptz,
+   'Santuario Principal', 'church'),
+  ('Ensayo Banda & Voces',
+   ((current_date + ((6 - extract(isodow from current_date)::int + 7) % 7))::date + time '10:00')::timestamptz,
+   'Sala de Ensayos A', 'mic')
+) as v(title, starts_at, location, location_icon)
+where not exists (select 1 from public.rehearsals);
+
+-- Checklist: los 4 ítems de la pantalla (con los 3 primeros marcados).
+insert into public.worship_checklist (item_text, is_checked, sort)
+select v.item_text, v.is_checked, v.sort
+from (values
+  ('Elementos de Santa Cena preparados en mesa',  true,  1),
+  ('Test de baterías en micrófonos inalámbricos', true,  2),
+  ('Aromatización y climatización a 21°C',        true,  3),
+  ('Sobres de diezmos reposicionados en bancos',  false, 4)
+) as v(item_text, is_checked, sort)
+where not exists (select 1 from public.worship_checklist);
+
 -- --------------------------------------------------------------------------
 -- 10. Roles seed: los 17 roles de la pantalla Roles.
 --     Coinciden con ROLES_INICIALES (App.tsx) para que al migrar no cambie
@@ -302,6 +422,9 @@ cross join (values
   ('Pastor Principal', 'solicitar_gastos', true), ('Pastor Principal', 'ver_finanzas', true),
   ('Pastor Principal', 'ver_todos_pastoral', true), ('Pastor Principal', 'ver_directorio', true),
   ('Pastor Principal', 'checkin_ninos', true),
+  -- Lote E: repertorio. El Director Alabanza edita su repertorio sin
+  -- necesitar gestionar_roles (que es acceso de administración).
+  ('Pastor Principal', 'editar_repertorio', true),
   ('Pastor 1', 'ver_directorio', true), ('Pastor 1', 'ver_todos_pastoral', true),
   ('Pastor 1', 'registrar_ofrendas', true), ('Pastor 1', 'solicitar_gastos', true),
   ('Pastor 1', 'ver_finanzas', true), ('Pastor 1', 'checkin_ninos', true),
@@ -310,6 +433,7 @@ cross join (values
   ('Pastor 2', 'ver_finanzas', true), ('Pastor 2', 'checkin_ninos', true),
   ('Tesorero', 'ver_finanzas', true), ('Tesorero', 'registrar_ofrendas', true),
   ('Tesorero', 'ver_directorio', true),
+  ('Director Alabanza', 'editar_repertorio', true),
   ('Director Alabanza', 'ver_directorio', true),
   ('Líder de Célula', 'ver_directorio', true), ('Líder de Célula', 'checkin_ninos', true),
   ('Portero', 'ver_directorio', true), ('Portero', 'checkin_ninos', true),
@@ -358,7 +482,9 @@ begin
   foreach t in array array[
     'profiles','roles','role_permissions','members','cells','member_cells',
     'transactions','pastoral_logs','prayer_requests','sacrament_records',
-    'events','event_attendance','children_checkins','broadcasts'
+    'events','event_attendance','children_checkins','broadcasts',
+    'songs','rehearsals','rehearsal_confirmations',
+    'worship_checklist','pastoral_appointments'
   ] loop
     execute format('alter table public.%I enable row level security', t);
   end loop;
@@ -483,6 +609,56 @@ create policy "broadcasts_select" on public.broadcasts for select using (auth.ro
 drop policy if exists "broadcasts_write" on public.broadcasts;
 create policy "broadcasts_write"  on public.broadcasts for all
   using (public.has_permission('gestionar_roles')) with check (public.has_permission('gestionar_roles'));
+
+-- Repertorio: lectura autenticados; escritura con 'gestionar_roles' o
+-- 'editar_repertorio' (Director Alabanza / Pastor Principal).
+drop policy if exists "songs_select" on public.songs;
+create policy "songs_select" on public.songs for select using (auth.role() = 'authenticated');
+drop policy if exists "songs_write" on public.songs;
+create policy "songs_write"  on public.songs for all
+  using (public.has_permission('gestionar_roles') or public.has_permission('editar_repertorio'))
+  with check (public.has_permission('gestionar_roles') or public.has_permission('editar_repertorio'));
+
+-- Ensayos: lectura autenticados; creación/edición liderazgo o director.
+drop policy if exists "rehearsals_select" on public.rehearsals;
+create policy "rehearsals_select" on public.rehearsals for select using (auth.role() = 'authenticated');
+drop policy if exists "rehearsals_write" on public.rehearsals;
+create policy "rehearsals_write"  on public.rehearsals for all
+  using (public.has_permission('gestionar_roles') or public.has_permission('editar_repertorio'))
+  with check (public.has_permission('gestionar_roles') or public.has_permission('editar_repertorio'));
+
+-- Confirmación de asistencia: cada usuario solo ve y marca SU fila
+-- (el toggle "Confirmar/Confirmado!" de la pantalla es personal).
+drop policy if exists "rehearsal_confirmations_own" on public.rehearsal_confirmations;
+create policy "rehearsal_confirmations_own" on public.rehearsal_confirmations for all
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+-- Checklist pre-culto: lectura autenticados; marcar con 'gestionar_roles'
+-- (un ítem marcado es global; una línea SQL amplía el permiso si se necesita).
+drop policy if exists "worship_checklist_select" on public.worship_checklist;
+create policy "worship_checklist_select" on public.worship_checklist
+  for select using (auth.role() = 'authenticated');
+drop policy if exists "worship_checklist_write" on public.worship_checklist;
+create policy "worship_checklist_write"  on public.worship_checklist for all
+  using (public.has_permission('gestionar_roles'))
+  with check (public.has_permission('gestionar_roles'));
+
+-- Citas pastorales: mismo espíritu que pastoral_logs — las agenda el equipo
+-- pastoral (ver_todos_pastoral) o quien ve directorio; editar completado
+-- queda para el equipo pastoral. Los datos son nombres/citas, no notas
+-- confidenciales: leer es menos sensible que pastoral_logs.
+drop policy if exists "pastoral_appointments_select" on public.pastoral_appointments;
+create policy "pastoral_appointments_select" on public.pastoral_appointments for select using (
+  public.has_permission('ver_todos_pastoral') or public.has_permission('ver_directorio')
+);
+drop policy if exists "pastoral_appointments_insert" on public.pastoral_appointments;
+create policy "pastoral_appointments_insert" on public.pastoral_appointments for insert
+  with check (public.has_permission('ver_todos_pastoral') or public.has_permission('ver_directorio'));
+drop policy if exists "pastoral_appointments_update" on public.pastoral_appointments;
+create policy "pastoral_appointments_update" on public.pastoral_appointments for update
+  using (public.has_permission('ver_todos_pastoral'))
+  with check (public.has_permission('ver_todos_pastoral'));
 
 -- ==========================================================================
 -- 12. CELDAS (buckets) para fotos: miembros, niños, logo.
