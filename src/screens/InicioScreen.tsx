@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { useContadoresNube } from "../lib/useContadores";
 
 // ==========================================================================
 // COMPONENTE: PANTALLA 2 - INICIO (Panel Pastoral)
@@ -21,6 +22,15 @@ export default function InicioScreen({
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [audioProgress, setAudioProgress] = useState(0);
   const progressIntervalRef = useRef<any>(null);
+
+  // Contadores: con nube salen del servidor (count exacto, Lote F);
+  // sin nube se muestran los números demo de siempre.
+  const nubeContadores = useContadoresNube();
+  const serviciosHoy = nubeContadores.contadores?.cultosHoy ?? "3";
+  const asistencia7d = nubeContadores.contadores
+    ? String(nubeContadores.contadores.asistentes7d)
+    : "850+";
+  const nuevosHnos = nubeContadores.contadores?.nuevos30d ?? "12";
 
   const capitalizeEs = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
   const todayLabel = (() => {
@@ -91,17 +101,17 @@ export default function InicioScreen({
             <div className="grid grid-cols-3 gap-2 pt-1.5">
               <div className="flex flex-col items-center justify-center p-2 rounded-[10px] bg-[#bdeddd]/30 border border-slate-100">
                 <span className="material-symbols-outlined text-[#386458] text-[20px] mb-0.5">church</span>
-                <span className="text-sm font-bold text-slate-900">3</span>
+                <span className="text-sm font-bold text-slate-900">{serviciosHoy}</span>
                 <span className="text-[10px] text-slate-400 text-center leading-none">Servicios Hoy</span>
               </div>
               <div className="flex flex-col items-center justify-center p-2 rounded-[10px] bg-[#cde5ff]/40 border border-blue-100/30">
                 <span className="material-symbols-outlined text-[#42617d] text-[20px] mb-0.5">groups</span>
-                <span className="text-sm font-bold text-[#001d32]">850+</span>
-                <span className="text-[10px] text-[#294964]/80 text-center leading-none">Asistencia</span>
+                <span className="text-sm font-bold text-[#001d32]">{asistencia7d}</span>
+                <span className="text-[10px] text-[#294964]/80 text-center leading-none">Asistencias 7 días</span>
               </div>
               <div className="flex flex-col items-center justify-center p-2 rounded-[10px] bg-[#ffd9de]/60 border border-emerald-100/30">
                 <span className="material-symbols-outlined text-[#7f4e57] text-[20px] mb-0.5">favorite</span>
-                <span className="text-sm font-bold text-[#002019]">12</span>
+                <span className="text-sm font-bold text-[#002019]">{nuevosHnos}</span>
                 <span className="text-[10px] text-[#214e43]/80 text-center leading-none">Nuevos Hnos.</span>
               </div>
             </div>

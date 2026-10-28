@@ -103,6 +103,32 @@ crear cita con cuenta pastoral/celi o Pastor).
 
 ---
 
+## ✅ APLICADO — Lote F: Contadores reales en Inicio y Directorio
+
+**Estado:** ✅ Aplicado el 28-oct-2026. Nuevo hook `src/lib/useContadores.ts`
+(`useContadoresNube`) con **count exacto del lado servidor** (`head: true`,
+no baja filas — 8 conteos en paralelo). Conectados:
+
+- **Inicio** (`src/screens/InicioScreen.tsx`): "Servicios Hoy" (`events`
+  kind='culto' de hoy local), "Asistencias 7 días" (check-ins de
+  `event_attendance` últimos 7 días; el demo decía "850+ Asistencia"),
+  "Nuevos Hnos." (miembros creados en los últimos 30 días).
+- **Directorio** (`src/Directorio.tsx`): "Hermanos en el directorio" (total
+  `members`; el demo decía "850 Asistentes habituales"), "Bautizados este año"
+  (real desde `sacrament_records` kind='bautismo' del año), y la tercera
+  tarjeta pasa a "Participan en células" (total `member_cells`) cuando hay
+  nube — sin nube conserva el demo "98% Conectados activamente".
+
+**Aún demo (honesto, se anota):** el gráfico semanal "Ritmo Comunitario"
+(asistencias por día L–D), el badge "98% enviado" de Comunicaciones y los
+chips Líderes del filtro (no hay relación persona↔rol de servicio; las
+opciones de fuente se evalúan cuando llegue ese lote). Sin sesión cloud todas
+las pantallas siguen mostrando sus datos demo de siempre.
+
+**Nota de datos:** con la base actual (28-oct-2026) las tablas de censo/
+eventos/células/sacramentos están vacías — los contadores muestran 0 reales
+hasta que se registren personas y actividades. `lint` y `build` en verde.
+
 ## ✅ APLICADO — Temas de color: Zafiro y Terracota (light/dark c/u) + icono palette
 
 **Estado:** ✅ Aplicado el 06-oct-2026, desde `DESIGN (1).md` (Serene Ecclesia →

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { supabase } from "./lib/supabase";
 import { MIEMBROS_INICIALES, type MiembroUI } from "./data/miembros";
 import { mapMiembroToUI, useMiembrosNube } from "./lib/useMiembros";
+import { useContadoresNube } from "./lib/useContadores";
 
 export default function DirectorioScreen({
   onNavigateToRoles,
@@ -24,6 +25,16 @@ export default function DirectorioScreen({
   // Roles); sin nube, los datos iniciales locales.
   const [members, setMembers] = useState<MiembroUI[]>(MIEMBROS_INICIALES);
   const nubeMiembros = useMiembrosNube();
+  // Contadores reales (count exacto en servidor); sin nube, números demo.
+  const nubeContadores = useContadoresNube();
+  const totalHermanos = nubeContadores.contadores?.hermanos ?? "850";
+  const bautizadosAnio = nubeContadores.contadores?.bautizadosAnio ?? "142";
+  const conectadosValor = nubeContadores.contadores
+    ? String(nubeContadores.contadores.enCelulas)
+    : "98%";
+  const conectadosEtiqueta = nubeContadores.sincronizado
+    ? "Participan en células"
+    : "Conectados activamente";
   useEffect(() => {
     if (!nubeMiembros.filas) return;
     setMembers(nubeMiembros.filas.map((row) => mapMiembroToUI(row)));
@@ -203,15 +214,15 @@ export default function DirectorioScreen({
               <div className="w-7 h-7 rounded-full bg-[#bdeddd] flex items-center justify-center text-[#214e43] mb-1.5">
                 <span className="material-symbols-outlined text-[16px]">groups</span>
               </div>
-              <span className="text-sm font-bold text-slate-800">850</span>
-              <span className="text-[10px] text-slate-400 font-medium leading-tight mt-0.5">Asistentes habituales</span>
+              <span className="text-sm font-bold text-slate-800">{totalHermanos}</span>
+              <span className="text-[10px] text-slate-400 font-medium leading-tight mt-0.5">Hermanos en el directorio</span>
             </div>
             {/* Metric 2 */}
             <div className="bg-white rounded-xl p-3 flex flex-col items-center text-center shadow-sm relative overflow-hidden border border-slate-100">
               <div className="w-7 h-7 rounded-full bg-[#bddefe] flex items-center justify-center text-[#43627e] mb-1.5">
                 <span className="material-symbols-outlined text-[16px]">water_drop</span>
               </div>
-              <span className="text-sm font-bold text-slate-800">142</span>
+              <span className="text-sm font-bold text-slate-800">{bautizadosAnio}</span>
               <span className="text-[10px] text-slate-400 font-medium leading-tight mt-0.5">Bautizados este año</span>
             </div>
             {/* Metric 3 */}
@@ -219,8 +230,8 @@ export default function DirectorioScreen({
               <div className="w-7 h-7 rounded-full bg-[#ffd9de] flex items-center justify-center text-[#663a42] mb-1.5">
                 <span className="material-symbols-outlined text-[16px]">favorite</span>
               </div>
-              <span className="text-sm font-bold text-slate-800">98%</span>
-              <span className="text-[10px] text-slate-400 font-medium leading-tight mt-0.5">Conectados activamente</span>
+              <span className="text-sm font-bold text-slate-800">{conectadosValor}</span>
+              <span className="text-[10px] text-slate-400 font-medium leading-tight mt-0.5">{conectadosEtiqueta}</span>
             </div>
           </div>
         </section>
