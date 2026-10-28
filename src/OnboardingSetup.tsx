@@ -1,4 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { supabase } from "./lib/supabase";
+import { PILARES_INICIALES, type PilarUI } from "./data/onboarding";
+import { mapPilarToUI, useOnboardingNube } from "./lib/useOnboarding";
 
 interface OnboardingPillar {
   id: number;
@@ -11,58 +14,43 @@ interface OnboardingPillar {
 
 export default function OnboardingSetupScreen({ onBack }: { onBack?: () => void }) {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [pillars, setPillars] = useState<OnboardingPillar[]>([
-    {
-      id: 1,
-      title: "Directorio de Familias",
-      subtitle: "Sube tu listado en XLSX para activar el censo fraternal dominical.",
-      icon: "group_add",
-      status: "prioritario",
-      actionText: "Subir Lista"
-    },
-    {
-      id: 2,
-      title: "Células y Zonas Territoriales",
-      subtitle: "Mapea tus grupos pequeños y sectores geográficos de comunión.",
-      icon: "share_location",
-      status: "pendiente",
-      actionText: "Configurar Zonas"
-    },
-    {
-      id: 3,
-      title: "Cuentas y Fondos Financieros",
-      subtitle: "Establece tus cuentas de diezmos, misiones y acción comunitaria.",
-      icon: "account_balance_wallet",
-      status: "pendiente",
-      actionText: "Crear Cuentas"
-    },
-    {
-      id: 4,
-      title: "Primer Culto o Evento",
-      subtitle: "Planifica el orden litúrgico de tu próximo culto de Alabanza.",
-      icon: "calendar_month",
-      status: "pendiente",
-      actionText: "Crear Culto"
-    }
-  ]);
+  const [pillars, setPillars] = useState<PilarUI[]>(PILARES_INICIALES);
+  const nubeOnboarding = useOnboardingNube();
+  useEffect(() => {
+    if (!nubeOnboarding.filas) return;
+    setPillars(nubeOnboarding.filas.map((row) => mapPilarToUI(row)));
+  }, [nubeOnboarding.filas]);
 
   const completedCount = pillars.filter(p => p.status === "completado").length;
   const progressPercent = Math.round((completedCount / pillars.length) * 100);
 
-  const togglePillarStatus = (pillarId: number) => {
+  const togglePillarStatus = (pillarId: number | string) => {
     const target = pillars.find(p => p.id === pillarId);
     if (!target) return;
 
     const nextStatus = target.status === "completado" ? "pendiente" : "completado";
 
-    // El updater se mantiene puro (sin efectos secundarios) y el toast
-    // se programa fuera de él, para que StrictMode no lo duplique.
     setPillars(prev => prev.map(pillar =>
       pillar.id === pillarId ? { ...pillar, status: nextStatus } : pillar
     ));
 
     setToastMessage(`Pilar "${target.title}" marcado como ${nextStatus.toUpperCase()}`);
     setTimeout(() => setToastMessage(null), 3000);
+
+    // Con nube: persiste el estado del pilar.
+    if (nubeOnboarding.sincronizado && supabase) {
+      void (async () => {
+        const { error } = await supabase
+          .from("onboarding_pillars")
+          .update({ status: nextStatus })
+          .eq("id", pillarId);
+        if (error) {
+          setPillars(prev => prev.map(p => p.id === pillarId ? { ...p, status: target.status } : p));
+          setToastMessage(`No se pudo actualizar "${target.title}" en la nube. Estado restaurado.`);
+          setTimeout(() => setToastMessage(null), 3000);
+        }
+      })();
+    }
   };
 
   const getActiveStepName = () => {

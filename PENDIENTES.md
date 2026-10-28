@@ -103,6 +103,27 @@ crear cita con cuenta pastoral/celi o Pastor).
 
 ---
 
+## ✅ APLICADO — Lote I: Onboarding (pilares de configuración) en Supabase
+
+**Estado:** ✅ Aplicado el 28-oct-2026. Los 4 pilares de configuración inicial
+ahora vienen de `onboarding_pillars`; marcar un pilar como completado persiste
+el estado. `lint` y `build` en verde.
+
+**Base (`supabase/schema.sql` §9d + migración incremental
+`supabase/migraciones/lote-i-onboarding.sql`):** 1 tabla nueva → **22 en total**,
+**46 políticas**. Lectura para autenticados; escritura con `gestionar_roles`.
+
+**Decisiones de modelado (y por qué):**
+- **`onboarding_pillars`**: `status` con check (`prioritario`/`pendiente`/
+  `completado`); `action_text` es el rótulo del botón ("Subir Lista"). El
+  toggle invierte `completado`↔`pendiente` (un pilar "prioritario" al marcarlo
+  pasa a "completado").
+- Es una pantalla de configuración inicial de una sola iglesia; no se enlaza
+  a miembros ni eventos.
+
+**Aún demo:** los botones de acción ("Subir Lista", etc.) solo muestran toast;
+la carga real de datos (censo XLSX, cuentas, culto) vive en sus pantallas.
+
 ## ✅ APLICADO — Lote H: Sacramentos (bautismo) conectado a Supabase
 
 **Estado:** ✅ Aplicado el 28-oct-2026. La solicitud de bautismo ahora se registra

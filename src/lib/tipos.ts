@@ -223,6 +223,18 @@ export interface SacramentRecord {
   created_by: string | null;
   created_at: string;
 }
+/** Pilar de configuración inicial (pantalla OnboardingSetup). */
+export interface OnboardingPillar {
+  id: string;
+  title: string;
+  subtitle: string | null;
+  icon: string | null;
+  status: "prioritario" | "pendiente" | "completado";
+  action_text: string | null;
+  sort: number | null;
+  created_at: string;
+}
+
 export interface Canal {
   id: string;
   name: string;
