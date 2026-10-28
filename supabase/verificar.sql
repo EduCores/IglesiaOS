@@ -1,16 +1,17 @@
 -- ==========================================================================
 -- IglesiaOS — Verificación del esquema (ejecutar DESPUÉS de schema.sql).
--- No modifica nada: solo consulta. Debe devolver 19 / 19 / 40 / 17.
--- (Cards: desde el Lote E son 19 tablas y 40 políticas.)
+-- No modifica nada: solo consulta. Debe devolver 21 / 21 / 44 / 17.
+-- (Lote E: 19 tablas y 40 políticas. Lote F: sin tablas nuevas.
+--  Lote G: 21 tablas y 44 políticas — se suman media_channels y media_clips.)
 -- ==========================================================================
 
--- 1) Tablas creadas (esperado: 19)
+-- 1) Tablas creadas (esperado: 21)
 select count(*) as tablas_creadas
 from information_schema.tables
 where table_schema = 'public'
   and table_type = 'BASE TABLE';
 
--- 2) RLS habilitado en todas (esperado: 19 de 19; cualquier FALSE = tabla
+-- 2) RLS habilitado en todas (esperado: 21 de 21; cualquier FALSE = tabla
 --    expuesta: corrige antes de seguir).
 select
   count(*) filter (where c.relrowsecurity) as con_rls,
@@ -19,7 +20,7 @@ from pg_class c
 join pg_namespace n on n.oid = c.relnamespace
 where n.nspname = 'public' and c.relkind = 'r';
 
--- 3) Políticas creadas (esperado: 40: 30 base + 10 del Lote E)
+-- 3) Políticas creadas (esperado: 44: 40 del Lote E + 4 del Lote G)
 select count(*) as politicas
 from pg_policies
 where schemaname = 'public';

@@ -1,14 +1,17 @@
 import React, { useState, useEffect, lazy, Suspense } from "react";
-
-interface SyncChannel {
-  id: number;
-  name: string;
-  description: string;
-  icon: string;
-  bgColor: string;
-  iconColor: string;
-  active: boolean;
-}
+import { supabase } from "./lib/supabase";
+import {
+  CANALES_INICIALES,
+  CLIPS_INICIALES,
+  type CanalUI,
+  type ClipUI,
+} from "./data/multimedia";
+import {
+  mapCanalToUI,
+  mapClipToUI,
+  useCanalesNube,
+  useClipsNube,
+} from "./lib/useMultimedia";
 
 // react-player v3 con carga diferida: el chunk se descarga solo al abrir un clip o iniciar el preview.
 const ReactPlayer = lazy(() => import("react-player"));
@@ -29,35 +32,21 @@ export default function MultimediaScreen() {
   const [successToast, setSuccessToast] = useState<string | null>(null);
 
   // Synchronized Channels State
-  const [channels, setChannels] = useState<SyncChannel[]>([
-    {
-      id: 1,
-      name: "YouTube Live Oficial",
-      description: "RTMP Principal · Canal Comunidad de Fe",
-      icon: "smart_display",
-      bgColor: "bg-[#ffd9de]",
-      iconColor: "text-[#7f4e57]",
-      active: true
-    },
-    {
-      id: 2,
-      name: "Facebook Watch Iglesia",
-      description: "Página Oficial Verificada · Evento en Vivo",
-      icon: "public",
-      bgColor: "bg-[#cde5ff]",
-      iconColor: "text-[#294964]",
-      active: true
-    },
-    {
-      id: 3,
-      name: "Grabación Local en 4K",
-      description: "Google Drive Backup · ProRes HQ",
-      icon: "cloud_upload",
-      bgColor: "bg-[#bdeddd]",
-      iconColor: "text-[#214e43]",
-      active: true
-    }
-  ]);
+  const [channels, setChannels] = useState<CanalUI[]>(CANALES_INICIALES);
+  // Grabaciones recientes: con nube viene de la tabla `media_clips`.
+  const [clips, setClips] = useState<ClipUI[]>(CLIPS_INICIALES);
+
+  // Lectura desde Supabase (reemplazo, no merge). Sin nube queda el demo.
+  const nubeCanales = useCanalesNube();
+  const nubeClips = useClipsNube();
+  useEffect(() => {
+    if (!nubeCanales.filas) return;
+    setChannels(nubeCanales.filas.map((row) => mapCanalToUI(row)));
+  }, [nubeCanales.filas]);
+  useEffect(() => {
+    if (!nubeClips.filas) return;
+    setClips(nubeClips.filas.map((row) => mapClipToUI(row)));
+  }, [nubeClips.filas]);
 
   // Slides State
   const slides = [
@@ -68,35 +57,7 @@ export default function MultimediaScreen() {
   ];
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
 
-  // Biblioteca de clips recientes (react-player) — clips demo con videos públicos de YouTube; reemplazar por las grabaciones reales del canal.
-  const [activeClipId, setActiveClipId] = useState<number | null>(null);
-  const clips = [
-    {
-      id: 1,
-      title: "Culto Dominical · Prédica Completa",
-      meta: "Dom 27 Sep · 412 reproducciones",
-      badge: "HD",
-      thumbnail: "https://lh3.googleusercontent.com/aida-public/AB6AXuCFidNdOOMK-Gc1IlEvVisENzHoO1-ixW45S5GfWQkW_zxYISoGnZIFSjLRpUncMXBHxm39TE7O7BLGp31I3AYuJ4pOmPeEKKz2Kb9snNgg4eyDhI864cehrbiTv5KYXpS5bmooWSPVIVzk7VxUbe4oOzvcj1z-GPoNEfUvZir-Bl4VbQPzNWtTwtWde95Pj2QnUeoaocAuY-bMyMMnBiKM5hKaS3uTljA6Md-suUsf7Xvm6x6myS-3",
-      src: "https://www.youtube.com/watch?v=y5JOJx8l-gA"
-    },
-    {
-      id: 2,
-      title: "Set de Adoración · Cuán Grande es Dios",
-      meta: "Dom 27 Sep · 268 reproducciones",
-      badge: "4K",
-      thumbnail: "https://lh3.googleusercontent.com/aida-public/AB6AXuBXZQ04S41pr2PWBNCWCCtjbco4gMgLaRNTIT55jYfXjLfA-s8KATpoFYyhTwqpYs5UdkYFjVw7OYLn6TQpDlulgjVJ8vpqWhDcv37unHoA_gE7cUmiFPHMwPZLUMmkYunqQzlH0QPDwNX0jIfgQq8UoqbH4XsvcI7Ezmku9lZvUE5G8-vPtiMcPHkG1VrpPsfH-1jMTuoxFTfQ2i0-h1bGvlz79Hj1VRddlOdSAA1jXHSUoplKoXOm",
-      src: "https://www.youtube.com/watch?v=6sRKYpgfS4I"
-    },
-    {
-      id: 3,
-      title: "Bautismos & Testimonios · Servicio Especial",
-      meta: "Vie 18 Sep · 305 reproducciones",
-      badge: "CLIP",
-      thumbnail: "https://lh3.googleusercontent.com/aida-public/AB6AXuCKuDV7C_6aZYyhi5tu2z1OQld66W9ew608SiUHa3NqIfobUM8rA2zg1aUrTDQ8M1I0dlr7KwtsSlxHrDjlju_ElTynZ8KOI6XMzwgagPKu21q__Hyhgimph3gdWwy7ykxaa_B1XRtaI6xn_h-zm-LSu1Il38Ym74SPPIv8MkZMA-Z-_XHdlsB-6RUvpcXOBDE93EFLAM8dpVEzrxAv27BVEgdxdWq6REqUpyoAUXzDlsc7ONsTYFtF",
-      src: "https://www.youtube.com/watch?v=k6sY6-PLxko"
-    }
-  ];
-
+  const [activeClipId, setActiveClipId] = useState<string | number | null>(null);
   // Fondo de video — cualquier video de la pantalla (feed de cámara o clips) puede activarse como fondo del contenido.
   const [backgroundVideo, setBackgroundVideo] = useState<{ label: string; src: string } | null>(null);
   const hasBackground = backgroundVideo !== null;
@@ -123,10 +84,28 @@ export default function MultimediaScreen() {
     return () => clearInterval(interval);
   }, [isStreaming]);
 
-  const toggleChannel = (id: number) => {
-    setChannels(prev => 
-      prev.map(c => c.id === id ? { ...c, active: !c.active } : c)
+  const toggleChannel = (id: number | string) => {
+    const canal = channels.find(c => c.id === id);
+    const activar = !(canal?.active ?? false);
+    // Cambio optimista del switch; se revierte si la BD lo rechaza.
+    setChannels(prev =>
+      prev.map(c => c.id === id ? { ...c, active: activar } : c)
     );
+    if (supabase) {
+      void (async () => {
+          const { error } = await supabase
+            .from("media_channels")
+            .update({ is_active: activar })
+            .eq("id", id);
+          if (error) {
+            setChannels(prev =>
+              prev.map(c => c.id === id ? { ...c, active: !activar } : c)
+            );
+            setSuccessToast(`No se pudo actualizar "${canal?.name}" en la nube. Estado restaurado.`);
+            setTimeout(() => setSuccessToast(null), 3000);
+          }
+        })();
+    }
   };
 
   const handleNextSlide = () => {

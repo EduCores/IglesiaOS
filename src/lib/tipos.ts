@@ -208,4 +208,34 @@ export interface CitaPastoral {
   time_label: string | null;
   location: "Hogar" | "Presencial" | "Online" | null;
   author_id: string | null;
+  created_at: string;
+}
+
+/** Canal sincronizado (pantalla Multimedia, "Canales Sincronizados"). */
+export interface Canal {
+  id: string;
+  name: string;
+  description: string | null;
+  /** Nombre del icono en Material Symbols (ej. 'smart_display'). */
+  icon: string | null;
+  /** Clases tailwind para el círculo (ej. 'bg-[#ffd9de]'). */
+  bg_color: string | null;
+  icon_color: string | null;
+  is_active: boolean;
+  sort: number | null;
+  created_at: string;
+}
+
+/** Clip de grabación reciente (pantalla Multimedia, "Grabaciones Recientes"). */
+export interface Clip {
+  id: string;
+  title: string;
+  /** Etiqueta de fecha/audiencia: 'Dom 27 Sep · 412 reproducciones'. */
+  meta_label: string | null;
+  badge: string | null;
+  thumbnail_url: string | null;
+  src_url: string | null;
+  is_active: boolean;
+  sort: number | null;
+  created_at: string;
 }

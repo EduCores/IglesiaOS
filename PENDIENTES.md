@@ -103,6 +103,32 @@ crear cita con cuenta pastoral/celi o Pastor).
 
 ---
 
+## ✅ APLICADO — Lote G: Multimedia (canales + grabaciones recientes) en Supabase
+
+**Estado:** ✅ Aplicado el 28-oct-2026. Las 2 listas que eran 100 % demo
+(canales sincronizados y grabaciones recientes) ahora vienen de la BD:
+`media_channels` y `media_clips`. El toggle de cada canal persiste
+`is_active`. `lint` y `build` en verde.
+
+**Base (`supabase/schema.sql` §9c + migración incremental
+`supabase/migraciones/lote-g-multimedia.sql`):** 2 tablas nuevas → ahora
+**21 en total**, **44 políticas**. Lectura para todos los autenticados;
+escritura con `gestionar_roles` (pastor). `verificar.sql` actualizado:
+**21 / 21 / 44 / 17**.
+
+**Decisiones de modelado (y por qué):**
+- **`media_channels`**: destinos de transmisión (YouTube/FB/copia local) con
+  `icon`, `bg_color` e `icon_color` guardados como clases Tailwind para no
+  perder los estilos de la pantalla. `is_active` es el switch.
+- **`media_clips`**: videos de "Grabaciones Recientes" con `meta_label` (texto
+  de fecha/reproducciones, como las etiquetas de citas) y `src_url` (enlace).
+- El feed de cámara en vivo (`DEMO_CAMERA_FEED`), las diapositivas de
+  ProPresenter y el chat de audiencia siguen siendo demo (dependen del
+  streaming real y del setlist; se evalúan cuando llegue ese lote).
+
+**Aún demo:** proyección de versículos, audiencia, stream en vivo. Sin sesión
+cloud la pantalla conserva sus datos demo de siempre.
+
 ## ✅ APLICADO — Lote F: Contadores reales en Inicio y Directorio
 
 **Estado:** ✅ Aplicado el 28-oct-2026. Nuevo hook `src/lib/useContadores.ts`
