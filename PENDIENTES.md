@@ -4,6 +4,64 @@
 
 ---
 
+## ✅ APLICADO — Lote E: Repertorio, Ensayos, Checklist Pre-Culto y Citas en Supabase
+
+**Estado:** ✅ Aplicado el 28-oct-2026. Las 3 pantallas que quedaban 100 % locales
+(Eventos repertorio/ensayos, CultoVivo checklist, Pastoral citas) ahora tienen
+tabla propia + hook `use*Nube` + escritura optimista. `lint` y `build` en verde.
+
+**Base (`supabase/schema.sql` §9b + migración incremental
+`supabase/migraciones/lote-e-repertorio-citas-checklist.sql`):** 5 tablas nuevas
+(`songs`, `rehearsals`, `rehearsal_confirmations`, `worship_checklist`,
+`pastoral_appointments`) → ahora **19 en total**, **40 policies**, con seeds
+defensivos (solo llenan si la tabla está VACÍA: re-ejecutar no duplica). El
+esquema entero sigue siendo idempotente; quien ya corrió el anterior puede
+ejecutar solo la migración incremental. `verificar.sql` actualizado:
+**19 / 19 / 40 / 17**.
+
+**Decisiones de modelado (y por qué):**
+- **Repertorio** (`songs`): el array completo con `number_tag`, tono
+  `musical_key` (`key` es reservada), BPM, compás, comentario y atmósfera. El
+  setlist del domingo sigue siendo vista de pantalla; la relación
+  setlist↔evento llega después (no se inventó fila falsa).
+- **Ensayos** (`rehearsals` + `rehearsal_confirmations`): la confirmación es
+  **por usuario** (toggle personal: cada quien confirma su asistencia), por eso
+  va en tabla aparte con PK compuesta. La policy devuelve `[]`/`[propia]` y ese
+  es exactamente el estado visual Confirmar↔Confirmado. Seeds relativos a hoy
+  (próximo jueves 19:00 y sábado 10:00, como los demos originales).
+- **Checklist pre-culto** (`worship_checklist`): es **global** (un ítem marcado
+  lo ve todo el equipo), con `checked_by`/`checked_at` de auditoría y `sort`
+  para el orden visual. Seeds = los 4 ítems demo tal cual.
+- **Citas** (`pastoral_appointments`): fecha/hora como etiqueta de texto
+  (`date_label`/`time_label`, misma convención que `cells.schedule`) porque el
+  formulario del pastor es "Mañana"/"10:00 AM", no selector de calendario.
+- **Permiso nuevo `editar_repertorio`** para Director Alabanza (+ Pastor
+  Principal): así el repertorio se edita sin abrir `gestionar_roles`.
+
+**App (mismo patrón piloto, sin cambios visuales sin nube):**
+- `src/lib/useRepertorio.ts` — `useCancionesNube` + `useEnsayosNube` (select
+  anidado de confirmaciones propias); `src/lib/useChecklist.ts` y
+  `src/lib/useCitas.ts` con `mapXToUI` exportado.
+- `src/data/repertorio.ts` — `CANCIONES_INICIALES`/`ENSAYOS_INICIALES` movidos
+  desde el componente (ids ahora string para convivir con UUID).
+- **Eventos.tsx:** canciones y ensayos leen la BD (reemplazo); el toggle
+  Confirmar escribe `rehearsal_confirmations` con **rollback honesto** si RLS
+  niega (vuelve al estado previo + toast). Colores de tarjeta ensayo ahora por
+  `locationIcon` (era `id === 1`).
+- **CultoVivo.tsx:** checklist lee `worship_checklist`; marcar escribe
+  `is_checked` + `checked_by` (usuario de la sesión) con rollback + toast
+  "Sin permiso en la nube: cambio solo local.". Requiere `gestionar_roles`
+  (una línea SQL lo amplía a Portero/Ujieres si se pide).
+- **Pastoral.tsx:** citas leen `pastoral_appointments` (orden LIFO, máx 20);
+  "Programar Nueva Cita" inserta con toast honesto si RLS niega. Los estilos
+  del badge (azul/habano) pasaron de `id % 2` a `status === "Confirmado"`.
+
+**Pendiente para verificar con nube:** ejecutar la migración en la base y
+probar a mano (Evento: toggle confirmación; CultoVivo: marcar ítem; Pastoral:
+crear cita con cuenta pastoral/celi o Pastor).
+
+---
+
 ## ✅ APLICADO — Temas de color: Zafiro y Terracota (light/dark c/u) + icono palette
 
 **Estado:** ✅ Aplicado el 06-oct-2026, desde `DESIGN (1).md` (Serene Ecclesia →

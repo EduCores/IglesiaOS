@@ -17,10 +17,17 @@ proyecto, con su propio backend (mismos datos sensibles).
 
 ## Estado actual
 
-- **Base de datos:** todavía NO creada. Los datos siguen hardcodeados en los
-  componentes (`App.tsx` y módulos) para que la app funcione sin backend.
-- **Esquema listo:** `supabase/schema.sql` (14 tablas + RLS + seed de los
-  **17 roles** con sus permisos: coinciden con `ROLES_INICIALES` de la app).
+- **Base de datos:** creada y verificada punta a punta. La app sigue con datos
+  de respaldo (`src/data/*`) hasta que haya sesión cloud; con sesión lee la BD
+  (ver PENDIENTES.md: Lotes A–E).
+- **Esquema listo:** `supabase/schema.sql` (**19 tablas** con el Lote E +
+  RLS con **40 policies** + seed de los **17 roles** con sus permisos y los
+  datos demo de canciones/ensayos/checklist; coincide con `ROLES_INICIALES`
+  de la app). Migración incremental del Lote E en `supabase/migraciones/`.
+- **Conectadas a la nube (lectura+escritura):** Roles, Finanzas,
+  Directorio+Censo, Células, Bitácora (escritura), Difusión/Comunicaciones,
+  Repertorio+Ensayos (Eventos), Checklist Pre-Culto (CultoVivo),
+  Citas Pastorales (Pastoral).
 - **Cliente listo:** `src/lib/supabase.ts` (`supabase` = null si no hay env).
 - **Tipos listos:** `src/lib/tipos.ts` (espejo del esquema).
 
