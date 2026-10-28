@@ -211,7 +211,18 @@ export interface CitaPastoral {
   created_at: string;
 }
 
-/** Canal sincronizado (pantalla Multimedia, "Canales Sincronizados"). */
+/** Registro sacramental (pantalla Sacramentos: bautismos, presentaciones, etc.). */
+export interface SacramentRecord {
+  id: string;
+  member_id: string | null;
+  candidate_name: string | null;
+  kind: "bautismo" | "confirmacion" | "presentacion" | "matrimonio" | "comunion" | "mayordomia";
+  performed_at: string;
+  notes: string | null;
+  is_anonymous: boolean;
+  created_by: string | null;
+  created_at: string;
+}
 export interface Canal {
   id: string;
   name: string;

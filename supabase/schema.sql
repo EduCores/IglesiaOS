@@ -184,6 +184,7 @@ create table if not exists public.prayer_requests (
 create table if not exists public.sacrament_records (
   id           uuid primary key default gen_random_uuid(),
   member_id    uuid references public.members (id) on delete set null,
+  candidate_name text,                   -- nombre del candidato (texto libre, sin ficha CRM)
   kind         text        not null
                check (kind in ('bautismo', 'confirmacion', 'presentacion',
                                'matrimonio', 'comunion', 'mayordomia')),
@@ -193,6 +194,10 @@ create table if not exists public.sacrament_records (
   created_by   uuid references auth.users (id) on delete set null,
   created_at   timestamptz not null default now()
 );
+-- Columna candidate_name (Lote H): bases que ya corrieron el esquema anterior
+-- no la tienen. Idempotente.
+alter table public.sacrament_records
+  add column if not exists candidate_name text;
 create index if not exists sacrament_records_member_idx
   on public.sacrament_records (member_id, performed_at desc);
 

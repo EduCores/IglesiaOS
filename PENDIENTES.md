@@ -103,6 +103,35 @@ crear cita con cuenta pastoral/celi o Pastor).
 
 ---
 
+## ✅ APLICADO — Lote H: Sacramentos (bautismo) conectado a Supabase
+
+**Estado:** ✅ Aplicado el 28-oct-2026. La solicitud de bautismo ahora se registra
+en `sacrament_records` (POST 201) con candidato, tipo, fecha de ceremonia,
+notas y quien la creó. La pantalla muestra los registros recientes leídos de la
+BD. `lint` y `build` en verde.
+
+**Base (`supabase/schema.sql` §8 + migración incremental
+`supabase/migraciones/lote-h-sacramentos.sql`):** la tabla `sacrament_records`
+ya existía (schema base, §8); este lote solo agrega la columna `candidate_name`
+(texto libre, sin ficha CRM). RLS ya estaba: lectura autenticados, insert con
+`registrar_ofrendas` o `gestionar_roles`, update con `gestionar_roles`. Sin
+tablas nuevas → sigue **21 tablas / 44 políticas**.
+
+**Decisiones de modelado (y por qué):**
+- **`candidate_name`**: el formulario captura un nombre libre ("Mateo Villalba
+  Morales"), no un `member_id` del censo. Se guarda como texto para no forzar
+  una ficha CRM que no existe. Si luego se enlaza al censo, se llena `member_id`.
+- **kind**: sale de la pestaña activa (`bautismo`/`presentacion`/`matrimonio`).
+  Solo bautismo tiene formulario real; las otras avisan "en preparación".
+- **performed_at**: fecha de la ceremonia seleccionada (slot 1 = 24-nov,
+  slot 2 = 15-dic), no la fecha de envío.
+- **created_by**: uid del pastor que registra.
+- El checklist de "Ruta de Discipulado" (4 pasos) sigue siendo demo (lista de
+  verificación de preparación); se evalúa si se persiste en un lote futuro.
+
+**Aún demo:** checklist de discipulado, presentación y matrimonio (formularios
+en preparación), descarga de guía PDF.
+
 ## ✅ APLICADO — Lote G: Multimedia (canales + grabaciones recientes) en Supabase
 
 **Estado:** ✅ Aplicado el 28-oct-2026. Las 2 listas que eran 100 % demo

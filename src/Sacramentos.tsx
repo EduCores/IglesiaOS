@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { supabase } from "./lib/supabase";
+import { useSacramentosNube, mapSacramentToUI } from "./lib/useSacramentos";
 
 interface SacramentTab {
   id: "bautismo" | "presentacion" | "matrimonio";
@@ -70,11 +72,53 @@ export default function SacramentosScreen({ onBack }: { onBack?: () => void }) {
 
   const approvedCount = checklist.filter(item => item.checked).length;
 
+  // Registros sacramentales: con nube vienen de `sacrament_records`.
+  const nubeSacramentos = useSacramentosNube();
+  const [registros, setRegistros] = useState<any[]>([]);
+  useEffect(() => {
+    if (!nubeSacramentos.filas) return;
+    setRegistros(nubeSacramentos.filas.map((row) => mapSacramentToUI(row)));
+  }, [nubeSacramentos.filas]);
+
   const handleSendRequest = () => {
     setShowConfirmation(true);
     setTimeout(() => {
       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
     }, 100);
+
+    // Con nube: registra el sacramento en `sacrament_records`.
+    // kind sale de la pestaña activa; las otras pestañas avisan "en preparación".
+    if (nubeSacramentos.sincronizado && supabase) {
+      const kindMap: Record<string, "bautismo" | "presentacion" | "matrimonio"> = {
+        bautismo: "bautismo",
+        presentacion: "presentacion",
+        matrimonio: "matrimonio",
+      };
+      const kind = kindMap[activeTab] ?? "bautismo";
+      const performedAt = selectedCeremony === "slot_2" ? "2024-12-15" : "2024-11-24";
+      const notas = [
+        `Candidato: ${candidateName}.`,
+        pastoralNotes ? `Observaciones: ${pastoralNotes}.` : null,
+        `Acompañante: ${mentorName}. Talla: ${robeSize}.`,
+      ].filter(Boolean).join(" ");
+      void (async () => {
+        const { error } = await supabase.from("sacrament_records").insert({
+          candidate_name: candidateName,
+          kind,
+          performed_at: performedAt,
+          notes: notas,
+          is_anonymous: false,
+          created_by: (await supabase.auth.getUser()).data.user?.id ?? null,
+        });
+        if (error) {
+          setSuccessToast("No se pudo registrar en la nube. Intenta de nuevo.");
+          setTimeout(() => setSuccessToast(null), 3000);
+        } else {
+          setSuccessToast("Solicitud registrada en la nube.");
+          setTimeout(() => setSuccessToast(null), 3000);
+        }
+      })();
+    }
   };
 
   return (
@@ -500,7 +544,30 @@ export default function SacramentosScreen({ onBack }: { onBack?: () => void }) {
 
         </form>
 
-        {/* Community Pastoral Care Contact Card */}
+        {/* Registros recientes (desde la nube) */}
+        {registros.length > 0 && (
+          <div className="rounded-xl bg-white p-5 shadow-sm border border-slate-100 space-y-3">
+            <div className="flex items-center gap-2">
+              <div className="w-7 h-7 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center text-[#386458] shadow-sm">
+                <span className="material-symbols-outlined text-[16px] font-bold">history</span>
+              </div>
+              <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Registros Recientes</h3>
+            </div>
+            <div className="space-y-2">
+              {registros.slice(0, 8).map((r) => (
+                <div key={r.id} className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 border border-slate-100">
+                  <div className="min-w-0">
+                    <p className="text-xs font-bold text-slate-800 truncate">{r.candidateName}</p>
+                    <p className="text-[10px] text-slate-400 font-medium leading-none mt-0.5">
+                      {r.kind} · {r.performedAt}
+                    </p>
+                  </div>
+                  <span className="material-symbols-outlined text-[#386458] text-[16px]">check_circle</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
         <div className="rounded-xl bg-slate-50 border border-slate-100 p-4 flex items-center gap-3.5 shadow-sm">
           <div className="w-9 h-9 rounded-full bg-[#42617d] text-white flex items-center justify-center shrink-0">
             <span className="material-symbols-outlined text-[18px]">support_agent</span>
