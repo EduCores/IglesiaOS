@@ -1,12 +1,6 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "./lib/supabase";
 import { useSacramentosNube, mapSacramentToUI } from "./lib/useSacramentos";
-
-interface SacramentTab {
-  id: "bautismo" | "presentacion" | "matrimonio";
-  label: string;
-  icon: string;
-}
 
 interface ChecklistItem {
   id: number;

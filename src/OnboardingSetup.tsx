@@ -1,16 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "./lib/supabase";
 import { PILARES_INICIALES, type PilarUI } from "./data/onboarding";
 import { mapPilarToUI, useOnboardingNube } from "./lib/useOnboarding";
-
-interface OnboardingPillar {
-  id: number;
-  title: string;
-  subtitle: string;
-  icon: string;
-  status: "prioritario" | "pendiente" | "completado";
-  actionText: string;
-}
 
 export default function OnboardingSetupScreen({ onBack }: { onBack?: () => void }) {
   const [toastMessage, setToastMessage] = useState<string | null>(null);

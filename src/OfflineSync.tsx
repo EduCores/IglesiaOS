@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 export default function OfflineSyncScreen({ onBack }: { onBack?: () => void }) {
   const [isVerifying, setIsVerifying] = useState(false);

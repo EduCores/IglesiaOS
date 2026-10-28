@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { createPortal } from "react-dom";
 import { TEMAS_COLOR, type TemaColor } from "../useTheme";
 import { NAV_GROUPS, type ScreenId } from "../navigation";

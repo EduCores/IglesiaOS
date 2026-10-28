@@ -62,7 +62,7 @@ export default function PastoralScreen({ onNavigateToSacramentos, onNavigateToBi
     setAppointments(nubeCitas.filas.map((row) => mapCitaToUI(row)));
   }, [nubeCitas.filas]);
 
-  const [confidentialNotes, setConfidentialNotes] = useState<ConfidentialNote[]>([
+  const [confidentialNotes] = useState<ConfidentialNote[]>([
     {
       id: 1,
       title: "Discipulado: Hna. María",

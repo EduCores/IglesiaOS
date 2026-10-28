@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { useContadoresNube } from "../lib/useContadores";
 
 // ==========================================================================
@@ -18,7 +18,6 @@ export default function InicioScreen({
   nombreUsuario?: string;
 }) {
   const [isCultoActive, setIsCultoActive] = useState(false);
-  const [activeDayInfo, setActiveDayInfo] = useState<string | null>(null);
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const [audioProgress, setAudioProgress] = useState(0);
   const progressIntervalRef = useRef<any>(null);
@@ -149,8 +148,6 @@ export default function InicioScreen({
             {daysData.map((d, idx) => (
               <div 
                 key={idx}
-                onMouseEnter={() => setActiveDayInfo(`${d.day}: ${d.count}`)}
-                onMouseLeave={() => setActiveDayInfo(null)}
                 className="flex flex-col items-center space-y-2 cursor-pointer group"
               >
                 <div className={`w-5 rounded-full transition-all duration-300 group-hover:opacity-80 ${d.height} ${d.barColor} ${

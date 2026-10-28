@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { BrowserRouter, useLocation, useNavigate } from "react-router";
-import { useTheme, useTemaColor, type TemaColor } from "./useTheme";
+import { useTheme, useTemaColor } from "./useTheme";
 import DirectorioScreen from "./Directorio";
 import CelulasScreen from "./Celulas";
 import MultimediaScreen from "./Multimedia";

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "../lib/supabase";
 import { HISTORIAL_INICIAL, type ComunicacionUI } from "../data/comunicaciones";
 import { mapDifusionToUI, useDifusionNube } from "../lib/useDifusion";
@@ -7,12 +7,10 @@ import { mapDifusionToUI, useDifusionNube } from "../lib/useDifusion";
 // COMPONENTE: PANTALLA 3 - COMUNICACIONES (Stitch)
 // ==========================================================================
 export default function ComunicacionesScreen({ 
-  onNavigateToForm,
-  onNavigateToInicio,
   onNavigateToWA
 }: { 
-  onNavigateToForm: () => void;
-  onNavigateToInicio: () => void;
+  onNavigateToForm?: () => void;
+  onNavigateToInicio?: () => void;
   onNavigateToWA?: () => void;
 }) {
   const [selectedFilter, setSelectedFilter] = useState<"todos" | "campañas" | "lecturas">("todos");
